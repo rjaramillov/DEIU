@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Diseño y Evaluación de Interfaces de Usuario - Universidad de Colima, Facultad de Telemática">
+    <title>DEIU | Diseño y Evaluación de Interfaces de Usuario</title>
+    <style>
+        :root {
+            --ucol-verde-claro: #64B32E;
+            --ucol-verde-obscuro: #527630;
+            --ucol-gris-obscuro: #4E4D4D;
+            --ucol-gris-medio: #8E8E8E;
+            --ucol-gris-claro: #B4B4B4;
+            --ucol-beige: #E4BA8B;
+            --ucol-naranja: #FBB034;
+            
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: var(--ucol-verde-claro);
+            --accent-dark: var(--ucol-verde-obscuro);
+            --border: #2a2a2a;
+            --hover: #252525;
+            
+            --font-mono: 'Courier New', monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --space-xxl: 4rem;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+            font-weight: bold;
+        }
+        .skip-link:focus { top: 0; }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 50;
+            padding: var(--space-sm) 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-placeholder {
+            width: 150px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--ucol-verde-claro), var(--ucol-verde-obscuro));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.8rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover, .nav-links a:focus {
+            color: var(--accent);
+            outline: none;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after, .nav-links a:focus::after { width: 100%; }
+
+        .hero {
+            margin-top: 80px;
+            padding: var(--space-xxl) var(--space-md);
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(100, 179, 46, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            font-family: var(--font-mono);
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: var(--space-md);
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+            display: block;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border);
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .meta-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .schedule-highlight {
+            color: var(--ucol-naranja);
+            font-family: var(--font-mono);
+        }
+
+        .main-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md) var(--space-xxl);
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-xl);
+        }
+
+        @media (min-width: 768px) {
+            .main-grid { grid-template-columns: 280px 1fr; }
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .info-card h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-sm);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-card h3::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .countdown {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .countdown-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .quick-links { list-style: none; }
+        .quick-links li { margin-bottom: var(--space-xs); }
+
+        .quick-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .quick-links a:hover, .quick-links a:focus {
+            background: var(--hover);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .quick-links a::before {
+            content: '→';
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .quick-links a:hover::before, .quick-links a:focus::before { opacity: 1; }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xl);
+        }
+
+        .section { scroll-margin-top: 100px; }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-sm);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-number {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .unidad {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: var(--space-md);
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .unidad:hover { border-color: var(--accent-dark); }
+
+        .unidad-header {
+            padding: var(--space-md);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: transparent;
+            border: none;
+            width: 100%;
+            color: var(--text-primary);
+            text-align: left;
+            transition: background 0.2s;
+        }
+
+        .unidad-header:hover { background: var(--hover); }
+        .unidad-header:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: -2px;
+        }
+
+        .unidad-title {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .unidad-name { font-size: 1.1rem; font-weight: 600; }
+        .unidad-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+
+        .unidad-toggle {
+            font-size: 1.5rem;
+            color: var(--accent);
+            transition: transform 0.3s;
+        }
+
+        .unidad.active .unidad-toggle { transform: rotate(45deg); }
+
+        .unidad-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .unidad.active .unidad-content {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .unidad-body { padding: 0 var(--space-md) var(--space-md); }
+
+        .unidad-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .sesiones-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .sesion-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: var(--space-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .sesion-item:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .sesion-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sesion-date {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .sesion-topic {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .sesion-files { display: flex; gap: var(--space-xs); }
+
+        .file-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .file-link:hover, .file-link:focus {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .file-link::before { content: '📄'; font-size: 0.9rem; }
+
+        .file-link.available {
+            background: rgba(100, 179, 46, 0.12);
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .file-link.available::before { content: ''; }
+
+        .file-link.available:hover, .file-link.available:focus {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-lg);
+            color: var(--text-secondary);
+            font-style: italic;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            margin-top: var(--space-sm);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-md);
+        }
+
+        .calendar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: var(--space-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calendar-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+        }
+
+        .calendar-card.urgent::before { background: var(--ucol-naranja); }
+
+        .calendar-date {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: var(--space-xs);
+        }
+
+        .calendar-card.urgent .calendar-date { color: var(--ucol-naranja); }
+
+        .calendar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .calendar-type {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .recursos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-md);
+        }
+
+        .recurso-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: var(--space-md);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .recurso-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .recurso-icon {
+            font-size: 2rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .recurso-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+
+        .recurso-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .recurso-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .recurso-link:hover { text-decoration: underline; }
+
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: var(--space-xl) var(--space-md);
+            margin-top: var(--space-xxl);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .footer-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .footer-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .last-update {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .last-update span { color: var(--accent); }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (max-width: 767px) {
+            .nav-links { display: none; }
+            .hero-meta { flex-direction: column; gap: var(--space-sm); }
+            .sidebar {
+                position: relative;
+                top: 0;
+                order: 2;
+            }
+            .content { order: 1; }
+            .main-grid {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    
+    <nav role="navigation" aria-label="Navegación principal">
+        <div class="nav-container">
+            <div class="logo-placeholder" aria-label="Logo Universidad de Colima (pendiente)">
+                <img src="UdeC_2L izq Blanco.png" alt="Smiley face" width="150" height="50" >
+            </div>
+            <ul class="nav-links">
+                <li><a href="#unidades">Unidades</a></li>
+                <li><a href="#calendario">Calendario</a></li>
+                <li><a href="#recursos">Recursos</a></li>
+                <li><a href="#evaluacion">Evaluación</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-badge">Semestre Feb - Ago 2026</div>
+        <h1>
+            Diseño y Evaluación de
+            <span>Interfaces de Usuario</span>
+        </h1>
+        <div class="hero-meta">
+            <div class="meta-item">
+                <span class="meta-label">Programa</span>
+                <span class="meta-value">Ingeniería de Software</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Semestre</span>
+                <span class="meta-value">6° Grupo G</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Horario</span>
+                <span class="meta-value schedule-highlight">Martes y Jueves 7:00 - 9:00 AM</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Profesor</span>
+                <span class="meta-value">Jaramillo Velasco Ricardo</span>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="main-grid">
+        <aside class="sidebar" role="complementary">
+            <div class="info-card">
+                <h3>Próxima Evaluación</h3>
+                <div class="countdown" id="countdown">20 MAR 2026</div>
+                <div class="countdown-label">1ª Evaluación Parcial</div>
+            </div>
+
+            <div class="info-card">
+                <h3>Navegación Rápida</h3>
+                <ul class="quick-links">
+                    <li><a href="#unidad1">Unidad I: Principios DCU</a></li>
+                    <li><a href="#unidad2">Unidad II: Análisis de Tareas</a></li>
+                    <li><a href="#unidad3">Unidad III: Interfaces Web</a></li>
+                    <li><a href="#unidad4">Unidad IV: Interfaces Móviles</a></li>
+                    <li><a href="#unidad5">Unidad V: Usabilidad</a></li>
+                    <li><a href="#unidad6">Unidad VI: Accesibilidad</a></li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Créditos</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Total:</span>
+                    <span style="font-weight: 600;">6</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Con docente:</span>
+                    <span style="font-weight: 600;">4 hrs</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Independiente:</span>
+                    <span style="font-weight: 600;">2 hrs</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="content">
+            <section id="unidades" class="section">
+                <div class="section-header">
+                    <span class="section-number">01</span>
+                    <h2>Unidades y Sesiones</h2>
+                </div>
+
+                <article class="unidad" id="unidad1">
+                    <button class="unidad-header" aria-expanded="false" aria-controls="content-u1">
+                        <div class="unidad-title">
+                            <span class="unidad-name">Unidad I: Principios de diseño centrado en el usuario</span>
+                            <span class="unidad-date">03/02/2026 - 06/02/2026</span>
+                        </div>
+                        <span class="unidad-toggle" aria-hidden="true">+</span>
+                    </button>
+                    <div class="unidad-content" id="content-u1">
+                        <div class="unidad-body">
+                            <p class="unidad-description">
+                                Aplica teorías, herramientas y técnicas básicas del diseño centrado en el usuario. 
+                                Introducción al DCU, diagnóstico de conocimientos previos y fundamentos teóricos.
+                            </p>
+                            <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: var(--space-sm);">
+                                Sesiones y Archivos
+                            </h4>
+                            <ul class="sesiones-list">
+                                <li class="sesion-item">
+                                    <div class="sesion-info">
+                                        <span class="sesion-date">03 FEB 2026</span>
+                                        <span class="sesion-topic">Introducción al curso y diagnóstico</span>
+                                    </div>
+                                    <div class="sesion-files">
+                                        <a href="slides/kickoff_slides.html" target="_blank" class="file-link available">🎞️ Slides S1</a>
+                                    </div>
+                                </li>
+                                <li class="sesion-item">
+                                    <div class="sesion-info">
+                                        <span class="sesion-date">06 FEB 2026</span>
+                                        <span class="sesion-topic">Fundamentos del DCU</span>
+                                    </div>
+                                    <div class="sesion-files">
+                                        <a href="slides/Slides_sesion2.html" target="_blank" class="file-link available">🎞️ Slides S1</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="unidad" id="unidad2">
+                    <button class="unidad-header" aria-expanded="false" aria-controls="content-u2">
+                        <div class="unidad-title">
+                            <span class="unidad-name">Unidad II: Análisis de tareas</span>
+                            <span class="unidad-date">10/02/2026 - 27/02/2026</span>
+                        </div>
+                        <span class="unidad-toggle" aria-hidden="true">+</span>
+                    </button>
+                    <div class="unidad-content" id="content-u2">
+                        <div class="unidad-body">
+                            <p class="unidad-description">
+                                Aplicar técnicas para analizar las tareas de los usuarios, considerando factores humanos. 
+                                Contexto del usuario, técnicas de recolección de datos y arquitectura de información.
+                            </p>
+                            <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: var(--space-sm);">
+                                Sesiones y Archivos
+                            </h4>
+                            <ul class="sesiones-list">
+                                <li class="sesion-item">
+                                    <div class="sesion-info">
+                                        <span class="sesion-date">10 FEB 2026</span>
+                                        <span class="sesion-topic">Contexto del usuario y Estudios Etnográficos (A1)</span>
+                                    </div>
+                                    <div class="sesion-files">
+                                       <a href="slides/sesion3_slides.html" target="_blank" class="file-link available">🎞️ Slides</a>
+                                    </div>
+                                </li>
+                                <li class="sesion-item">
+                                    <div class="sesion-info">
+                                        <span class="sesion-date">13 FEB 2026</span>
+                                        <span class="sesion-topic">User Personas – Construcción y validación (A2)</span>
+                                    </div>
+                                    <div class="sesion-files">
+                                       <a href="slides/sesion4.html" target="_blank" class="file-link available">🎞️ Slides</a>
+                                    </div>
+                                </li>
+                                <li class="sesion-item">
+                                    <div class="sesion-info">
+                                        <span class="sesion-date">20 FEB 2026</span>
+                                        <span class="sesion-topic">Análisis de Tareas y Journey Maps (A3)</span>
+                                    </div>
+                                    <div class="sesion-files">
+                                        <a href="slides/sesion5_slides_task_analysis.html" target="_blank" class="file-link available">🎞️ Slides</a>
+                                        
+                                    </div>
+                                </li>
+                                <li class="sesion-item">
+                                    <div class="sesion-info">
+                                        <span class="sesion-date">24 FEB 2026</span>
+                                        <span class="sesion-topic">Card Sorting</span>
+                                    </div>
+                                    <div class="sesion-files">
+                                        <a href="slides/sesion6_slides_card_sorting.html" target="_blank" class="file-link available">🎞️ Slides</a>
+                                    </div>
+                                </li>
+                                
+                                
+								
+                            </ul>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="unidad" id="unidad3">
+                    <button class="unidad-header" aria-expanded="false" aria-controls="content-u3">
+                        <div class="unidad-title">
+                            <span class="unidad-name">Unidad III: Diseño de interfaces para aplicaciones Web</span>
+                            <span class="unidad-date">03/03/2026 - 13/03/2026</span>
+                        </div>
+                        <span class="unidad-toggle" aria-hidden="true">+</span>
+                    </button>
+                    <div class="unidad-content" id="content-u3">
+                        <div class="unidad-body">
+                            <p class="unidad-description">
+                                Aplicar técnicas para resolver problemas del diseño de interfaces web del mundo real. 
+                                Guías de accesibilidad WCAG 2.0 y diseño visual.
+                            </p>
+                            <div class="empty-state">Contenido disponible a partir del 03 de marzo</div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="unidad" id="unidad4">
+                    <button class="unidad-header" aria-expanded="false" aria-controls="content-u4">
+                        <div class="unidad-title">
+                            <span class="unidad-name">Unidad IV: Diseño de interfaces para aplicaciones móviles</span>
+                            <span class="unidad-date">24/03/2026 - 17/04/2026</span>
+                        </div>
+                        <span class="unidad-toggle" aria-hidden="true">+</span>
+                    </button>
+                    <div class="unidad-content" id="content-u4">
+                        <div class="unidad-body">
+                            <p class="unidad-description">
+                                Aplicar técnicas para resolver problemas del diseño de interfaces móviles. 
+                                Guías de diseño móvil y comparativa con escritorio.
+                            </p>
+                            <div class="empty-state">Contenido disponible a partir del 24 de marzo</div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="unidad" id="unidad5">
+                    <button class="unidad-header" aria-expanded="false" aria-controls="content-u5">
+                        <div class="unidad-title">
+                            <span class="unidad-name">Unidad V: Evaluación de usabilidad</span>
+                            <span class="unidad-date">21/04/2026 - 08/05/2026</span>
+                        </div>
+                        <span class="unidad-toggle" aria-hidden="true">+</span>
+                    </button>
+                    <div class="unidad-content" id="content-u5">
+                        <div class="unidad-body">
+                            <p class="unidad-description">
+                                Aplicar métodos de usabilidad para mejorar el diseño. 
+                                Evaluación heurística sin usuarios y recorrido cognitivo con usuarios.
+                            </p>
+                            <div class="empty-state">Contenido disponible a partir del 21 de abril</div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="unidad" id="unidad6">
+                    <button class="unidad-header" aria-expanded="false" aria-controls="content-u6">
+                        <div class="unidad-title">
+                            <span class="unidad-name">Unidad VI: Evaluación de accesibilidad</span>
+                            <span class="unidad-date">12/05/2026 - 14/05/2026</span>
+                        </div>
+                        <span class="unidad-toggle" aria-hidden="true">+</span>
+                    </button>
+                    <div class="unidad-content" id="content-u6">
+                        <div class="unidad-body">
+                            <p class="unidad-description">
+                                Aplicar métodos de accesibilidad para mejorar el diseño. 
+                                Accesibilidad Web y herramientas de verificación.
+                            </p>
+                            <div class="empty-state">Contenido disponible a partir del 12 de mayo</div>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="calendario" class="section">
+                <div class="section-header">
+                    <span class="section-number">02</span>
+                    <h2>Calendario de Evaluaciones</h2>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-card urgent">
+                        <div class="calendar-date">20 MAR 2026</div>
+                        <div class="calendar-title">1ª Evaluación Parcial</div>
+                        <div class="calendar-type">Unidades I, II y III • 80% Actividades / 20% Examen</div>
+                    </div>
+                    <div class="calendar-card">
+                        <div class="calendar-date">29 MAY 2026</div>
+                        <div class="calendar-title">2ª Evaluación Parcial</div>
+                        <div class="calendar-type">Unidades IV, V y VI • 80% Actividades / 20% Examen</div>
+                    </div>
+                    <div class="calendar-card">
+                        <div class="calendar-date">12 JUN 2026</div>
+                        <div class="calendar-title">Evaluación Ordinario</div>
+                        <div class="calendar-type">Evaluación final ordinaria</div>
+                    </div>
+                    <div class="calendar-card">
+                        <div class="calendar-date">26 JUN 2026</div>
+                        <div class="calendar-title">Evaluación Extraordinario</div>
+                        <div class="calendar-type">Para quienes no acreditaron en ordinario</div>
+                    </div>
+                    <div class="calendar-card">
+                        <div class="calendar-date">31 JUL 2026</div>
+                        <div class="calendar-title">Regularización</div>
+                        <div class="calendar-type">Última oportunidad de evaluación</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="recursos" class="section">
+                <div class="section-header">
+                    <span class="section-number">03</span>
+                    <h2>Recursos y Bibliografía</h2>
+                </div>
+                <div class="recursos-grid">
+                    <div class="recurso-card">
+                        <div class="recurso-icon">📚</div>
+                        <h4 class="recurso-title">Interaction Design</h4>
+                        <p class="recurso-desc">Preece, Rogers & Sharp. Beyond Human Computer Interaction (2a ed.)</p>
+                        <a href="#" class="recurso-link">Ver referencia →</a>
+                    </div>
+                    <div class="recurso-card">
+                        <div class="recurso-icon">🎯</div>
+                        <h4 class="recurso-title">The Design of Everyday Things</h4>
+                        <p class="recurso-desc">Donald Norman (2002). Basic Books.</p>
+                        <a href="#" class="recurso-link">Ver referencia →</a>
+                    </div>
+                    <div class="recurso-card">
+                        <div class="recurso-icon">🌐</div>
+                        <h4 class="recurso-title">Nielsen Norman Group</h4>
+                        <p class="recurso-desc">Artículos de investigación sobre usabilidad y UX.</p>
+                        <a href="https://www.nngroup.com" target="_blank" class="recurso-link">Visitar sitio →</a>
+                    </div>
+                    <div class="recurso-card">
+                        <div class="recurso-icon">♿</div>
+                        <h4 class="recurso-title">WCAG 2.1 Quick Reference</h4>
+                        <p class="recurso-desc">W3C Web Accessibility Initiative. Guías de accesibilidad.</p>
+                        <a href="https://www.w3.org/WAI/WCAG21/quickref/" target="_blank" class="recurso-link">Ver guía →</a>
+                    </div>
+                    <div class="recurso-card">
+                        <div class="recurso-icon">🎓</div>
+                        <h4 class="recurso-title">Interaction Design Foundation</h4>
+                        <p class="recurso-desc">Cursos y recursos sobre diseño centrado en el usuario.</p>
+                        <a href="https://www.interaction-design.org" target="_blank" class="recurso-link">Explorar →</a>
+                    </div>
+                    <div class="recurso-card">
+                        <div class="recurso-icon">📱</div>
+                        <h4 class="recurso-title">Designing the User Interface</h4>
+                        <p class="recurso-desc">Ben Shneiderman (2005). 4ta Edición. Addison-Wesley.</p>
+                        <a href="#" class="recurso-link">Ver referencia →</a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="evaluacion" class="section">
+                <div class="section-header">
+                    <span class="section-number">04</span>
+                    <h2>Criterios de Evaluación</h2>
+                </div>
+                <div class="info-card" style="max-width: 100%;">
+                    <h3 style="margin-bottom: var(--space-md);">Escala de Desempeño</h3>
+                    <div style="display: grid; gap: var(--space-sm);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm); background: var(--bg-primary); border-radius: 8px; border-left: 4px solid var(--ucol-verde-claro);">
+                            <div>
+                                <strong>Sobresaliente</strong>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Comprende y domina todos los conceptos, evalúa proyectos aplicando principios correctamente</p>
+                            </div>
+                            <span style="font-family: var(--font-mono); font-weight: bold; color: var(--ucol-verde-claro);">9.5 - 10</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm); background: var(--bg-primary); border-radius: 8px; border-left: 4px solid var(--ucol-naranja);">
+                            <div>
+                                <strong>Competente</strong>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Conoce y domina conceptos, aplica principios de evaluación correctamente</p>
+                            </div>
+                            <span style="font-family: var(--font-mono); font-weight: bold; color: var(--ucol-naranja);">8.0 - 9.4</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm); background: var(--bg-primary); border-radius: 8px; border-left: 4px solid var(--ucol-beige);">
+                            <div>
+                                <strong>Suficiente</strong>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Conoce los conceptos, aplica principios en ocasiones</p>
+                            </div>
+                            <span style="font-family: var(--font-mono); font-weight: bold; color: var(--ucol-beige);">6.0 - 7.9</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm); background: var(--bg-primary); border-radius: 8px; border-left: 4px solid var(--ucol-gris-medio);">
+                            <div>
+                                <strong>No Competente</strong>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">No domina los conceptos fundamentales</p>
+                            </div>
+                            <span style="font-family: var(--font-mono); font-weight: bold; color: var(--ucol-gris-medio);">< 6.0</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid var(--border);">
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                            <strong style="color: var(--text-primary);">Nota importante:</strong> Es obligatorio el 80% de asistencia para tener derecho a evaluaciones parciales.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer role="contentinfo">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-info">
+                    <h4>Diseño y Evaluación de Interfaces de Usuario</h4>
+                    <p>Universidad de Colima • Facultad de Telemática</p>
+                    <p style="margin-top: 8px; font-size: 0.85rem;">Prof. Jaramillo Velasco Ricardo</p>
+                </div>
+                <div class="last-update">
+                    Última actualización: <span id="lastUpdate">--</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.unidad-header').forEach(button => {
+            button.addEventListener('click', () => {
+                const unidad = button.parentElement;
+                const isExpanded = button.getAttribute('aria-expanded') === 'true';
+                
+                document.querySelectorAll('.unidad').forEach(u => {
+                    if (u !== unidad) {
+                        u.classList.remove('active');
+                        u.querySelector('.unidad-header').setAttribute('aria-expanded', 'false');
+                    }
+                });
+                
+                unidad.classList.toggle('active');
+                button.setAttribute('aria-expanded', !isExpanded);
+            });
+        });
+
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('es-MX', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        function updateCountdown() {
+            const evalDate = new Date('2026-03-20');
+            const today = new Date();
+            const diffTime = evalDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            const countdownEl = document.getElementById('countdown');
+            if (diffDays > 0) {
+                countdownEl.innerHTML = `${diffDays} <span style="font-size: 0.7em; color: var(--text-secondary);">días</span>`;
+            } else if (diffDays === 0) {
+                countdownEl.textContent = 'HOY';
+                countdownEl.style.color = 'var(--ucol-naranja)';
+            } else {
+                countdownEl.textContent = '20 MAR 2026';
+            }
+        }
+        updateCountdown();
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        const sections = document.querySelectorAll('.section, .unidad');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.style.color = '';
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.style.color = 'var(--accent)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
