@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesión 5 - Task Analysis y Journey Maps | DEIU</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --bg: #282a36;
+            --current-line: #44475a;
+            --foreground: #f8f8f2;
+            --comment: #6272a4;
+            --cyan: #8be9fd;
+            --green: #50fa7b;
+            --orange: #ffb86c;
+            --pink: #ff79c6;
+            --purple: #bd93f9;
+            --red: #ff5555;
+            --yellow: #f1fa8c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--foreground);
+            overflow: hidden;
+        }
+        
+        .reveal {
+            font-size: 20px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .reveal .slides {
+            height: auto;
+        }
+        
+        .reveal .slides section {
+            padding: 40px 60px;
+            height: auto;
+            min-height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        .reveal h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.4em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .reveal h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--purple);
+            margin-bottom: 0.6em;
+        }
+        
+        .reveal h3 {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--green);
+            margin-bottom: 0.5em;
+        }
+        
+        .reveal h4 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--yellow);
+            margin-bottom: 0.4em;
+        }
+        
+        .reveal p, .reveal li {
+            font-size: 1em;
+            line-height: 1.5;
+            margin-bottom: 0.6em;
+        }
+        
+        .reveal ul, .reveal ol {
+            margin-left: 1.2em;
+        }
+        
+        .reveal li {
+            margin-bottom: 0.4em;
+        }
+        
+        .reveal strong {
+            color: var(--orange);
+            font-weight: 600;
+        }
+        
+        .reveal em {
+            color: var(--pink);
+            font-style: italic;
+        }
+        
+        .reveal .subtitle {
+            font-size: 1.1em;
+            color: var(--comment);
+            margin-top: -0.3em;
+            margin-bottom: 1.5em;
+        }
+        
+        .reveal .highlight-box {
+            background: var(--current-line);
+            border-left: 4px solid var(--cyan);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .success-box {
+            background: rgba(80, 250, 123, 0.1);
+            border-left: 4px solid var(--green);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .warning-box {
+            background: rgba(255, 184, 108, 0.1);
+            border-left: 4px solid var(--orange);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .error-box {
+            background: rgba(255, 85, 85, 0.1);
+            border-left: 4px solid var(--red);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5em;
+            margin: 1em 0;
+        }
+        
+        .reveal .three-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1em;
+            margin: 1em 0;
+        }
+        
+        .reveal table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+            font-size: 0.9em;
+        }
+        
+        .reveal th {
+            background: var(--current-line);
+            color: var(--cyan);
+            padding: 0.6em;
+            border: 1px solid var(--comment);
+            font-weight: 600;
+        }
+        
+        .reveal td {
+            padding: 0.6em;
+            border: 1px solid var(--comment);
+        }
+        
+        .reveal .small-text {
+            font-size: 0.85em;
+            color: var(--comment);
+        }
+        
+        .reveal .large-text {
+            font-size: 1.15em;
+            font-weight: 600;
+        }
+        
+        .reveal .quote {
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--yellow);
+            border-left: 4px solid var(--yellow);
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        .reveal .grid-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8em;
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .reveal .grid-list li {
+            background: var(--current-line);
+            padding: 0.8em;
+            border-radius: 8px;
+            border-left: 3px solid var(--purple);
+        }
+        
+        .reveal .step-box {
+            background: var(--current-line);
+            padding: 1em;
+            margin: 0.6em 0;
+            border-radius: 8px;
+            border-left: 4px solid var(--green);
+        }
+        
+        .reveal .step-number {
+            display: inline-block;
+            background: var(--green);
+            color: var(--bg);
+            width: 1.6em;
+            height: 1.6em;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 1.6em;
+            font-weight: 700;
+            margin-right: 0.4em;
+            font-size: 0.9em;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .controls button {
+            background: var(--current-line);
+            color: var(--foreground);
+            border: 2px solid var(--cyan);
+            padding: 12px 24px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            opacity: 0.85;
+        }
+        
+        .controls button:hover {
+            background: var(--cyan);
+            color: var(--bg);
+            transform: translateY(-2px);
+            opacity: 1;
+        }
+        
+        .slide-number {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--current-line);
+            color: var(--comment);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Título -->
+            <section>
+                <h1>Task Analysis<br>y Journey Maps</h1>
+                <p class="subtitle">Sesión 5 • Martes 17 de Febrero, 2026</p>
+                <p class="subtitle">DEIU - Diseño y Evaluación de Interfaces de Usuario</p>
+                <p class="subtitle">Ing. Ricardo Jaramillo Velasco</p>
+            </section>
+
+            <!-- Slide 2: Agenda -->
+            <section>
+                <h2>📋 Agenda de Hoy</h2>
+                <div class="highlight-box">
+                    <ol>
+                        <li><strong>Check-in A2</strong> - ¿Tienen personas completas? (10 min)</li>
+                        <li><strong>¿Qué es Task Analysis?</strong> - Teoría + ejemplos (20 min)</li>
+                        <li><strong>Cómo mapear tareas</strong> - Metodología (30 min)</li>
+                        <li><strong>Actividad</strong> - Mapear tareas de Persona 1 (30 min)</li>
+                        <li><strong>Journey Maps</strong> - Teoría + diferencias (15 min)</li>
+                        <li><strong>A3. Introducción</strong> - Entregable (10 min)</li>
+                        <li><strong>Cierre</strong> - Tarea + próxima sesión (5 min)</li>
+                    </ol>
+                </div>
+                <p class="small-text">Total: 120 minutos</p>
+            </section>
+
+            <!-- Slide 3: Posición en DCU -->
+            <section>
+                <h2>🔄 ¿Dónde Estamos en el Ciclo DCU?</h2>
+                <div class="highlight-box large-text">
+                    <p><strong style="color: var(--comment);">01. Identificar problema</strong> → Sesión 1-2 ✓</p>
+                    <p><strong style="color: var(--comment);">02. Validar problema</strong> → Sesión 2 ✓</p>
+                    <p><strong style="color: var(--comment);">03. Investigar usuarios</strong> → Sesión 3 (A1) ✓</p>
+                    <p><strong style="color: var(--comment);">03b. Sintetizar datos</strong> → Sesión 4 (A2) ✓</p>
+                    <p><strong style="color: var(--green);">04. Analizar tareas</strong> → Sesión 5 (HOY) 👈</p>
+                    <p><strong style="color: var(--comment);">05. Diseñar solución</strong> → Sesión 6+</p>
+                </div>
+                <p class="small-text">Estamos analizando QUÉ hacen los usuarios y CÓMO lo hacen</p>
+            </section>
+
+            <!-- Slide 4: ¿Qué es Task Analysis? -->
+            <section>
+                <h2>🔍 ¿Qué es Task Analysis?</h2>
+                <div class="success-box">
+                    <p class="large-text"><strong>Task Analysis</strong> es el proceso de descomponer una tarea en pasos específicos para identificar problemas y oportunidades de diseño.</p>
+                </div>
+                <h3>Propósito:</h3>
+                <ul>
+                    <li>Entender <strong>QUÉ</strong> tareas hace el usuario</li>
+                    <li>Documentar <strong>CÓMO</strong> las hace actualmente</li>
+                    <li>Identificar <strong>PAIN POINTS</strong> en cada paso</li>
+                    <li>Descubrir <strong>OPORTUNIDADES</strong> de mejora</li>
+                </ul>
+            </section>
+
+            <!-- Slide 5: ¿Qué es una "Tarea"? -->
+            <section>
+                <h2>❓ ¿Qué es una "Tarea"?</h2>
+                <div class="two-columns">
+                    <div>
+                        <div class="error-box">
+                            <h4>❌ NO es una tarea:</h4>
+                            <ul>
+                                <li>"Organizarse"</li>
+                                <li>"Ser productivo"</li>
+                                <li>"Usar la app"</li>
+                            </ul>
+                            <p class="small-text">Demasiado vago</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="success-box">
+                            <h4>✅ SÍ es una tarea:</h4>
+                            <ul>
+                                <li>"Planear la semana académica"</li>
+                                <li>"Revisar deadlines del día"</li>
+                                <li>"Sincronizar calendarios"</li>
+                            </ul>
+                            <p class="small-text">Específico y accionable</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>Regla:</strong> Una tarea tiene un objetivo claro, inicio y fin definidos.</p>
+                </div>
+            </section>
+
+            <!-- Slide 6: Niveles de Granularidad -->
+            <section>
+                <h2>📊 Niveles de Granularidad</h2>
+                <div class="step-box">
+                    <p><span class="step-number">1</span><strong>Actividad</strong> (muy general)</p>
+                    <p class="small-text">Ejemplo: "Organizar vida académica"</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">2</span><strong>Tarea</strong> (nivel medio - <em>ESTE ES EL NIVEL QUE USAMOS</em>)</p>
+                    <p class="small-text">Ejemplo: "Planear semana académica"</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">3</span><strong>Subtarea</strong> (nivel detallado)</p>
+                    <p class="small-text">Ejemplo: "Revisar deadlines en Calendar"</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">4</span><strong>Acción</strong> (muy específico)</p>
+                    <p class="small-text">Ejemplo: "Abrir app de Google Calendar"</p>
+                </div>
+                <p class="warning-box"><strong>Para Task Analysis:</strong> Usamos nivel 2 (Tarea) y lo descomponemos en nivel 3 (Subtareas).</p>
+            </section>
+
+            <!-- Slide 7: Tipos de Tareas -->
+            <section>
+                <h2>🔀 Tipos de Tareas</h2>
+                <div class="two-columns">
+                    <div class="highlight-box">
+                        <h3>Tarea ACTUAL</h3>
+                        <p>Cómo el usuario hace la tarea <strong>HOY</strong> (sin tu solución)</p>
+                        <p class="small-text">Basada en datos del A1</p>
+                        <hr style="border-color: var(--cyan); margin: 1em 0;">
+                        <p><strong>Ejemplo:</strong></p>
+                        <p style="font-size: 0.9em;">Laura planea su semana abriendo 3 apps diferentes, copiando fechas manualmente a un cuaderno, y revisando 5 grupos de WhatsApp.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3>Tarea IDEAL</h3>
+                        <p>Cómo el usuario <strong>QUISIERA</strong> hacer la tarea (con tu solución)</p>
+                        <p class="small-text">Visión futura</p>
+                        <hr style="border-color: var(--cyan); margin: 1em 0;">
+                        <p><strong>Ejemplo:</strong></p>
+                        <p style="font-size: 0.9em;">Laura abre 1 app que sincroniza todo automáticamente y ve su semana completa en 30 segundos.</p>
+                    </div>
+                </div>
+                <p class="warning-box"><strong>Para A3:</strong> Mapearán tareas ACTUALES. Las tareas ideales vienen después.</p>
+            </section>
+
+            <!-- Slide 8: Task Analysis vs User Flow -->
+            <section>
+                <h2>🔄 Task Analysis vs User Flow</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th style="color: var(--green);">Task Analysis</th>
+                            <th style="color: var(--purple);">User Flow</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Enfoque</strong></td>
+                            <td>COMPORTAMIENTO actual del usuario</td>
+                            <td>NAVEGACIÓN en tu interfaz</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Contexto</strong></td>
+                            <td>Mundo real (múltiples apps, offline)</td>
+                            <td>Dentro de tu app/sistema</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Herramientas</strong></td>
+                            <td>Cualquier herramienta que usa hoy</td>
+                            <td>Solo tu interfaz</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cuándo</strong></td>
+                            <td>ANTES de diseñar (investigación)</td>
+                            <td>DURANTE diseño (prototipo)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="highlight-box"><strong>HOY:</strong> Task Analysis (cómo hacen las cosas SIN tu app)</p>
+            </section>
+
+            <!-- Slide 9: Cómo Hacer Task Analysis -->
+            <section>
+                <h2>🛠️ Cómo Hacer Task Analysis</h2>
+                <div class="step-box">
+                    <p><span class="step-number">1</span><strong>Identificar tarea principal</strong></p>
+                    <p class="small-text">¿Cuál es la tarea crítica que hace tu persona?</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">2</span><strong>Descomponer en subtareas</strong></p>
+                    <p class="small-text">¿Qué pasos específicos sigue para completar la tarea?</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">3</span><strong>Documentar cada subtarea</strong></p>
+                    <p class="small-text">Acción + Herramienta + Tiempo + Pain point</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">4</span><strong>Identificar pain points</strong></p>
+                    <p class="small-text">¿Dónde hay fricción, frustración o errores?</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">5</span><strong>Encontrar oportunidades</strong></p>
+                    <p class="small-text">¿Qué podría mejorarse o eliminarse?</p>
+                </div>
+            </section>
+
+            <!-- Slide 10: Ejemplo - Tarea de Laura (Parte 1) -->
+            <section>
+                <h2>📝 Ejemplo: Laura Planea su Semana</h2>
+                <div class="success-box">
+                    <p><strong>TAREA:</strong> Planear semana académica y laboral</p>
+                    <p><strong>USUARIO:</strong> Laura Méndez (Persona 1)</p>
+                    <p><strong>CONTEXTO:</strong> Domingo noche, 10 PM, en su cuarto</p>
+                    <p><strong>FRECUENCIA:</strong> 1 vez por semana</p>
+                </div>
+                <h3>Subtareas (6 pasos):</h3>
+                <p class="small-text">Ver siguiente slide para desglose completo...</p>
+            </section>
+
+            <!-- Slide 11: Ejemplo - Tarea de Laura (Parte 2) -->
+            <section>
+                <h2>📋 Desglose de Subtareas - Laura</h2>
+                <div style="font-size: 0.75em;">
+                    <p><strong>1. Revisar turnos de trabajo</strong></p>
+                    <p class="small-text">→ Herramienta: Google Calendar | Tiempo: 2 min | ⚠️ Pain: Solo tiene turnos, no tareas</p>
+                    
+                    <p><strong>2. Revisar tareas académicas</strong></p>
+                    <p class="small-text">→ Herramienta: Notion | Tiempo: 5 min | ⚠️ Pain: No sabe si hay conflictos con trabajo</p>
+                    
+                    <p><strong>3. Revisar anuncios en grupos de clase</strong></p>
+                    <p class="small-text">→ Herramienta: WhatsApp (3 grupos) | Tiempo: 8 min | ⚠️ Pain: Mucho scroll, fácil olvidar algo</p>
+                    
+                    <p><strong>4. Consolidar en cuaderno</strong></p>
+                    <p class="small-text">→ Herramienta: Cuaderno físico | Tiempo: 10 min | ⚠️ Pain: Copiar manualmente, posibles errores</p>
+                    
+                    <p><strong>5. Identificar conflictos</strong></p>
+                    <p class="small-text">→ Herramienta: Comparar cuaderno vs apps | Tiempo: 5 min | ⚠️ Pain: Se da cuenta que olvidó algo</p>
+                    
+                    <p><strong>6. Ajustar y priorizar</strong></p>
+                    <p class="small-text">→ Herramienta: Cuaderno + Notion | Tiempo: 5 min | ⚠️ Pain: Ansiedad de que algo falta</p>
+                </div>
+                <div class="error-box">
+                    <p><strong>TOTAL: ~35 minutos</strong> | <strong>Pain points: 6</strong></p>
+                </div>
+            </section>
+
+            <!-- Slide 12: Pain Points y Oportunidades -->
+            <section>
+                <h2>⚠️ Pain Points → 💡 Oportunidades</h2>
+                <table style="font-size: 0.8em;">
+                    <thead>
+                        <tr>
+                            <th>Pain Point</th>
+                            <th>Severidad</th>
+                            <th>Oportunidad de Diseño</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Información fragmentada en 3+ apps</td>
+                            <td style="color: var(--red);">🔴 Alta</td>
+                            <td>Sincronización automática</td>
+                        </tr>
+                        <tr>
+                            <td>Copiar manualmente 20+ items</td>
+                            <td style="color: var(--orange);">🟡 Media</td>
+                            <td>Vista unificada</td>
+                        </tr>
+                        <tr>
+                            <td>No detecta conflictos automáticamente</td>
+                            <td style="color: var(--red);">🔴 Alta</td>
+                            <td>Detección de conflictos</td>
+                        </tr>
+                        <tr>
+                            <td>Ansiedad de olvidar algo</td>
+                            <td style="color: var(--orange);">🟡 Media</td>
+                            <td>Checklist de verificación</td>
+                        </tr>
+                        <tr>
+                            <td>Proceso toma 35 min semanales</td>
+                            <td style="color: var(--green);">🟢 Baja</td>
+                            <td>Reducir a <10 min</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="highlight-box"><strong>Prioridad:</strong> Atacar pain points 🔴 rojos primero</p>
+            </section>
+
+            <!-- Slide 13: Actividad en Clase -->
+            <section>
+                <h2>⚡ Actividad en Clase (30 min)</h2>
+                <div class="warning-box large-text">
+                    <p><strong>En sus equipos:</strong></p>
+                    <ol>
+                        <li>Identifiquen 1-2 tareas CRÍTICAS de su Persona 1</li>
+                        <li>Descompongan en subtareas (4-8 pasos)</li>
+                        <li>Documenten: Acción + Herramienta + Tiempo + Pain point</li>
+                        <li>Identifiquen 3-5 pain points principales</li>
+                        <li>Sugieran oportunidades de diseño</li>
+                    </ol>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>Dónde:</strong> Miro, sección nueva "Task Analysis"</p>
+                    <p><strong>Formato:</strong> Usar template que compartí</p>
+                </div>
+                <p class="small-text">Circularé para dar feedback en vivo</p>
+            </section>
+
+            <!-- Slide 14: Checklist de la Actividad -->
+            <section>
+                <h2>✅ Checklist - Actividad</h2>
+                <div class="step-box">
+                    <p>□ Tarea tiene nombre claro y específico</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Basada en datos del A1 (comportamiento REAL)</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Descompuesta en 4-8 subtareas</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Cada subtarea documenta: Acción + Herramienta + Tiempo</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Pain points identificados (mínimo 3)</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Pain points tienen severidad (🔴🟡🟢)</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Oportunidades de diseño sugeridas</p>
+                </div>
+            </section>
+
+            <!-- Slide 15: ¿Qué son Journey Maps? -->
+            <section>
+                <h2>🗺️ ¿Qué son Journey Maps?</h2>
+                <div class="success-box">
+                    <p class="large-text"><strong>Journey Map</strong> (Mapa de Viaje de Usuario) es una visualización de la experiencia completa del usuario a través de todas las fases de interacción.</p>
+                </div>
+                <h3>Componentes:</h3>
+                <ul class="grid-list">
+                    <li><strong>Fases:</strong> Etapas del journey</li>
+                    <li><strong>Acciones:</strong> Qué hace en cada fase</li>
+                    <li><strong>Pensamientos:</strong> Qué piensa</li>
+                    <li><strong>Emociones:</strong> Cómo se siente (😊😐😟)</li>
+                    <li><strong>Touchpoints:</strong> Puntos de contacto</li>
+                    <li><strong>Pain Points:</strong> Momentos de fricción</li>
+                </ul>
+            </section>
+
+            <!-- Slide 16: Task Analysis vs Journey Map -->
+            <section>
+                <h2>🔀 Task Analysis vs Journey Map</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th style="color: var(--green);">Task Analysis</th>
+                            <th style="color: var(--pink);">Journey Map</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Enfoque</strong></td>
+                            <td>PASOS de una tarea específica</td>
+                            <td>EXPERIENCIA completa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Alcance</strong></td>
+                            <td>1 tarea concreta</td>
+                            <td>Proceso completo (múltiples tareas)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Componente clave</strong></td>
+                            <td>Pain points técnicos/funcionales</td>
+                            <td>EMOCIONES del usuario</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nivel de detalle</strong></td>
+                            <td>Zoom-in (granular)</td>
+                            <td>Zoom-out (panorama general)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Resultado</strong></td>
+                            <td>Qué optimizar/eliminar</td>
+                            <td>Dónde invertir esfuerzo</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="highlight-box"><strong>Ambos son complementarios:</strong> Task Analysis = detalle, Journey Map = contexto emocional</p>
+            </section>
+
+            <!-- Slide 17: Componentes de Journey Map -->
+            <section>
+                <h2>🧩 Componentes Detallados</h2>
+                <div class="two-columns" style="font-size: 0.85em;">
+                    <div>
+                        <div class="highlight-box">
+                            <h4>1. FASES</h4>
+                            <p>Etapas cronológicas del journey completo</p>
+                            <p class="small-text">Ej: Descubrimiento → Planificación → Ejecución → Revisión</p>
+                        </div>
+                        <div class="highlight-box">
+                            <h4>2. ACCIONES</h4>
+                            <p>Qué hace el usuario en cada fase</p>
+                            <p class="small-text">Ej: "Abre apps", "Revisa calendario"</p>
+                        </div>
+                        <div class="highlight-box">
+                            <h4>3. PENSAMIENTOS</h4>
+                            <p>Qué piensa (citas del A1)</p>
+                            <p class="small-text">Ej: "¿Olvidé algo?"</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="highlight-box">
+                            <h4>4. EMOCIONES</h4>
+                            <p>Cómo se siente (curva emocional)</p>
+                            <p class="small-text">😊 Positivo | 😐 Neutral | 😟 Negativo</p>
+                        </div>
+                        <div class="highlight-box">
+                            <h4>5. TOUCHPOINTS</h4>
+                            <p>Puntos de contacto/herramientas</p>
+                            <p class="small-text">Ej: "Google Calendar", "Notion", "WhatsApp"</p>
+                        </div>
+                        <div class="highlight-box">
+                            <h4>6. PAIN POINTS</h4>
+                            <p>Momentos de frustración</p>
+                            <p class="small-text">Ej: "No encuentra deadline importante"</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 18: Curva Emocional -->
+            <section>
+                <h2>📈 La Curva Emocional</h2>
+                <div class="highlight-box">
+                    <p><strong>La curva emocional</strong> muestra altibajos de sentimientos a través del journey.</p>
+                </div>
+                <div class="two-columns">
+                    <div class="success-box">
+                        <h4>😊 Momentos Positivos</h4>
+                        <ul>
+                            <li>Encuentra info rápido</li>
+                            <li>Se siente organizada</li>
+                            <li>Logra objetivo</li>
+                        </ul>
+                        <p class="small-text">→ Reforzar estos momentos</p>
+                    </div>
+                    <div class="error-box">
+                        <h4>😟 Momentos Negativos</h4>
+                        <ul>
+                            <li>No encuentra algo</li>
+                            <li>Información contradictoria</li>
+                            <li>Toma demasiado tiempo</li>
+                        </ul>
+                        <p class="small-text">→ Eliminar/mejorar estos momentos</p>
+                    </div>
+                </div>
+                <p class="warning-box"><strong>Oportunidad de diseño:</strong> Convertir 😟 en 😊</p>
+            </section>
+
+            <!-- Slide 19: Ejemplo Journey Map - Laura (Resumen) -->
+            <section>
+                <h2>🗺️ Journey Map - Laura (Resumen)</h2>
+                <div style="font-size: 0.7em;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fase</th>
+                                <th>Acciones</th>
+                                <th>Pensamientos</th>
+                                <th>Emoción</th>
+                                <th>Pain Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1. Inicio</strong></td>
+                                <td>Decide planear semana</td>
+                                <td>"Necesito organizarme"</td>
+                                <td>😐 Neutral</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2. Recopilación</strong></td>
+                                <td>Abre Calendar, Notion, WhatsApp</td>
+                                <td>"¿Cuántas apps tengo que revisar?"</td>
+                                <td>😟 Frustración</td>
+                                <td>Fragmentación</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3. Consolidación</strong></td>
+                                <td>Copia a cuaderno manualmente</td>
+                                <td>"Esto toma mucho tiempo"</td>
+                                <td>😟 Cansancio</td>
+                                <td>Manual, lento</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4. Descubrimiento</strong></td>
+                                <td>Se da cuenta que olvidó algo</td>
+                                <td>"¡No! Olvidé revisar grupo X"</td>
+                                <td>😟 Pánico</td>
+                                <td>Olvidos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5. Cierre</strong></td>
+                                <td>Termina, con ansiedad residual</td>
+                                <td>"¿Olvidé algo más?"</td>
+                                <td>😐 Ansiedad</td>
+                                <td>Falta de confianza</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="error-box"><strong>Curva emocional:</strong> 😐 → 😟 → 😟 → 😟 → 😐 (Nunca llega a 😊)</p>
+            </section>
+
+            <!-- Slide 20: Insights del Journey Map -->
+            <section>
+                <h2>💡 Insights del Journey Map</h2>
+                <div class="highlight-box">
+                    <h3>¿Qué aprendemos del journey de Laura?</h3>
+                </div>
+                <div class="step-box">
+                    <p><strong>1. La experiencia NUNCA es positiva</strong></p>
+                    <p class="small-text">No hay un solo momento 😊. Todo es neutral o negativo.</p>
+                </div>
+                <div class="step-box">
+                    <p><strong>2. El problema NO es al final, es al INICIO</strong></p>
+                    <p class="small-text">Fase 2 (Recopilación) ya genera frustración. No esperó a terminar.</p>
+                </div>
+                <div class="step-box">
+                    <p><strong>3. La ansiedad persiste DESPUÉS de terminar</strong></p>
+                    <p class="small-text">Incluso si completa la tarea, no tiene confianza de que esté bien.</p>
+                </div>
+                <div class="success-box">
+                    <p><strong>Oportunidad:</strong> Crear experiencia que termine en 😊, no en 😐</p>
+                </div>
+            </section>
+
+            <!-- Slide 21: A3. Task Analysis + Journey Map -->
+            <section>
+                <h2>📋 A3. Task Analysis + Journey Map</h2>
+                <div class="warning-box large-text">
+                    <p><strong>Actividad grupal | Valor: 10%</strong></p>
+                    <p><strong>Entrega: Miércoles 26 de Febrero, 2026</strong></p>
+                </div>
+                <h3>Requisitos:</h3>
+                <ul>
+                    <li><strong>Task Analysis</strong> de 2-3 tareas críticas de Persona 1</li>
+                    <li><strong>Journey Map</strong> completo de 1 experiencia (4-6 fases)</li>
+                    <li>Basado en datos del A1 (comportamiento real)</li>
+                    <li>Pain points identificados y priorizados</li>
+                    <li>Oportunidades de diseño documentadas</li>
+                </ul>
+                <p class="highlight-box"><strong>Formato:</strong> Miro (proceso) + Google Slides (visualización)</p>
+            </section>
+
+            <!-- Slide 22: Criterios de Evaluación A3 -->
+            <section>
+                <h2>📊 Criterios de Evaluación A3</h2>
+                <table style="font-size: 0.85em;">
+                    <thead>
+                        <tr>
+                            <th>Criterio</th>
+                            <th>Peso</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Basado en datos</strong></td>
+                            <td>30%</td>
+                            <td>Tareas reales del A1, no inventadas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Task Analysis completo</strong></td>
+                            <td>25%</td>
+                            <td>2-3 tareas, descompuestas, pain points</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Journey Map completo</strong></td>
+                            <td>25%</td>
+                            <td>6 componentes, curva emocional</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Insights accionables</strong></td>
+                            <td>15%</td>
+                            <td>Oportunidades de diseño claras</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Visualización</strong></td>
+                            <td>5%</td>
+                            <td>Google Slides legible y profesional</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="small-text">Detalles completos en Classroom</p>
+            </section>
+
+            <!-- Slide 23: Próxima Sesión -->
+            <section>
+                <h2>🔜 Próxima Sesión</h2>
+                <div class="highlight-box large-text">
+                    <p><strong>Sesión 6 - Jueves 19 de Febrero</strong></p>
+                    <p>Card Sorting y Arquitectura de Información</p>
+                </div>
+                <h3>Temas:</h3>
+                <ul>
+                    <li>¿Qué es Card Sorting?</li>
+                    <li>Cómo organizar información</li>
+                    <li>Actividad: Card Sort con usuarios reales</li>
+                    <li>Crear sitemap/IA de su solución</li>
+                </ul>
+                <p class="warning-box"><strong>Prerequisito:</strong> Tener draft de Task Analysis (de hoy) completo</p>
+            </section>
+
+            <!-- Slide 24: Recordatorios -->
+            <section>
+                <h2>⏰ Recordatorios</h2>
+                <div class="error-box large-text">
+                    <p><strong>📅 Miércoles 19 Feb - MAÑANA</strong></p>
+                    <p>Entrega A1 + A2 (23:59)</p>
+                </div>
+                <div class="warning-box" style="margin-top: 1em;">
+                    <p><strong>📅 Miércoles 26 Feb - PRÓXIMA SEMANA</strong></p>
+                    <p>Entrega A3. Task Analysis + Journey Map (23:59)</p>
+                </div>
+                <div class="highlight-box" style="margin-top: 1em;">
+                    <h3>Para mañana (19 Feb):</h3>
+                    <ul>
+                        <li>Terminar A1 si no lo han terminado</li>
+                        <li>Terminar A2 (User Personas completas)</li>
+                        <li>Publicar ambos en Classroom</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 25: Resumen -->
+            <section>
+                <h2>📝 Resumen de Hoy</h2>
+                <ul class="grid-list">
+                    <li><strong>Task Analysis</strong> = Descomponer tareas en pasos</li>
+                    <li><strong>Journey Map</strong> = Experiencia completa + emociones</li>
+                    <li>Task Analysis = <em>Zoom-in</em>, Journey = <em>Zoom-out</em></li>
+                    <li>Ambos basados en datos del A1</li>
+                    <li>Pain points → Oportunidades de diseño</li>
+                    <li>A3 requiere: 2-3 tasks + 1 journey map</li>
+                </ul>
+                <div class="quote">
+                    "Entender QUÉ hacen y CÓMO lo hacen te dice DÓNDE diseñar."
+                </div>
+            </section>
+
+            <!-- Slide 26: Cierre -->
+            <section>
+                <h2>❓ ¿Preguntas?</h2>
+                <div class="highlight-box" style="margin-top: 3em;">
+                    <p class="large-text">Nos vemos el jueves.</p>
+                    <p class="subtitle">¡Éxito con A1 y A2!</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <div class="slide-number" id="slideNumber">1 / 26</div>
+    
+    <div class="controls">
+        <button onclick="navigateSlide(-1)">← Anterior</button>
+        <button onclick="navigateSlide(1)">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slides section');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => {
+                slide.style.display = 'none';
+            });
+            
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].style.display = 'flex';
+            
+            // Scroll to top of the slide
+            slides[currentSlide].scrollTop = 0;
+            
+            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function navigateSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') navigateSlide(-1);
+            if (e.key === 'ArrowRight') navigateSlide(1);
+        });
+
+        showSlide(0);
+    </script>
+</body>
+</html>

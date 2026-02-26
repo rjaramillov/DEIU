@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesión 6 - Card Sorting y Arquitectura de Información | DEIU</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --bg: #282a36;
+            --current-line: #44475a;
+            --foreground: #f8f8f2;
+            --comment: #6272a4;
+            --cyan: #8be9fd;
+            --green: #50fa7b;
+            --orange: #ffb86c;
+            --pink: #ff79c6;
+            --purple: #bd93f9;
+            --red: #ff5555;
+            --yellow: #f1fa8c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--foreground);
+            overflow: hidden;
+        }
+        
+        .reveal {
+            font-size: 20px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .reveal .slides {
+            height: auto;
+        }
+        
+        .reveal .slides section {
+            padding: 40px 60px 120px 60px;
+            height: auto;
+            min-height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        .reveal h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.4em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .reveal h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--purple);
+            margin-bottom: 0.6em;
+        }
+        
+        .reveal h3 {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--green);
+            margin-bottom: 0.5em;
+        }
+        
+        .reveal h4 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--yellow);
+            margin-bottom: 0.4em;
+        }
+        
+        .reveal p, .reveal li {
+            font-size: 1em;
+            line-height: 1.5;
+            margin-bottom: 0.6em;
+        }
+        
+        .reveal ul, .reveal ol {
+            margin-left: 1.2em;
+        }
+        
+        .reveal li {
+            margin-bottom: 0.4em;
+        }
+        
+        .reveal strong {
+            color: var(--orange);
+            font-weight: 600;
+        }
+        
+        .reveal em {
+            color: var(--pink);
+            font-style: italic;
+        }
+        
+        .reveal .subtitle {
+            font-size: 1.1em;
+            color: var(--comment);
+            margin-top: -0.3em;
+            margin-bottom: 1.5em;
+        }
+        
+        .reveal .highlight-box {
+            background: var(--current-line);
+            border-left: 4px solid var(--cyan);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .success-box {
+            background: rgba(80, 250, 123, 0.1);
+            border-left: 4px solid var(--green);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .warning-box {
+            background: rgba(255, 184, 108, 0.1);
+            border-left: 4px solid var(--orange);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .error-box {
+            background: rgba(255, 85, 85, 0.1);
+            border-left: 4px solid var(--red);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5em;
+            margin: 1em 0;
+        }
+        
+        .reveal .three-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1em;
+            margin: 1em 0;
+        }
+        
+        .reveal table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+            font-size: 0.9em;
+        }
+        
+        .reveal th {
+            background: var(--current-line);
+            color: var(--cyan);
+            padding: 0.6em;
+            border: 1px solid var(--comment);
+            font-weight: 600;
+        }
+        
+        .reveal td {
+            padding: 0.6em;
+            border: 1px solid var(--comment);
+        }
+        
+        .reveal .small-text {
+            font-size: 0.85em;
+            color: var(--comment);
+        }
+        
+        .reveal .large-text {
+            font-size: 1.15em;
+            font-weight: 600;
+        }
+        
+        .reveal .quote {
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--yellow);
+            border-left: 4px solid var(--yellow);
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        .reveal .grid-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8em;
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .reveal .grid-list li {
+            background: var(--current-line);
+            padding: 0.8em;
+            border-radius: 8px;
+            border-left: 3px solid var(--purple);
+        }
+        
+        .reveal .step-box {
+            background: var(--current-line);
+            padding: 1em;
+            margin: 0.6em 0;
+            border-radius: 8px;
+            border-left: 4px solid var(--green);
+        }
+        
+        .reveal .step-number {
+            display: inline-block;
+            background: var(--green);
+            color: var(--bg);
+            width: 1.6em;
+            height: 1.6em;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 1.6em;
+            font-weight: 700;
+            margin-right: 0.4em;
+            font-size: 0.9em;
+        }
+        
+        .reveal .card-example {
+            display: inline-block;
+            background: var(--yellow);
+            color: var(--bg);
+            padding: 0.5em 1em;
+            border-radius: 6px;
+            margin: 0.3em;
+            font-weight: 600;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .controls button {
+            background: var(--current-line);
+            color: var(--foreground);
+            border: 2px solid var(--cyan);
+            padding: 10px 20px;
+            font-size: 0.95em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            opacity: 0.9;
+        }
+        
+        .controls button:hover {
+            background: var(--cyan);
+            color: var(--bg);
+            transform: translateY(-2px);
+            opacity: 1;
+        }
+        
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--current-line);
+            color: var(--comment);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Título -->
+            <section>
+                <h1>Card Sorting<br>y Arquitectura de<br>Información</h1>
+                <p class="subtitle">Sesión 6 • Martes 24 de Febrero, 2026</p>
+                <p class="subtitle">DEIU - Diseño y Evaluación de Interfaces de Usuario</p>
+                <p class="subtitle">Ing. Ricardo Jaramillo Velasco</p>
+            </section>
+
+            <!-- Slide 2: Agenda -->
+            <section>
+                <h2>📋 Agenda de Hoy</h2>
+                <div class="highlight-box">
+                    <ol>
+                        <li><strong>Check-in A3</strong> - ¿Task Analysis completo? (10 min)</li>
+                        <li><strong>¿Qué es Card Sorting?</strong> - Teoría + tipos (20 min)</li>
+                        <li><strong>Cómo hacer Card Sorting</strong> - Metodología (20 min)</li>
+                        <li><strong>Actividad</strong> - Card Sort con compañero (30 min)</li>
+                        <li><strong>Analizar resultados</strong> - Matriz de similitud (20 min)</li>
+                        <li><strong>Arquitectura de Información</strong> - Sitemap (15 min)</li>
+                        <li><strong>A4. Introducción</strong> - Entregable (5 min)</li>
+                    </ol>
+                </div>
+                <p class="small-text">Total: 120 minutos</p>
+            </section>
+
+            <!-- Slide 3: Posición en DCU -->
+            <section>
+                <h2>🔄 ¿Dónde Estamos en el Ciclo DCU?</h2>
+                <div class="highlight-box large-text">
+                    <p><strong style="color: var(--comment);">01. Identificar problema</strong> → Sesión 1-2 ✓</p>
+                    <p><strong style="color: var(--comment);">02. Validar problema</strong> → Sesión 2 ✓</p>
+                    <p><strong style="color: var(--comment);">03. Investigar usuarios</strong> → Sesión 3 (A1) ✓</p>
+                    <p><strong style="color: var(--comment);">04. Sintetizar datos</strong> → Sesión 4 (A2) ✓</p>
+                    <p><strong style="color: var(--comment);">05. Analizar tareas</strong> → Sesión 5 (A3) ✓</p>
+                    <p><strong style="color: var(--green);">06. Organizar información</strong> → Sesión 6 (HOY) 👈</p>
+                    <p><strong style="color: var(--comment);">07. Diseñar solución</strong> → Sesión 7+</p>
+                </div>
+                <p class="small-text">Estamos organizando features y contenido ANTES de diseñar interfaces</p>
+            </section>
+
+            <!-- Slide 4: ¿Qué es Card Sorting? -->
+            <section>
+                <h2>🃏 ¿Qué es Card Sorting?</h2>
+                <div class="success-box">
+                    <p class="large-text"><strong>Card Sorting</strong> es una técnica de investigación donde usuarios organizan contenido o features en categorías que tienen sentido para ELLOS.</p>
+                </div>
+                <h3>Propósito:</h3>
+                <ul>
+                    <li>Entender el <strong>modelo mental</strong> de los usuarios</li>
+                    <li>Descubrir cómo agrupan naturalmente información</li>
+                    <li>Identificar nombres de categorías que usan</li>
+                    <li>Crear <strong>arquitectura de información</strong> que sea intuitiva</li>
+                </ul>
+                <div class="warning-box">
+                    <p><strong>Clave:</strong> NO impones tu organización. Los USUARIOS te dicen cómo organizarla.</p>
+                </div>
+            </section>
+
+            <!-- Slide 5: ¿Para Qué Sirve? -->
+            <section>
+                <h2>🎯 ¿Para Qué Sirve Card Sorting?</h2>
+                <div class="two-columns">
+                    <div class="success-box">
+                        <h4>✅ SÍ usar para:</h4>
+                        <ul>
+                            <li>Organizar menú de navegación</li>
+                            <li>Estructurar sitemap</li>
+                            <li>Agrupar features de tu app</li>
+                            <li>Decidir categorías de contenido</li>
+                            <li>Validar tu propuesta de IA</li>
+                        </ul>
+                    </div>
+                    <div class="error-box">
+                        <h4>❌ NO usar para:</h4>
+                        <ul>
+                            <li>Diseñar layout visual</li>
+                            <li>Decidir colores/tipografía</li>
+                            <li>Priorizar features</li>
+                            <li>Testear usabilidad</li>
+                            <li>Reemplazar Task Analysis</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="highlight-box"><strong>Card Sorting responde:</strong> "¿Cómo organizarían USTEDES esta información?"</p>
+            </section>
+
+            <!-- Slide 6: Tipos de Card Sorting -->
+            <section>
+                <h2>🔀 Tipos de Card Sorting</h2>
+                <div class="step-box">
+                    <h3><span class="step-number">1</span>OPEN Card Sorting</h3>
+                    <p>Los usuarios <strong>crean sus propias categorías</strong> y les dan nombres.</p>
+                    <p class="small-text">Útil cuando: No sabes cómo organizar el contenido. Quieres descubrir categorías emergentes.</p>
+                </div>
+                <div class="step-box">
+                    <h3><span class="step-number">2</span>CLOSED Card Sorting</h3>
+                    <p>Tú defines las <strong>categorías predefinidas</strong>. Usuarios solo asignan cards.</p>
+                    <p class="small-text">Útil cuando: Ya tienes categorías. Quieres validar si tienen sentido para usuarios.</p>
+                </div>
+                <div class="step-box">
+                    <h3><span class="step-number">3</span>HYBRID Card Sorting</h3>
+                    <p>Categorías predefinidas + opción de <strong>crear nuevas</strong>.</p>
+                    <p class="small-text">Útil cuando: Tienes algunas categorías claras, pero sospechas que faltan otras.</p>
+                </div>
+            </section>
+
+            <!-- Slide 7: Cuándo Usar Cada Tipo -->
+            <section>
+                <h2>🤔 ¿Cuál Tipo Usar?</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Situación</th>
+                            <th>Tipo Recomendado</th>
+                            <th>Razón</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Proyecto nuevo, no sabes cómo organizar</td>
+                            <td style="color: var(--green);">OPEN</td>
+                            <td>Descubrimiento puro</td>
+                        </tr>
+                        <tr>
+                            <td>Ya tienes sitemap, quieres validar</td>
+                            <td style="color: var(--purple);">CLOSED</td>
+                            <td>Validación de propuesta</td>
+                        </tr>
+                        <tr>
+                            <td>Tienes categorías obvias + algunas dudas</td>
+                            <td style="color: var(--orange);">HYBRID</td>
+                            <td>Balance descubrimiento/validación</td>
+                        </tr>
+                        <tr>
+                            <td>Rediseño de navegación existente</td>
+                            <td style="color: var(--purple);">CLOSED</td>
+                            <td>Comparar vieja vs nueva estructura</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="warning-box"><strong>Para su A4:</strong> Usarán OPEN Card Sorting (descubrimiento)</p>
+            </section>
+
+            <!-- Slide 8: Cómo Preparar Card Sorting -->
+            <section>
+                <h2>📝 Cómo Preparar un Card Sorting</h2>
+                <div class="step-box">
+                    <p><span class="step-number">1</span><strong>Identificar contenido/features</strong></p>
+                    <p class="small-text">De dónde vienen: Oportunidades de diseño del A3, features de la solución, secciones de contenido</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">2</span><strong>Crear cards (15-30 cards)</strong></p>
+                    <p class="small-text">1 card = 1 concepto. No muy genéricos, no muy específicos. Nivel medio.</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">3</span><strong>Reclutar participantes (5-15)</strong></p>
+                    <p class="small-text">Del perfil de tus personas. Mínimo 5 para patrones, máximo 15 para no saturar.</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">4</span><strong>Decidir: Presencial o Remoto</strong></p>
+                    <p class="small-text">Presencial = tarjetas físicas. Remoto = Miro, OptimalSort.</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">5</span><strong>Preparar instrucciones claras</strong></p>
+                    <p class="small-text">"Agrupa estas cards en categorías que tengan sentido para ti. Puedes crear tantas categorías como quieras."</p>
+                </div>
+            </section>
+
+            <!-- Slide 9: Número Ideal de Cards -->
+            <section>
+                <h2>🔢 ¿Cuántas Cards Crear?</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cantidad</th>
+                            <th>Evaluación</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color: var(--red);">5-10 cards</td>
+                            <td>❌ Muy pocas</td>
+                            <td>Agrupación obvia. No aprendes nada nuevo.</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--green);">15-30 cards</td>
+                            <td>✅ Ideal</td>
+                            <td>Suficiente complejidad sin abrumar.</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--orange);">30-50 cards</td>
+                            <td>⚠️ Muchas</td>
+                            <td>Útil para sitios grandes, pero cansa usuarios.</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--red);">50+ cards</td>
+                            <td>❌ Demasiadas</td>
+                            <td>Usuarios abandonan. Sesión de 1+ hora.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="highlight-box">
+                    <p><strong>Para A4:</strong> Crear 20-25 cards (sweet spot)</p>
+                    <p class="small-text">Suficiente para revelar patrones, no tanto que canse a participantes</p>
+                </div>
+            </section>
+
+            <!-- Slide 10: Granularidad de Cards -->
+            <section>
+                <h2>🎚️ Nivel de Granularidad Correcto</h2>
+                <div class="three-columns" style="font-size: 0.85em;">
+                    <div class="error-box">
+                        <h4>❌ Muy Genérico</h4>
+                        <p class="card-example">Configuración</p>
+                        <p class="card-example">Contenido</p>
+                        <p class="card-example">Ayuda</p>
+                        <p class="small-text">Problema: Obvio. No ayuda a decidir subcategorías.</p>
+                    </div>
+                    <div class="success-box">
+                        <h4>✅ Nivel Correcto</h4>
+                        <p class="card-example">Cambiar contraseña</p>
+                        <p class="card-example">Notificaciones push</p>
+                        <p class="card-example">Sincronizar calendarios</p>
+                        <p class="small-text">Correcto: Específico pero no trivial.</p>
+                    </div>
+                    <div class="error-box">
+                        <h4>❌ Muy Específico</h4>
+                        <p class="card-example">Botón "Guardar" color azul</p>
+                        <p class="card-example">Font 14pt en títulos</p>
+                        <p class="small-text">Problema: Detalles de diseño visual, no contenido.</p>
+                    </div>
+                </div>
+                <div class="warning-box">
+                    <p><strong>Regla:</strong> La card debe describir una FUNCIÓN o CONTENIDO, no un elemento visual.</p>
+                </div>
+            </section>
+
+            <!-- Slide 11: Ejemplo de Cards - Proyecto Estudiante -->
+            <section>
+                <h2>📋 Ejemplo: Cards de TaskSync (Laura)</h2>
+                <p class="small-text">Proyecto: App para sincronizar Calendar, Notion y WhatsApp</p>
+                <div style="font-size: 0.85em;">
+                    <p><strong>20 cards creadas desde oportunidades del A3:</strong></p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5em; margin: 1em 0;">
+                        <span class="card-example">Sincronizar calendarios</span>
+                        <span class="card-example">Ver vista semanal</span>
+                        <span class="card-example">Notificaciones de deadlines</span>
+                        <span class="card-example">Detectar conflictos turno/entrega</span>
+                        <span class="card-example">Importar de Notion</span>
+                        <span class="card-example">Importar de Google Calendar</span>
+                        <span class="card-example">Leer grupos de WhatsApp</span>
+                        <span class="card-example">Agregar tarea manual</span>
+                        <span class="card-example">Marcar tarea completada</span>
+                        <span class="card-example">Ver deadlines del día</span>
+                        <span class="card-example">Filtrar por materia</span>
+                        <span class="card-example">Priorizar tareas</span>
+                        <span class="card-example">Cambiar tema oscuro/claro</span>
+                        <span class="card-example">Exportar a PDF</span>
+                        <span class="card-example">Compartir calendario</span>
+                        <span class="card-example">Configurar recordatorios</span>
+                        <span class="card-example">Ver estadísticas cumplimiento</span>
+                        <span class="card-example">Buscar tareas</span>
+                        <span class="card-example">Cambiar zona horaria</span>
+                        <span class="card-example">Tutoriales de uso</span>
+                    </div>
+                </div>
+                <p class="highlight-box"><strong>Fuente:</strong> Pain points del A3 → Oportunidades → Features → Cards</p>
+            </section>
+
+            <!-- Slide 12: Cómo Conducir Sesión -->
+            <section>
+                <h2>🎬 Cómo Conducir la Sesión</h2>
+                <div class="step-box">
+                    <p><span class="step-number">1</span><strong>Explicar contexto (1 min)</strong></p>
+                    <p class="small-text">"Estoy diseñando una app de [X]. Estas cards son features. Ayúdame a organizarlas."</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">2</span><strong>Dar instrucciones (1 min)</strong></p>
+                    <p class="small-text">"Agrupa las cards en categorías que tengan sentido para ti. Usa tantas categorías como necesites. Dale nombre a cada categoría."</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">3</span><strong>Observar en silencio (10-15 min)</strong></p>
+                    <p class="small-text">NO interrumpas. Deja que piensen. Toma notas de dudas o comentarios espontáneos.</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">4</span><strong>Hacer preguntas de seguimiento (3-5 min)</strong></p>
+                    <p class="small-text">"¿Por qué pusiste X con Y?", "¿Cómo le pondrías a esta categoría?", "¿Hubo algo difícil de ubicar?"</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">5</span><strong>Documentar resultado (2 min)</strong></p>
+                    <p class="small-text">Foto del resultado (físico) o exportar Miro (digital).</p>
+                </div>
+            </section>
+
+            <!-- Slide 13: Actividad en Clase -->
+            <section>
+                <h2>⚡ Actividad en Clase (30 min)</h2>
+                <div class="warning-box large-text">
+                    <p><strong>En sus equipos:</strong></p>
+                    <ol>
+                        <li>Crear 15-20 cards de features de su proyecto (basadas en A3)</li>
+                        <li>Reclutar 1 compañero de OTRO equipo como participante</li>
+                        <li>Conducir sesión de Open Card Sorting (15 min)</li>
+                        <li>Documentar resultado en Miro con foto/screenshot</li>
+                        <li>Hacer preguntas de seguimiento</li>
+                    </ol>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>Materiales:</strong> Sticky notes en Miro o papel</p>
+                    <p><strong>Rol:</strong> Mitad de equipos son facilitadores, mitad participantes. Luego intercambian.</p>
+                </div>
+                <p class="small-text">Esto es PRÁCTICA. Para A4 necesitarán 5 participantes más.</p>
+            </section>
+
+            <!-- Slide 14: Checklist de la Actividad -->
+            <section>
+                <h2>✅ Checklist - Actividad</h2>
+                <div class="step-box">
+                    <p>□ Crearon 15-20 cards de features (basadas en A3)</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Cards tienen nivel de granularidad correcto (no muy genéricas, no muy específicas)</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Explicaron contexto al participante claramente</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Participante agrupó cards SIN ayuda</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Participante nombró cada categoría</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Documentaron resultado (foto o Miro)</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Hicieron 2-3 preguntas de seguimiento</p>
+                </div>
+            </section>
+
+            <!-- Slide 15: Analizar Resultados -->
+            <section>
+                <h2>📊 Analizar Resultados</h2>
+                <div class="highlight-box">
+                    <p class="large-text">Con 1 participante: Tienes 1 opinión.</p>
+                    <p class="large-text">Con 5+ participantes: Empiezas a ver <strong>PATRONES</strong>.</p>
+                </div>
+                <h3>Herramienta: Matriz de Similitud</h3>
+                <p>Matriz que muestra qué % de participantes agruparon card A con card B.</p>
+                <div class="two-columns">
+                    <div class="success-box">
+                        <p><strong>80-100%:</strong> Agrupación fuerte</p>
+                        <p class="small-text">Van juntas en categoría</p>
+                    </div>
+                    <div class="warning-box">
+                        <p><strong>50-79%:</strong> Agrupación moderada</p>
+                        <p class="small-text">Considerar juntarlas</p>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="error-box">
+                        <p><strong>20-49%:</strong> Agrupación débil</p>
+                        <p class="small-text">Probablemente separadas</p>
+                    </div>
+                    <div class="error-box">
+                        <p><strong>0-19%:</strong> No relacionadas</p>
+                        <p class="small-text">Definitivamente separadas</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 16: Ejemplo Matriz de Similitud -->
+            <section>
+                <h2>📈 Ejemplo: Matriz de Similitud</h2>
+                <p class="small-text">5 participantes, 6 cards (simplificado para ejemplo)</p>
+                <table style="font-size: 0.75em;">
+                    <thead>
+                        <tr>
+                            <th>Card</th>
+                            <th>Sincronizar</th>
+                            <th>Importar Notion</th>
+                            <th>Notificaciones</th>
+                            <th>Ver semanal</th>
+                            <th>Tema oscuro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Sincronizar calendarios</strong></td>
+                            <td>-</td>
+                            <td style="background: rgba(80,250,123,0.3);">100%</td>
+                            <td>20%</td>
+                            <td>40%</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Importar de Notion</strong></td>
+                            <td style="background: rgba(80,250,123,0.3);">100%</td>
+                            <td>-</td>
+                            <td>20%</td>
+                            <td>40%</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Notificaciones deadlines</strong></td>
+                            <td>20%</td>
+                            <td>20%</td>
+                            <td>-</td>
+                            <td style="background: rgba(80,250,123,0.3);">80%</td>
+                            <td>20%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ver vista semanal</strong></td>
+                            <td>40%</td>
+                            <td>40%</td>
+                            <td style="background: rgba(80,250,123,0.3);">80%</td>
+                            <td>-</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cambiar tema oscuro</strong></td>
+                            <td>0%</td>
+                            <td>0%</td>
+                            <td>20%</td>
+                            <td>0%</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="success-box">
+                    <p><strong>Categorías emergentes:</strong></p>
+                    <p>• Categoría 1: "Sincronizar" + "Importar Notion" (100%)</p>
+                    <p>• Categoría 2: "Notificaciones" + "Ver semanal" (80%)</p>
+                    <p>• Categoría 3: "Tema oscuro" (solo, 0% con otras)</p>
+                </div>
+            </section>
+
+            <!-- Slide 17: De Resultados a Categorías -->
+            <section>
+                <h2>🎯 De Resultados a Categorías Finales</h2>
+                <div class="step-box">
+                    <p><span class="step-number">1</span><strong>Identificar agrupaciones fuertes (80%+)</strong></p>
+                    <p class="small-text">Cards que la mayoría puso juntas → van en misma categoría</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">2</span><strong>Decidir sobre agrupaciones moderadas (50-79%)</strong></p>
+                    <p class="small-text">Usar criterio: ¿Tiene sentido semánticamente? Si sí, juntar. Si no, separar.</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">3</span><strong>Elegir nombres de categorías</strong></p>
+                    <p class="small-text">Usar nombres que LOS USUARIOS dieron (no inventar). Si hay varios, elegir el más común.</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">4</span><strong>Validar con lógica de negocio</strong></p>
+                    <p class="small-text">¿La agrupación tiene sentido técnicamente? ¿Es viable implementarla así?</p>
+                </div>
+                <div class="warning-box">
+                    <p><strong>Balance:</strong> Respetar modelo mental del usuario + viabilidad técnica</p>
+                </div>
+            </section>
+
+            <!-- Slide 18: Arquitectura de Información (IA) -->
+            <section>
+                <h2>🏛️ Arquitectura de Información</h2>
+                <div class="success-box">
+                    <p class="large-text"><strong>Arquitectura de Información (IA)</strong> es la estructura y organización del contenido de forma que usuarios puedan encontrar lo que necesitan fácilmente.</p>
+                </div>
+                <h3>4 Componentes de IA:</h3>
+                <ul class="grid-list">
+                    <li><strong>Organización:</strong> Cómo se agrupa el contenido (categorías, jerarquía)</li>
+                    <li><strong>Navegación:</strong> Cómo los usuarios se mueven (menús, breadcrumbs)</li>
+                    <li><strong>Etiquetado:</strong> Nombres que usas (categorías, botones, links)</li>
+                    <li><strong>Búsqueda:</strong> Cómo encuentran contenido específico (buscador, filtros)</li>
+                </ul>
+                <p class="highlight-box"><strong>Card Sorting ayuda principalmente con:</strong> Organización y Etiquetado</p>
+            </section>
+
+            <!-- Slide 19: Del Card Sorting al Sitemap -->
+            <section>
+                <h2>🗺️ Del Card Sorting al Sitemap</h2>
+                <div class="highlight-box">
+                    <p class="large-text"><strong>Sitemap:</strong> Diagrama jerárquico que muestra estructura de contenido/navegación.</p>
+                </div>
+                <h3>Proceso:</h3>
+                <div class="step-box">
+                    <p><span class="step-number">1</span>Categorías del Card Sorting → <strong>Nivel 1</strong> (menú principal)</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">2</span>Cards dentro de cada categoría → <strong>Nivel 2</strong> (sub-secciones)</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">3</span>Si hay subcategorías claras → <strong>Nivel 3</strong> (detalles)</p>
+                </div>
+                <div class="warning-box">
+                    <p><strong>Límite recomendado:</strong> Máximo 3-4 niveles de profundidad</p>
+                    <p class="small-text">Más profundo = usuarios se pierden</p>
+                </div>
+            </section>
+
+            <!-- Slide 20: Ejemplo de Sitemap -->
+            <section>
+                <h2>📊 Ejemplo: Sitemap de TaskSync</h2>
+                <div style="font-size: 0.75em; margin: 2em 0;">
+                    <div style="text-align: center;">
+                        <div style="background: var(--cyan); color: var(--bg); padding: 0.8em; border-radius: 8px; display: inline-block; font-weight: 700;">
+                            HOME / Dashboard
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-around; margin-top: 2em;">
+                        <div>
+                            <div style="background: var(--green); color: var(--bg); padding: 0.6em; border-radius: 6px; font-weight: 600; margin-bottom: 1em;">
+                                📅 Vista
+                            </div>
+                            <div style="background: var(--current-line); padding: 0.4em; border-radius: 4px; margin: 0.3em 0;">Ver semanal</div>
+                            <div style="background: var(--current-line); padding: 0.4em; border-radius: 4px; margin: 0.3em 0;">Ver diaria</div>
+                            <div style="background: var(--current-line); padding: 0.4em; border-radius: 4px; margin: 0.3em 0;">Filtrar por materia</div>
+                        </div>
+                        <div>
+                            <div style="background: var(--green); color: var(--bg); padding: 0.6em; border-radius: 6px; font-weight: 600; margin-bottom: 1em;">
+                                🔄 Sincronización
+                            </div>
+                            <div style="background: var(--current-line); padding: 0.4em; border-radius: 4px; margin: 0.3em 0;">Importar Notion</div>
+                            <div style="background: var(--current-line); padding: 0.4em; border-radius: 4px; margin: 0.3em 0;">Importar Calendar</div>
+                            <div style="background: var(--current-line); padding: 0.4em; border-radius: 4px; margin: 0.3em 0;">Leer WhatsApp</div>
+                        </div>
+                        <div>
+                            <div style="background: var(--green); color: var(--bg); padding: 0.6em; border-radius: 6px; font-weight: 600; margin-bottom: 1em;">
+                                ⚙️ Configuración
+                            </div>
+                            <div style="background: var(--current-line); padding: 0.4em; border-radius: 4px; margin: 0.3em 0;">Notificaciones</div>
+                            <div style="background: var(--current-line); padding: 0.4em; border-radius: 4px; margin: 0.3em 0;">Tema oscuro/claro</div>
+                            <div style="background: var(--current-line); padding: 0.4em; border-radius: 4px; margin: 0.3em 0;">Zona horaria</div>
+                        </div>
+                    </div>
+                </div>
+                <p class="small-text">Nivel 1 (verde) = Categorías del Card Sorting | Nivel 2 (gris) = Cards individuales</p>
+            </section>
+
+            <!-- Slide 21: Breadth vs Depth -->
+            <section>
+                <h2>📐 Breadth vs Depth (Amplitud vs Profundidad)</h2>
+                <div class="two-columns">
+                    <div>
+                        <div class="warning-box">
+                            <h4>⚠️ Muy AMPLIO (Breadth)</h4>
+                            <p>12 categorías en nivel 1</p>
+                            <p>Pocas subcategorías</p>
+                            <p class="small-text">Problema: Menú abrumador. Difícil escanear.</p>
+                        </div>
+                        <div class="error-box" style="margin-top: 1em;">
+                            <h4>❌ Muy PROFUNDO (Depth)</h4>
+                            <p>3 categorías en nivel 1</p>
+                            <p>5 niveles de profundidad</p>
+                            <p class="small-text">Problema: Muchos clics para llegar. Usuarios se pierden.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="success-box">
+                            <h4>✅ BALANCEADO</h4>
+                            <p>5-7 categorías nivel 1</p>
+                            <p>3-5 items por categoría</p>
+                            <p>Máximo 3 niveles profundidad</p>
+                            <p class="small-text">Resultado: Fácil de escanear y navegar.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>Regla 7±2 (Miller's Law):</strong> Personas pueden mantener 5-9 items en memoria de trabajo. Ideal: 5-7 categorías principales.</p>
+                </div>
+            </section>
+
+            <!-- Slide 22: Buenas Prácticas de IA -->
+            <section>
+                <h2>✅ Buenas Prácticas de IA</h2>
+                <ul class="grid-list">
+                    <li><strong>Nombres claros y distintos:</strong> Evitar "Otros", "Misceláneos", "General"</li>
+                    <li><strong>Categorías mutuamente exclusivas:</strong> Un item no debe caber en 2+ categorías</li>
+                    <li><strong>Jerarquía lógica:</strong> General → Específico, no al revés</li>
+                    <li><strong>Consistencia:</strong> Mismo patrón de nombres (verbos o sustantivos, no mezclar)</li>
+                    <li><strong>Priorizar por frecuencia:</strong> Lo más usado primero en el menú</li>
+                    <li><strong>Breadcrumbs:</strong> Mostrar dónde está el usuario (Home > Vista > Semanal)</li>
+                </ul>
+            </section>
+
+            <!-- Slide 23: Conexión: TA → CS → Sitemap -->
+            <section>
+                <h2>🔗 Flujo Completo del Proceso</h2>
+                <div class="step-box">
+                    <p><strong>A3. Task Analysis</strong></p>
+                    <p class="small-text">Pain points → Oportunidades de diseño → <strong>Lista de features necesarias</strong></p>
+                </div>
+                <p style="text-align: center; font-size: 2em; margin: 0.5em 0;">↓</p>
+                <div class="step-box">
+                    <p><strong>Card Sorting (HOY)</strong></p>
+                    <p class="small-text">Features → Cards → Usuarios agrupan → <strong>Categorías emergentes</strong></p>
+                </div>
+                <p style="text-align: center; font-size: 2em; margin: 0.5em 0;">↓</p>
+                <div class="step-box">
+                    <p><strong>Sitemap (A4)</strong></p>
+                    <p class="small-text">Categorías → Jerarquía 3 niveles → <strong>Estructura de navegación</strong></p>
+                </div>
+                <p style="text-align: center; font-size: 2em; margin: 0.5em 0;">↓</p>
+                <div class="step-box">
+                    <p><strong>Wireframes (Sesión 7+)</strong></p>
+                    <p class="small-text">Sitemap → Pantallas específicas → <strong>Diseño de interfaz</strong></p>
+                </div>
+            </section>
+
+            <!-- Slide 24: Errores Comunes -->
+            <section>
+                <h2>🚫 Errores Comunes en Card Sorting</h2>
+                <div class="error-box">
+                    <p><strong>1. Influir en el usuario</strong></p>
+                    <p class="small-text">"¿No crees que esto va mejor aquí?" → NO. Dejar que decidan.</p>
+                </div>
+                <div class="error-box">
+                    <p><strong>2. Cards con lenguaje técnico</strong></p>
+                    <p class="small-text">"API REST endpoint" → Usuario no entiende. Usar lenguaje natural.</p>
+                </div>
+                <div class="error-box">
+                    <p><strong>3. Muy pocas participantes (1-2)</strong></p>
+                    <p class="small-text">No ves patrones. Mínimo 5 participantes.</p>
+                </div>
+                <div class="error-box">
+                    <p><strong>4. Ignorar resultados que no te gustan</strong></p>
+                    <p class="small-text">Si usuarios agrupan diferente a lo que pensabas, ELLOS tienen razón.</p>
+                </div>
+                <div class="error-box">
+                    <p><strong>5. Sesión muy larga (1+ hora)</strong></p>
+                    <p class="small-text">Usuarios se cansan, empiezan a agrupar al azar. Máximo 30-40 min.</p>
+                </div>
+            </section>
+
+            <!-- Slide 25: A4. Card Sorting + Sitemap -->
+            <section>
+                <h2>📋 A4. Card Sorting + Sitemap</h2>
+                <div class="warning-box large-text">
+                    <p><strong>Actividad grupal | Valor: 10%</strong></p>
+                    <p><strong>Entrega: Miércoles 10 de Marzo, 2026</strong></p>
+                </div>
+                <h3>Requisitos:</h3>
+                <ul>
+                    <li><strong>Card Sorting</strong> con 5 participantes (mínimo)</li>
+                    <li>20-25 cards basadas en features del A3</li>
+                    <li>Open Card Sorting (usuarios crean categorías)</li>
+                    <li>Análisis de resultados (matriz de similitud)</li>
+                    <li><strong>Sitemap</strong> de 3 niveles basado en resultados</li>
+                    <li>Documentación en Miro + Google Slides</li>
+                </ul>
+                <p class="small-text">Detalles completos en Classroom</p>
+            </section>
+
+            <!-- Slide 26: Próxima Sesión -->
+            <section>
+                <h2>🔜 Próxima Sesión</h2>
+                <div class="highlight-box large-text">
+                    <p><strong>Sesión 7 - Jueves 26 de Febrero</strong></p>
+                    <p>Tree Testing y Wireframes</p>
+                </div>
+                <h3>Temas:</h3>
+                <ul>
+                    <li>¿Qué es Tree Testing? (validar sitemap)</li>
+                    <li>Cómo hacer Tree Testing con usuarios</li>
+                    <li>Introducción a Wireframes</li>
+                    <li>Fidelidad: Low-fi, Mid-fi, Hi-fi</li>
+                    <li>Actividad: Wireframes de 3 pantallas clave</li>
+                </ul>
+                <p class="warning-box"><strong>Prerequisito:</strong> Tener sitemap draft (del A4 en progreso)</p>
+            </section>
+
+            <!-- Slide 27: Recordatorios -->
+            <section>
+                <h2>⏰ Recordatorios</h2>
+                <div class="warning-box" style="margin-top: 1em;">
+                    <p><strong>📅 Miércoles 26 Feb</strong></p>
+                    <p>Entrega A3. Task Analysis + Journey Map (23:59)</p>
+                </div>
+                <div class="highlight-box" style="margin-top: 1em;">
+                    <p><strong>📅 Miércoles 10 Mar - PRÓXIMO ENTREGABLE</strong></p>
+                    <p>Entrega A4. Card Sorting + Sitemap (23:59)</p>
+                </div>
+                <div class="highlight-box" style="margin-top: 1em;">
+                    <h3>Para próxima clase (26 Feb):</h3>
+                    <ul>
+                        <li>Tener cards de features listas (20-25)</li>
+                        <li>Empezar a reclutar 5 participantes para Card Sorting</li>
+                        <li>Revisar templates de Miro compartidos hoy</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 28: Resumen -->
+            <section>
+                <h2>📝 Resumen de Hoy</h2>
+                <ul class="grid-list">
+                    <li><strong>Card Sorting</strong> = Usuarios organizan contenido</li>
+                    <li><strong>Open</strong> (descubrir) vs <strong>Closed</strong> (validar)</li>
+                    <li>15-30 cards ideal, granularidad media</li>
+                    <li>Mínimo 5 participantes para ver patrones</li>
+                    <li>Matriz de similitud para analizar</li>
+                    <li>Sitemap = jerarquía de 3 niveles</li>
+                    <li>Regla 7±2: 5-7 categorías principales</li>
+                    <li>Task Analysis → Cards → Categories → Sitemap</li>
+                </ul>
+                <div class="quote">
+                    "No impongas tu estructura. Descubre la estructura mental del usuario."
+                </div>
+            </section>
+
+            <!-- Slide 29: Cierre -->
+            <section>
+                <h2>❓ ¿Preguntas?</h2>
+                <div class="highlight-box" style="margin-top: 3em;">
+                    <p class="large-text">Nos vemos el martes.</p>
+                    <p class="subtitle">¡Empiecen a reclutar participantes para A4!</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <div class="slide-number" id="slideNumber">1 / 29</div>
+    
+    <div class="controls">
+        <button onclick="navigateSlide(-1)">← Anterior</button>
+        <button onclick="navigateSlide(1)">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slides section');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => {
+                slide.style.display = 'none';
+            });
+            
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].style.display = 'flex';
+            
+            // Scroll to top of the slide
+            slides[currentSlide].scrollTop = 0;
+            
+            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function navigateSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') navigateSlide(-1);
+            if (e.key === 'ArrowRight') navigateSlide(1);
+        });
+
+        showSlide(0);
+    </script>
+</body>
+</html>

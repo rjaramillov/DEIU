@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEIU - Sesión 3: Técnicas de Recolección</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #282a36;
+            color: #f8f8f2;
+            overflow: hidden;
+        }
+        .slides-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        .slide {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 60px;
+            overflow-y: auto;
+        }
+        .slide > * {
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .slide.active { 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            animation: fadeIn 0.3s; 
+        }
+        .slide.center {
+            justify-content: center;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        h1, h2, h3 { text-transform: none; margin-bottom: 35px; }
+        h1 { font-size: 5em; color: #ff79c6; line-height: 1.2; font-weight: 700; }
+        h2 { font-size: 3.5em; color: #bd93f9; border-bottom: 4px solid #bd93f9; padding-bottom: 20px; margin-bottom: 50px; font-weight: 700; }
+        h3 { font-size: 2.2em; color: #8be9fd; margin-top: 30px; font-weight: 600; }
+        
+        p { line-height: 1.8; margin: 20px 0; font-size: 1.6em; }
+        ul, ol { margin-left: 50px; line-height: 2.5; font-size: 1.5em; }
+        li { margin: 15px 0; }
+        strong { color: #ff79c6; }
+        em { color: #8be9fd; }
+        
+        .center { 
+            text-align: center; 
+            align-items: center;
+        }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+        
+        .comparison-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 30px 0;
+            font-size: 1.4em;
+        }
+        .comparison-table th { 
+            background: #6272a4; 
+            padding: 22px; 
+            border: 2px solid #44475a;
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+        .comparison-table td { 
+            padding: 22px; 
+            border: 2px solid #6272a4;
+            vertical-align: top;
+            line-height: 1.6;
+        }
+        
+        .highlight-box { 
+            background: #44475a; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin: 25px 0; 
+        }
+        .quote { 
+            font-style: italic; 
+            color: #f1fa8c; 
+            border-left: 6px solid #f1fa8c; 
+            padding-left: 30px; 
+            margin: 35px 0; 
+            font-size: 1.8em;
+            line-height: 1.6;
+        }
+        .phase-box { 
+            background: #282a36; 
+            border: 3px solid #bd93f9; 
+            padding: 25px; 
+            margin: 18px 0; 
+            border-radius: 8px; 
+        }
+        .example-bad { color: #ff5555; font-size: 1.5em; }
+        .example-good { color: #50fa7b; font-size: 1.5em; }
+        .checklist li { list-style: none; }
+        .checklist li:before { content: "✓ "; color: #50fa7b; font-weight: bold; font-size: 1.4em; margin-right: 12px; }
+        
+        .nav-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 25px;
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+        .nav-btn {
+            background: rgba(98, 114, 164, 0.85);
+            color: #f8f8f2;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+        .nav-btn:hover:not(:disabled) { 
+            background: rgba(189, 147, 249, 0.95); 
+            transform: scale(1.05); 
+        }
+        .nav-btn:disabled { 
+            background: rgba(68, 71, 90, 0.6); 
+            cursor: not-allowed; 
+            opacity: 0.4;
+        }
+        
+        .slide-counter {
+            position: fixed;
+            bottom: 20px;
+            left: 25px;
+            background: rgba(68, 71, 90, 0.85);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .slide { padding: 40px; }
+            h1 { font-size: 2.5em; }
+            h2 { font-size: 2em; }
+            p, ul, ol { font-size: 1em; }
+            .two-column { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="slides-container" id="slidesContainer">
+        <!-- SLIDE 1 -->
+        <div class="slide active center">
+            <h1>Sesión 3</h1>
+            <h2 style="border: none; color: #f8f8f2;">Técnicas de Recolección de Datos</h2>
+            <p style="font-size: 2em; margin: 40px 0;"><strong>Entrevistas y Etnografía</strong></p>
+            <p style="margin-top: 70px; font-size: 1.8em;">DEIU - Semana 2<br>
+            Martes 10 de Febrero, 2026</p>
+        </div>
+
+        <!-- SLIDE 2 -->
+        <div class="slide">
+            <h2>Agenda de Hoy</h2>
+            <div class="highlight-box">
+                <ol style="line-height: 2.5;">
+                    <li><strong>Kahoot:</strong> Repaso DCU (10 min)</li>
+                    <li><strong>User Research:</strong> Panorama general (15 min)</li>
+                    <li><strong>Attitudinal vs Behavioral:</strong> Concepto + ejercicio (30 min)</li>
+                    <li><strong>Ethnography:</strong> Método etnográfico (30 min)</li>
+                    <li><strong>A1:</strong> Preparación del estudio etnográfico (20 min)</li>
+                    <li><strong>Cierre:</strong> Siguientes pasos (10 min)</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- SLIDE 3 -->
+        <div class="slide center">
+            <h2>¿Dónde estamos en el ciclo DCU?</h2>
+            <div style="margin: 70px 0;">
+                <div style="background: #ff79c6; padding: 40px 70px; border-radius: 15px; font-size: 2em; display: inline-block;">
+                    <strong style="color: #282a36;">03. USER RESEARCH</strong>
+                </div>
+            </div>
+            <p style="margin-top: 70px; color: #8be9fd; font-size: 1.7em;">Fase de investigación: entender a los usuarios ANTES de diseñar</p>
+        </div>
+
+        <!-- SLIDE 4 -->
+        <div class="slide">
+            <h2>Métodos de Investigación UX</h2>
+            <p style="font-size: 1.4em; color: #f8f8f2; margin-bottom: 35px;">Métodos más usados en la industria (NN/g Survey):</p>
+            
+            <div class="two-column" style="font-size: 1.3em;">
+                <div>
+                    <p><strong style="color: #ff5555; font-size: 1.4em;">DISCOVER</strong></p>
+                    <ul>
+                        <li>Field study / User interview (74%)</li>
+                        <li>Diary study (22%)</li>
+                    </ul>
+                    
+                    <p style="margin-top: 35px;"><strong style="color: #bd93f9; font-size: 1.4em;">EXPLORE</strong></p>
+                    <ul>
+                        <li>Task analysis (92%)</li>
+                        <li>Journey mapping (83%)</li>
+                        <li>Persona building (77%)</li>
+                        <li>Card sorting (48%)</li>
+                    </ul>
+                </div>
+                <div>
+                    <p><strong style="color: #50fa7b; font-size: 1.4em;">TEST</strong></p>
+                    <ul>
+                        <li>In-person usability (84%)</li>
+                        <li>Remote usability (58%)</li>
+                        <li>Accessibility evaluation (62%)</li>
+                    </ul>
+                    
+                    <p style="margin-top: 35px;"><strong style="color: #8be9fd; font-size: 1.4em;">LISTEN</strong></p>
+                    <ul>
+                        <li>Analytics review (82%)</li>
+                        <li>Survey (76%)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p style="margin-top: 50px; font-size: 1.2em; color: #6272a4;">Fuente: Nielsen Norman Group - "Most Frequent UX Research Methods"</p>
+        </div>
+
+        <!-- SLIDE 5 -->
+        <div class="slide center">
+            <h2>Hoy nos enfocamos en:</h2>
+            <div style="margin: 70px 0;">
+                <div class="highlight-box" style="display: inline-block; padding: 50px 80px;">
+                    <p style="font-size: 2.2em; margin: 0;"><strong style="color: #ff5555;">DISCOVER</strong></p>
+                    <p style="font-size: 1.7em; margin-top: 35px;">Field study / User interview</p>
+                    <p style="font-size: 1.7em;">Ethnography</p>
+                </div>
+            </div>
+            <p style="margin-top: 70px; font-size: 1.5em;">Estas técnicas las usarán en su <strong>A1. Estudio Etnográfico</strong></p>
+        </div>
+
+        <!-- SLIDE 6 -->
+        <div class="slide center">
+            <h2>Dos tipos de datos de investigación</h2>
+            <div class="two-column" style="margin-top: 70px; text-align: center;">
+                <div class="highlight-box">
+                    <h3 style="color: #f1fa8c; margin: 0; font-size: 2em;">ATTITUDINAL</h3>
+                    <p style="font-size: 2.3em; margin: 50px 0; font-weight: 700;">"What users SAY"</p>
+                    <p style="font-size: 1.4em;">Lo que los usuarios <em>dicen</em> que hacen, piensan o sienten</p>
+                </div>
+                <div class="highlight-box">
+                    <h3 style="color: #50fa7b; margin: 0; font-size: 2em;">BEHAVIORAL</h3>
+                    <p style="font-size: 2.3em; margin: 50px 0; font-weight: 700;">"What users DO"</p>
+                    <p style="font-size: 1.4em;">Lo que los usuarios <em>realmente</em> hacen, medido por observación</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7 -->
+        <div class="slide">
+            <h2>Attitudinal vs Behavioral</h2>
+            <table class="comparison-table">
+                <tr>
+                    <th style="width: 25%;">Aspecto</th>
+                    <th style="background: #6272a4;">ATTITUDINAL<br><span style="font-weight: normal; font-size: 0.85em;">(Lo que dicen)</span></th>
+                    <th style="background: #44475a;">BEHAVIORAL<br><span style="font-weight: normal; font-size: 0.85em;">(Lo que hacen)</span></th>
+                </tr>
+                <tr>
+                    <td><strong>Método</strong></td>
+                    <td>Self-reported data<br>Surveys, interviews</td>
+                    <td>Direct observation<br>Usability tests, analytics</td>
+                </tr>
+                <tr>
+                    <td><strong>Pregunta tipo</strong></td>
+                    <td>"¿Qué opinas de...?"<br>"¿Te gusta...?"</td>
+                    <td>"Muéstrame cómo..."<br>"¿Cuántas veces...?"</td>
+                </tr>
+                <tr>
+                    <td><strong>Confiabilidad</strong></td>
+                    <td>Menos confiable<br>(sesgos, memoria)</td>
+                    <td>Más confiable<br>(datos objetivos)</td>
+                </tr>
+                <tr>
+                    <td><strong>Cuándo usar</strong></td>
+                    <td>Explorar motivaciones,<br>preferencias, satisfacción</td>
+                    <td>Medir comportamiento real,<br>detectar problemas de usabilidad</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- SLIDE 8 -->
+        <div class="slide center">
+            <h2>La dura realidad:</h2>
+            <div class="quote" style="font-size: 2.2em; margin: 90px auto; max-width: 900px; text-align: left;">
+                "What users SAY ≠ What users DO"
+            </div>
+            <p style="margin-top: 70px; font-size: 1.7em;">Ejemplo clásico:</p>
+            <p class="example-bad" style="margin: 30px 0; font-size: 1.7em;">❌ Encuesta: "¿Usarías esta app?" → 90% dice "Sí"</p>
+            <p class="example-good" style="margin: 30px 0; font-size: 1.7em;">✅ Realidad: Solo 10% realmente la descarga y usa</p>
+        </div>
+
+        <!-- SLIDE 9 -->
+        <div class="slide">
+            <h2>Ejemplo: Sistema SSC (Servicio Social)</h2>
+            <p style="font-size: 1.5em;"><strong>Propósito:</strong> Explorar mejoras potenciales al sistema SSC</p>
+            <p style="font-size: 1.5em;"><strong>Participantes:</strong> Estudiantes haciendo su SSC actualmente</p>
+            
+            <div class="two-column" style="margin-top: 55px;">
+                <div class="highlight-box">
+                    <h3 style="color: #f1fa8c; font-size: 1.7em; margin-top: 0;">ATTITUDINAL</h3>
+                    <p style="font-size: 1.3em; margin-top: 25px;">Preguntas sobre opiniones:</p>
+                    <ul style="font-size: 1.25em; line-height: 2.3;">
+                        <li>"¿Qué dificultades has tenido al utilizar el sistema?"</li>
+                        <li>"¿Cuáles son tus recomendaciones de mejora?"</li>
+                        <li>"¿Qué te parece la interfaz actual?"</li>
+                    </ul>
+                </div>
+                <div class="highlight-box">
+                    <h3 style="color: #50fa7b; font-size: 1.7em; margin-top: 0;">BEHAVIORAL</h3>
+                    <p style="font-size: 1.3em; margin-top: 25px;">Preguntas sobre hechos:</p>
+                    <ul style="font-size: 1.25em; line-height: 2.3;">
+                        <li>"¿Cuál es la fecha límite para entregar tu informe?"</li>
+                        <li>"¿Qué información debes reportar?"</li>
+                        <li>"¿Cuántas veces has entrado al sistema esta semana?"</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p style="margin-top: 50px; font-size: 1.4em;"><strong>Mejor resultado:</strong> Combinar ambos tipos de datos</p>
+        </div>
+
+        <!-- SLIDE 10 -->
+        <div class="slide">
+            <h2>⚡ Ejercicio Rápido (10 min)</h2>
+            <div class="highlight-box" style="font-size: 1.4em;">
+                <p><strong>En sus equipos:</strong></p>
+                <p style="margin: 30px 0;">Clasifiquen las siguientes 10 preguntas como:</p>
+                <ul style="line-height: 2.8;">
+                    <li><strong style="color: #f1fa8c; font-size: 1.3em;">A</strong> = Attitudinal (lo que dicen)</li>
+                    <li><strong style="color: #50fa7b; font-size: 1.3em;">B</strong> = Behavioral (lo que hacen)</li>
+                </ul>
+            </div>
+            
+            <p style="margin-top: 50px; font-size: 1.3em;"><strong>Las preguntas están en el siguiente slide...</strong></p>
+            <p style="font-size: 1.2em; color: #6272a4; margin-top: 30px;">⏰ Tienen 10 minutos. Anoten sus respuestas en su tablero Miro.</p>
+        </div>
+
+        <!-- SLIDE 11 -->
+        <div class="slide">
+            <h2>10 Preguntas para Clasificar</h2>
+            <ol style="font-size: 1.35em; line-height: 2.8;">
+                <li>¿Qué tan satisfecho estás con la app actual?</li>
+                <li>¿Cuántas veces por semana usas la app?</li>
+                <li>¿Recomendarías esta app a un amigo?</li>
+                <li>Muéstrame cómo agregas una nueva tarea</li>
+                <li>¿Qué te gusta más de la app?</li>
+                <li>¿Cuánto tiempo te tomó completar el registro la última vez?</li>
+                <li>Si pudieras cambiar una cosa, ¿qué sería?</li>
+                <li>¿En qué dispositivo usas más la app? (muéstramelo)</li>
+                <li>¿Cómo describirías tu experiencia con la app?</li>
+                <li>¿Qué hiciste cuando se bloqueó la pantalla la última vez?</li>
+            </ol>
+            
+            <p style="margin-top: 50px; font-size: 1.4em;">Discutiremos las respuestas en <strong>10 minutos</strong></p>
+        </div>
+
+        <!-- SLIDE 12 -->
+        <div class="slide">
+            <h2>Respuestas del Ejercicio</h2>
+            <table style="width: 100%; font-size: 1.3em; border-collapse: collapse;">
+                <tr style="border-bottom: 2px solid #6272a4;"><td style="padding: 16px;">1. ¿Qué tan satisfecho estás?</td><td style="padding: 16px; color: #f1fa8c;"><strong>A - Attitudinal</strong></td></tr>
+                <tr style="border-bottom: 2px solid #6272a4;"><td style="padding: 16px;">2. ¿Cuántas veces por semana?</td><td style="padding: 16px; color: #50fa7b;"><strong>B - Behavioral</strong></td></tr>
+                <tr style="border-bottom: 2px solid #6272a4;"><td style="padding: 16px;">3. ¿Recomendarías a un amigo?</td><td style="padding: 16px; color: #f1fa8c;"><strong>A - Attitudinal</strong></td></tr>
+                <tr style="border-bottom: 2px solid #6272a4;"><td style="padding: 16px;">4. Muéstrame cómo agregas tarea</td><td style="padding: 16px; color: #50fa7b;"><strong>B - Behavioral</strong></td></tr>
+                <tr style="border-bottom: 2px solid #6272a4;"><td style="padding: 16px;">5. ¿Qué te gusta más?</td><td style="padding: 16px; color: #f1fa8c;"><strong>A - Attitudinal</strong></td></tr>
+                <tr style="border-bottom: 2px solid #6272a4;"><td style="padding: 16px;">6. ¿Cuánto tiempo te tomó registrarte?</td><td style="padding: 16px; color: #50fa7b;"><strong>B - Behavioral</strong></td></tr>
+                <tr style="border-bottom: 2px solid #6272a4;"><td style="padding: 16px;">7. Si cambiaras una cosa, ¿qué sería?</td><td style="padding: 16px; color: #f1fa8c;"><strong>A - Attitudinal</strong></td></tr>
+                <tr style="border-bottom: 2px solid #6272a4;"><td style="padding: 16px;">8. ¿En qué dispositivo? (muéstramelo)</td><td style="padding: 16px; color: #50fa7b;"><strong>B - Behavioral</strong></td></tr>
+                <tr style="border-bottom: 2px solid #6272a4;"><td style="padding: 16px;">9. ¿Cómo describirías tu experiencia?</td><td style="padding: 16px; color: #f1fa8c;"><strong>A - Attitudinal</strong></td></tr>
+                <tr style="border-bottom: 2px solid #6272a4;"><td style="padding: 16px;">10. ¿Qué hiciste cuando se bloqueó?</td><td style="padding: 16px; color: #50fa7b;"><strong>B - Behavioral</strong></td></tr>
+            </table>
+            
+            <p style="margin-top: 50px; font-size: 1.3em;"><strong>Tip:</strong> Si pregunta sobre opiniones/sentimientos = A. Si pregunta sobre acciones concretas = B.</p>
+        </div>
+
+        <!-- SLIDE 13 -->
+        <div class="slide center">
+            <h2>Ethnography (Etnografía)</h2>
+            <div class="highlight-box" style="display: inline-block; margin: 70px 0; padding: 60px;">
+                <p style="font-size: 1.9em; line-height: 1.8;">
+                    <strong>Etnografía:</strong> Estudio de personas en su <em>ambiente natural</em>
+                </p>
+            </div>
+            <p style="margin-top: 70px; line-height: 2.5; font-size: 1.5em;">
+                ✓ Datos recolectados por <strong>observación</strong> y/o <strong>entrevistas</strong><br>
+                ✓ Ayuda a conocer y definir a tus usuarios<br>
+                ✓ Proponer soluciones eficientes basadas en necesidades reales
+            </p>
+        </div>
+
+        <!-- SLIDE 14 -->
+        <div class="slide">
+            <h2>Etnografía NO es...</h2>
+            <div style="margin-top: 50px;">
+                <div class="highlight-box" style="background: #3d1a1a; border: 3px solid #ff5555;">
+                    <p class="example-bad" style="margin: 0; font-size: 1.3em;"><strong>❌ Una encuesta de Google Forms</strong></p>
+                    <p style="margin-top: 15px; font-size: 1.05em; color: #f8f8f2;">Encuesta = preguntarles sentados en una silla, sin contexto</p>
+                </div>
+                
+                <div class="highlight-box" style="background: #3d1a1a; border: 3px solid #ff5555; margin-top: 30px;">
+                    <p class="example-bad" style="margin: 0; font-size: 1.3em;"><strong>❌ Preguntarle a tus amigos "¿Usarías esta app?"</strong></p>
+                    <p style="margin-top: 15px; font-size: 1.05em; color: #f8f8f2;">Hipotéticos = no son confiables</p>
+                </div>
+                
+                <div class="highlight-box" style="background: #3d1a1a; border: 3px solid #ff5555; margin-top: 30px;">
+                    <p class="example-bad" style="margin: 0; font-size: 1.3em;"><strong>❌ Asumir lo que los usuarios necesitan</strong></p>
+                    <p style="margin-top: 15px; font-size: 1.05em; color: #f8f8f2;">No diseñen para ustedes, diseñen para los usuarios</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 15 -->
+        <div class="slide">
+            <h2>3 Fases del Estudio Etnográfico</h2>
+            
+            <div class="phase-box">
+                <h3 style="color: #ff79c6; margin-top: 0; font-size: 1.4em;">1. Definir propósito</h3>
+                <p style="font-size: 1.05em; margin-top: 15px;">¿Por qué estás haciendo este estudio? ¿Qué necesitas aprender?</p>
+            </div>
+            
+            <div class="phase-box">
+                <h3 style="color: #ff79c6; margin-top: 0; font-size: 1.4em;">2. Recolectar datos</h3>
+                <p style="font-size: 1.05em; margin-top: 15px;">Attitudinal (entrevistas) + Behavioral (observación)</p>
+            </div>
+            
+            <div class="phase-box">
+                <h3 style="color: #ff79c6; margin-top: 0; font-size: 1.4em;">3. Analizar patrones</h3>
+                <p style="font-size: 1.05em; margin-top: 15px;">Organizar información, encontrar similitudes/diferencias, extraer insights</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 16 -->
+        <div class="slide">
+            <h2>5 Propósitos de un Estudio Etnográfico</h2>
+            <ol style="line-height: 2.5; margin-top: 40px; font-size: 1.1em;">
+                <li>Conocer las <strong>necesidades</strong> de un grupo específico (como inspiración)</li>
+                <li>Explorar la <strong>viabilidad</strong> de un sistema que planeas diseñar</li>
+                <li>Mejorar la <strong>eficiencia</strong> de un proceso existente</li>
+                <li>Entender los <strong>problemas actuales</strong> usando un sistema existente</li>
+                <li>Informar el <strong>diseño</strong> de un sistema nuevo o basado en uno existente</li>
+            </ol>
+            
+            <p style="margin-top: 50px; font-size: 1.05em;"><strong>Para su A1:</strong> Elegirán 1 o más de estos propósitos</p>
+        </div>
+
+        <!-- SLIDE 17 -->
+        <div class="slide">
+            <h2>Caso Real: P&G Swiffer</h2>
+            <div class="two-column" style="font-size: 1em;">
+                <div>
+                    <p><strong style="color: #ff79c6; font-size: 1.2em;">El Problema:</strong></p>
+                    <p style="margin-top: 15px;">Procter & Gamble quería innovar en productos de limpieza</p>
+                    
+                    <p style="margin-top: 35px;"><strong style="color: #8be9fd; font-size: 1.2em;">El Método:</strong></p>
+                    <p style="margin-top: 15px;">Observaron a personas limpiando sus casas (etnografía)</p>
+                    
+                    <p style="margin-top: 35px;"><strong style="color: #f1fa8c; font-size: 1.2em;">El Descubrimiento:</strong></p>
+                    <p style="margin-top: 15px;">La gente no solo limpiaba pisos. También limpiaban:</p>
+                    <ul style="margin-top: 15px;">
+                        <li>Techos (telarañas)</li>
+                        <li>Paredes</li>
+                        <li>Ventanas altas</li>
+                    </ul>
+                </div>
+                <div>
+                    <p><strong style="color: #50fa7b; font-size: 1.2em;">El Resultado:</strong></p>
+                    <p style="margin-top: 15px;">Swiffer con mango extensible + cabezal giratorio</p>
+                    
+                    <div class="highlight-box" style="margin-top: 35px;">
+                        <p style="font-size: 1em; margin: 0;"><strong>Lección clave:</strong></p>
+                        <p style="font-size: 0.95em; margin-top: 15px; line-height: 1.8;">Si hubieran PREGUNTADO "¿Qué necesitas para limpiar pisos?" nunca hubieran descubierto los techos y paredes.</p>
+                        <p style="font-size: 0.95em; margin-top: 15px; color: #50fa7b; line-height: 1.8;"><strong>La observación reveló necesidades que los usuarios no articulaban.</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 18 -->
+        <div class="slide center">
+            <h2>A1. Estudio Etnográfico</h2>
+            <div class="highlight-box" style="display: inline-block; margin: 60px 0; padding: 50px 100px;">
+                <p style="font-size: 1.7em; margin: 0;">Actividad grupal</p>
+                <p style="font-size: 2.4em; margin: 40px 0; color: #ff79c6;"><strong>Valor: 10%</strong></p>
+                <p style="font-size: 1.7em; margin: 0;">Entrega: <strong>19 de Febrero</strong></p>
+            </div>
+            <p style="margin-top: 70px; font-size: 1.5em;">Detalles completos publicados en Classroom</p>
+        </div>
+
+        <!-- SLIDE 19 -->
+        <div class="slide">
+            <h2>A1: Requisitos Principales</h2>
+            <div class="highlight-box">
+                <p style="margin-top: 0; font-size: 1.15em;"><strong>1. Participantes:</strong></p>
+                <ul class="checklist" style="margin-left: 30px; margin-top: 15px;">
+                    <li><strong>Mínimo 10 participantes</strong></li>
+                    <li>Deben ser <strong>usuarios REALES</strong> del tipo que definieron en su proyecto</li>
+                    <li>NO valen amigos/familiares que no sean del perfil correcto</li>
+                </ul>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 25px;">
+                <p style="margin-top: 0; font-size: 1.15em;"><strong>2. Metodología:</strong></p>
+                <ul class="checklist" style="margin-left: 30px; margin-top: 15px;">
+                    <li>Combinar datos <strong>Attitudinal</strong> y <strong>Behavioral</strong></li>
+                    <li>Entrevistas (15-30 min por participante)</li>
+                    <li>Observación en contexto (opcional pero recomendado)</li>
+                </ul>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 25px;">
+                <p style="margin-top: 0; font-size: 1.15em;"><strong>3. Documentación:</strong></p>
+                <ul class="checklist" style="margin-left: 30px; margin-top: 15px;">
+                    <li><strong>Tablero Miro:</strong> Proceso completo documentado</li>
+                    <li><strong>Google Slides:</strong> Presentación de 2-3 slides con hallazgos</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SLIDE 20 -->
+        <div class="slide">
+            <h2>Documentación en Miro</h2>
+            <p style="font-size: 1.1em;">Su tablero de equipo debe tener:</p>
+            
+            <div class="two-column" style="margin-top: 40px; font-size: 1em;">
+                <div>
+                    <div class="highlight-box">
+                        <p style="margin-top: 0;"><strong style="color: #ff79c6; font-size: 1.2em;">Sección: A1. Ethnographic Study</strong></p>
+                        <ul style="margin-left: 20px; line-height: 2.3; margin-top: 20px;">
+                            <li>Propósito del estudio</li>
+                            <li>Perfil de participantes</li>
+                            <li>Lista de 10 participantes</li>
+                            <li>Guía de preguntas/observación</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="highlight-box">
+                        <p style="margin-top: 0;"><strong style="color: #8be9fd; font-size: 1.2em;">Sección: Hallazgos A1</strong></p>
+                        <ul style="margin-left: 20px; line-height: 2.3; margin-top: 20px;">
+                            <li>Datos demográficos</li>
+                            <li>Patrones encontrados</li>
+                            <li>3-5 insights clave</li>
+                            <li>Evidencia visual (screenshots, fotos)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="margin-top: 50px; font-size: 1.05em;"><strong>IMPORTANTE:</strong> El Miro es su portafolio del proyecto. Documenten TODO el proceso, no solo el resultado.</p>
+        </div>
+
+        <!-- SLIDE 21 -->
+        <div class="slide">
+            <h2>Tips para su Estudio Etnográfico</h2>
+            <div class="two-column" style="font-size: 1em;">
+                <div>
+                    <p><strong style="color: #50fa7b; font-size: 1.2em;">✓ DO:</strong></p>
+                    <ul style="line-height: 2.3; margin-top: 20px;">
+                        <li>Graben entrevistas (con permiso)</li>
+                        <li>Tomen notas durante la entrevista</li>
+                        <li>Hagan preguntas de seguimiento</li>
+                        <li>Observen su contexto real</li>
+                        <li>Pidan ejemplos concretos</li>
+                        <li>Dividan los 10 participantes entre el equipo</li>
+                    </ul>
+                </div>
+                <div>
+                    <p><strong style="color: #ff5555; font-size: 1.2em;">✗ DON'T:</strong></p>
+                    <ul style="line-height: 2.3; margin-top: 20px;">
+                        <li>No hagan solo preguntas de sí/no</li>
+                        <li>No sugieran respuestas</li>
+                        <li>No inventen datos</li>
+                        <li>No usen solo encuestas escritas</li>
+                        <li>No entrevisten solo a sus amigos</li>
+                        <li>No dejen todo para el último día</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 40px;">
+                <p style="margin: 0; font-size: 1.05em;"><strong>Pregunta clave que deben poder responder:</strong></p>
+                <p style="margin-top: 20px; color: #f1fa8c; font-size: 1.25em;">"¿El problema que identificamos REALMENTE existe?"</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 22 -->
+        <div class="slide">
+            <h2>Próxima Sesión (Jue 12 Feb)</h2>
+            <div class="highlight-box" style="margin-top: 50px;">
+                <h3 style="color: #ff79c6; margin-top: 0;">Sesión 4: User Personas y Escenarios</h3>
+                <p style="font-size: 1.1em; line-height: 2.2; margin-top: 25px;">
+                    ✓ Cómo crear User Personas basadas en investigación real<br>
+                    ✓ Escenarios de uso<br>
+                    ✓ Los datos de su A1 alimentarán sus personas
+                </p>
+            </div>
+            
+            <p style="margin-top: 50px; font-size: 1.05em;"><strong>Tarea para el jueves:</strong></p>
+            <ul style="font-size: 1em; line-height: 2.3; margin-top: 20px;">
+                <li>Definir propósito y perfiles de su A1 (en Miro)</li>
+                <li>Diseñar guía de preguntas (mínimo 10 preguntas)</li>
+                <li>Confirmar lista de 10 participantes</li>
+            </ul>
+        </div>
+
+        <!-- SLIDE 23 -->
+        <div class="slide">
+            <h2>Recordatorios</h2>
+            <div style="margin-top: 50px;">
+                <div class="highlight-box">
+                    <p style="margin: 0; font-size: 1.15em;"><strong>📅 A1. Estudio Etnográfico:</strong> Entrega 19 de Febrero</p>
+                </div>
+                
+                <div class="highlight-box" style="margin-top: 30px;">
+                    <p style="margin: 0; font-size: 1.15em;"><strong>📋 Tablero Miro:</strong> Actualicen constantemente, no solo al final</p>
+                </div>
+                
+                <div class="highlight-box" style="margin-top: 30px;">
+                    <p style="margin: 0; font-size: 1.15em;"><strong>👥 Trabajo en equipo:</strong> Dividan los 10 participantes entre ustedes</p>
+                </div>
+                
+                <div class="highlight-box" style="margin-top: 30px;">
+                    <p style="margin: 0; font-size: 1.15em;"><strong>💬 Dudas:</strong> Foro de Classroom o horario de asesoría</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 24 -->
+        <div class="slide center">
+            <h2>Resumen de Hoy</h2>
+            <div style="margin: 70px 0; line-height: 3;">
+                <p style="font-size: 1.7em;">✓ User Research: Discover, Explore, Test, Listen</p>
+                <p style="font-size: 1.7em;">✓ Attitudinal (lo que dicen) vs Behavioral (lo que hacen)</p>
+                <p style="font-size: 1.7em;">✓ Etnografía: 3 fases (Definir, Recolectar, Analizar)</p>
+                <p style="font-size: 1.7em;">✓ A1: 10 participantes reales, datos attitudinal + behavioral</p>
+            </div>
+            
+            <div class="quote" style="font-size: 1.8em; margin-top: 90px;">
+                "Observar a usuarios reales es 10x más valioso que asumir lo que necesitan"
+            </div>
+        </div>
+
+        <!-- SLIDE 25 -->
+        <div class="slide center">
+            <h1 style="font-size: 5em; margin-bottom: 60px;">¿Preguntas?</h1>
+            <p style="font-size: 1.9em;">DEIU - Sesión 3</p>
+            <p style="margin-top: 40px; font-size: 1.6em;">Nos vemos el jueves 12 de febrero</p>
+            <p style="margin-top: 70px; font-size: 1.4em; color: #6272a4;">Ing. Ricardo Jaramillo Velasco</p>
+        </div>
+
+    </div>
+
+    <div class="slide-counter" id="slideCounter">1 / 25</div>
+    
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Anterior</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>

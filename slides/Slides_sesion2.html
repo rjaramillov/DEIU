@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEIU - Sesión 2: Definición del Proyecto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root { --r-main-font-size: 38px; }
+        .highlight { color: #bd93f9; font-weight: bold; }
+        .error-text { color: #ff79c6; font-weight: bold; }
+        .success-text { color: #50fa7b; font-weight: bold; }
+        .warning-text { color: #ffb86c; font-weight: bold; }
+        .card { background: rgba(255,255,255,0.08); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin: 10px 0; }
+        .timer-box { font-size: 3em; font-family: monospace; border: 2px solid #ff79c6; padding: 20px; display: inline-block; border-radius: 10px; color: #ff79c6; }
+        .small-text { font-size: 0.7em; }
+        .tiny-text { font-size: 0.5em; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .principle-box { padding: 15px; border-left: 4px solid #bd93f9; background: rgba(189, 147, 249, 0.1); }
+        .example-box { padding: 15px; background: rgba(80, 250, 123, 0.1); border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: PORTADA -->
+            <section data-background-gradient="linear-gradient(135deg, #2d2d44, #1e1e2e)">
+                <h2>Sesión 2: <span class="highlight">Definición del Proyecto</span></h2>
+                <p class="small-text">Diseño y Evaluación de Interfaces de Usuario</p>
+                <div style="margin-top: 40px;">
+                    <p>Hoy no salimos sin:</p>
+                    <ol style="font-size: 0.8em;">
+                        <li>Entender <strong>qué es DCU</strong></li>
+                        <li>Formar <strong>equipos</strong></li>
+                        <li>Definir un <strong>problema real</strong></li>
+                        <li>Crear su <strong>roadmap</strong> semestral</li>
+                    </ol>
+                </div>
+                <div style="margin-top: 30px; font-size: 0.5em; opacity: 0.7;">
+                    <i data-lucide="clock"></i> 90 minutos | <i data-lucide="layout"></i> Trabajo en Miro
+                </div>
+            </section>
+
+            <!-- SLIDE 2: AGENDA -->
+            <section>
+                <h3>📋 Agenda de Hoy</h3>
+                <div class="card">
+                    <table style="width: 100%; font-size: 0.7em;">
+                        <tr>
+                            <td><strong>10 min</strong></td>
+                            <td>Intro: ¿Qué es Diseño Centrado en el Usuario?</td>
+                        </tr>
+                        <tr>
+                            <td><strong>15 min</strong></td>
+                            <td>Formación de equipos (3-4 personas)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>30 min</strong></td>
+                            <td>Lluvia de ideas + Validación con IA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>20 min</strong></td>
+                            <td>Llenado del Validation Board en Miro</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10 min</strong></td>
+                            <td>Explicación del Roadmap + Survival Guide</td>
+                        </tr>
+                        <tr>
+                            <td><strong>15 min</strong></td>
+                            <td>Pitch relámpagoå (1 min por equipo)</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: ¿QUÉ ES DCU? -->
+            <section>
+                <h3>¿Qué es el Diseño Centrado en el Usuario?</h3>
+                <blockquote style="font-size: 0.8em; font-style: italic; border-left: 4px solid #bd93f9; padding-left: 20px;">
+                    "User-centered design means understanding what your users need, how they think, and how they behave—and incorporating that understanding into every aspect of your process."
+                    <footer style="font-size: 0.7em; margin-top: 10px;">— Don Norman, <em>The Design of Everyday Things</em></footer>
+                </blockquote>
+                <p class="fragment" style="margin-top: 30px; font-size: 0.8em;">
+                    No diseñamos para nosotros. <span class="highlight">Diseñamos para quien lo va a usar.</span>
+                </p>
+            </section>
+
+            <!-- SLIDE 4: PRINCIPIO 1 - ENFOQUE EN EL USUARIO -->
+            <section>
+                <h3>Principio 1: <span class="highlight">Enfoque en el Usuario</span></h3>
+                <div class="grid-2">
+                    <div class="principle-box fragment">
+                        <h4 style="font-size: 0.8em;">📚 Concepto</h4>
+                        <p class="small-text">Las decisiones de diseño se basan en el <strong>comportamiento real</strong> de los usuarios, no en suposiciones del equipo de desarrollo.</p>
+                        <p class="tiny-text" style="margin-top: 10px; opacity: 0.7;">
+                            Fuente: Preece et al., <em>Interaction Design</em>
+                        </p>
+                    </div>
+                    <div class="example-box fragment">
+                        <h4 style="font-size: 0.8em;">✅ Ejemplo Real</h4>
+                        <p class="small-text"><strong>Caso:</strong> Netflix eliminó su sistema de estrellas (⭐⭐⭐⭐⭐) y lo cambió por 👍👎</p>
+                        <p class="small-text"><strong>¿Por qué?</strong> Los datos mostraron que los usuarios <em>no entendían</em> qué significaba cada estrella, pero sí sabían si les gustó o no.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 5: PRINCIPIO 2 - ITERACIÓN -->
+            <section>
+                <h3>Principio 2: <span class="highlight">Iteración Constante</span></h3>
+                <div class="grid-2">
+                    <div class="principle-box fragment">
+                        <h4 style="font-size: 0.8em;">📚 Concepto</h4>
+                        <p class="small-text">El diseño no es lineal. Se <strong>prueba, se evalúa, se mejora</strong> en ciclos continuos.</p>
+                        <p class="tiny-text" style="margin-top: 10px; opacity: 0.7;">
+                            Fuente: Norman, <em>The Design of Everyday Things</em>
+                        </p>
+                    </div>
+                    <div class="example-box fragment">
+                        <h4 style="font-size: 0.8em;">✅ Ejemplo Real</h4>
+                        <p class="small-text"><strong>Caso:</strong> Instagram tardó 8 versiones en llegar a su feed actual.</p>
+                        <p class="small-text"><strong>¿Por qué?</strong> Cada versión se probó con usuarios reales y se ajustó según su comportamiento.</p>
+                    </div>
+                </div>
+                <div class="fragment" style="margin-top: 20px; text-align: center;">
+                    <p class="small-text"><em>Esto es lo que harán ustedes este semestre: diseñar → probar → mejorar.</em></p>
+                </div>
+            </section>
+
+            <!-- SLIDE 6: PRINCIPIO 3 - EVALUACIÓN -->
+            <section>
+                <h3>Principio 3: <span class="highlight">Evaluación Continua</span></h3>
+                <div class="grid-2">
+                    <div class="principle-box fragment">
+                        <h4 style="font-size: 0.8em;">📚 Concepto</h4>
+                        <p class="small-text">No asumas que funciona. <strong>Mídelo.</strong> Usa datos cualitativos (observación) y cuantitativos (métricas).</p>
+                        <p class="tiny-text" style="margin-top: 10px; opacity: 0.7;">
+                            Fuente: Tullis & Albert, <em>Measuring the User Experience</em>
+                        </p>
+                    </div>
+                    <div class="example-box fragment">
+                        <h4 style="font-size: 0.8em;">✅ Ejemplo Real</h4>
+                        <p class="small-text"><strong>Caso:</strong> Jared Spool descubrió que cambiar el texto de un botón de "Register" a "Continue" generó <strong>$300 millones de dólares</strong> adicionales en ventas.</p>
+                        <p class="small-text"><strong>¿Por qué?</strong> Los usuarios no querían "registrarse", solo querían "continuar".</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 7: EL CICLO UCD -->
+            <section>
+                <h3>Esto es lo que harán este semestre</h3>
+                <img src="https://i.imgur.com/placeholder-ucd-cycle.png" alt="Ciclo UCD" style="max-width: 70%; margin: 20px auto; display: block;">
+                <p class="small-text fragment">Cada fase tiene <strong>técnicas específicas</strong>, <strong>entregables</strong> y <strong>evaluaciones</strong>.</p>
+                <p class="small-text fragment">Hoy crearán el <span class="highlight">roadmap</span> que seguirán todo el semestre.</p>
+            </section>
+
+            <!-- SLIDE 8: TRANSICIÓN A LA DINÁMICA -->
+            <section data-background-color="#282a36">
+                <h2>Pasemos a la acción 🚀</h2>
+                <p>Primero: <span class="highlight">Formar equipos</span></p>
+                <p>Después: <span class="highlight">Definir el problema</span></p>
+            </section>
+
+            <!-- SLIDE 9: CRITERIOS DE UN BUEN PROYECTO -->
+            <section>
+                <h3>¿Qué es un "Buen Proyecto"?</h3>
+                <div class="grid-2">
+                    <div class="card fragment">
+                        <h4 class="error-text">❌ Lo que NO queremos</h4>
+                        <ul class="small-text">
+                            <li>"Una app de To-Do list" → Demasiado trivial</li>
+                            <li>"Una landing page de un restaurante" → Sin flujo complejo</li>
+                            <li>"Un clon de Uber" → Irrealista para el alcance</li>
+                            <li>"Una red social" → Demasiado amplio</li>
+                        </ul>
+                    </div>
+                    <div class="card fragment">
+                        <h4 class="success-text">✅ Lo que SÍ queremos</h4>
+                        <ul class="small-text">
+                            <li><strong>Problemas sistémicos</strong> → Gestión, procesos internos</li>
+                            <li><strong>Usuarios reales accesibles</strong> → Puedes entrevistarlos</li>
+                            <li><strong>Flujos con roles</strong> → Admin vs. Usuario final</li>
+                            <li><strong>Impacto medible</strong> → Tiempo ahorrado, errores reducidos</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 10: CRITERIOS DE VALIDACIÓN -->
+            <section>
+                <h3>✅ Checklist: ¿Mi idea es viable?</h3>
+                <div class="card">
+                    <ol class="small-text">
+                        <li class="fragment">¿Puedo <strong>entrevistar al menos 5 usuarios reales</strong>? (No inventados)</li>
+                        <li class="fragment">¿El problema causa <strong>frustración o pérdida de tiempo</strong> actualmente?</li>
+                        <li class="fragment">¿La solución requiere <strong>al menos 3 pantallas principales</strong>? (Tiene flujo)</li>
+                        <li class="fragment">¿Puedo <strong>probar el diseño con usuarios</strong> antes de programarlo?</li>
+                        <li class="fragment">¿No es un problema que se resuelva con una <strong>simple hoja de cálculo</strong>?</li>
+                    </ol>
+                </div>
+                <p class="fragment warning-text" style="margin-top: 20px; font-size: 0.7em;">
+                    Si respondiste NO a más de 2 preguntas, reconsidera tu idea.
+                </p>
+            </section>
+
+            <!-- SLIDE 11: TIMELINE DE LA DINÁMICA -->
+            <section>
+                <h3>⏱️ Timeline de Hoy</h3>
+                <div class="card">
+                    <table style="width: 100%; font-size: 0.7em;">
+                        <tr style="background: rgba(189, 147, 249, 0.2);">
+                            <td><strong>11:15 - 11:30</strong></td>
+                            <td><strong>Formación de equipos</strong> → "Mercado de fichajes"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>11:30 - 12:00</strong></td>
+                            <td>Lluvia de ideas + Validación con IA (Shark Tank)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>12:00 - 12:20</strong></td>
+                            <td>Llenar Validation Board en Miro</td>
+                        </tr>
+                        <tr>
+                            <td><strong>12:20 - 12:30</strong></td>
+                            <td>Explicación del Roadmap + Survival Guide</td>
+                        </tr>
+                        <tr style="background: rgba(80, 250, 123, 0.2);">
+                            <td><strong>12:30 - 12:45</strong></td>
+                            <td><strong>Pitch relámå</strong> (1 min por equipo)</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SLIDE 12: VALIDATION BOARD -->
+            <section>
+                <h3>📋 Validation Board (En Miro)</h3>
+                <div class="small-text">
+                    <p>Cada equipo llenará <strong>4 zonas</strong>:</p>
+                    <div class="grid-2" style="margin-top: 20px;">
+                        <div class="card">
+                            <strong>1. Team Roster</strong><br>
+                            ¿Quiénes son? Roles de cada miembro.
+                        </div>
+                        <div class="card">
+                            <strong>2. Problem Statement</strong><br>
+                            Hipótesis del problema (formato Mad Libs).
+                        </div>
+                        <div class="card">
+                            <strong>3. The Evidence</strong><br>
+                            Pruebas de que el problema existe.
+                        </div>
+                        <div class="card">
+                            <strong>4. The Shark Tank</strong><br>
+                            IA destruyendo tu idea + tu respuesta.
+                        </div>
+                    </div>
+                </div>
+                <p class="fragment warning-text" style="margin-top: 20px; font-size: 0.6em;">
+                    ⚠️ La Zona 3 NO puede quedar en blanco. Sin evidencia = No es un problema real.
+                </p>
+            </section>
+
+            <!-- SLIDE 13: EL PROMPT SHARK TANK -->
+            <section>
+                <h3>🦈 Validación con IA</h3>
+                <p class="small-text">Antes de enamorarse de una idea, dejen que la IA la critique.</p>
+                <div class="card" style="font-size: 0.45em; text-align: left; font-family: monospace;">
+                    <code>"Actúa como un Venture Capitalist escéptico en Shark Tank. Te voy a presentar una idea de software: [TU IDEA].
+                    
+Tu trabajo es decirme por qué va a fallar. Enfócate en:
+1. ¿El usuario realmente tiene este problema o es un problema inventado?
+2. ¿La solución es demasiado compleja para el alcance de un equipo pequeño?
+3. ¿Ya existe una solución más simple (como Excel o Google Forms)?
+
+Sé duro pero constructivo. Dame 3 riesgos principales."</code>
+                </div>
+                <p class="fragment small-text" style="margin-top: 15px;">
+                    <span class="highlight">Luego:</span> Peguen la respuesta en Miro y expliquen cómo mitigarán cada riesgo.
+                </p>
+            </section>
+
+            <!-- SLIDE 14: ROADMAP MODELO -->
+            <section>
+                <h3>🗺️ Su Roadmap Semestral</h3>
+                <p class="small-text">En Miro encontrarán un <strong>template</strong> con las 6 fases del ciclo UCD.</p>
+                <div class="card small-text">
+                    <p><strong>Cada fase incluye:</strong></p>
+                    <ul style="font-size: 0.9em;">
+                        <li>📋 <strong>Checklist</strong> → Qué entregar (A1, A2, prácticas...)</li>
+                        <li>🛠️ <strong>Técnicas</strong> → Métodos a usar (etnografía, card sorting...)</li>
+                        <li>💬 <strong>Espacio de feedback</strong> → Yo les dejaré comentarios</li>
+                        <li>🎯 <strong>Output esperado</strong> → Qué debe salir de esa fase</li>
+                    </ul>
+                </div>
+                <p class="fragment warning-text" style="margin-top: 20px; font-size: 0.7em;">
+                    ⚠️ Copien el template a su propio tablero Miro de equipo. No trabajen en el original.
+                </p>
+            </section>
+
+            <!-- SLIDE 15: DCU SURVIVAL GUIDE -->
+            <section>
+                <h3>📚 DCU Survival Guide</h3>
+                <p class="small-text">Su "cheat sheet" para los exámenes.</p>
+                <div class="card small-text">
+                    <p><strong>¿Cómo funciona?</strong></p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Hoy les doy <strong>5 conceptos base</strong> pre-llenados como ejemplo</li>
+                        <li>Cada clase: <strong>Agregarán 3 conceptos nuevos</strong> al final de la sesión</li>
+                        <li>Antes del examen: Tendrán un poster completo hecho por ustedes</li>
+                    </ul>
+                </div>
+                <div class="fragment" style="margin-top: 20px; padding: 15px; background: rgba(80, 250, 123, 0.2); border-radius: 8px;">
+                    <p class="success-text" style="font-size: 0.8em;">
+                        ✅ Pueden usar su Survival Guide (1 página A4) EN EL EXAMEN.
+                    </p>
+                </div>
+                <p class="fragment tiny-text" style="margin-top: 10px; opacity: 0.7;">
+                    Está en su mejor interés construirlo bien desde ahora.
+                </p>
+            </section>
+
+            <!-- SLIDE 16: ESTRUCTURA DEL SURVIVAL GUIDE -->
+            <section>
+                <h3>Estructura del Survival Guide</h3>
+                <div class="card">
+                    <table style="width: 100%; font-size: 0.6em; text-align: left;">
+                        <thead>
+                            <tr style="background: rgba(189, 147, 249, 0.3);">
+                                <th style="padding: 10px;">Concepto</th>
+                                <th style="padding: 10px;">Definición (máx. 2 líneas)</th>
+                                <th style="padding: 10px;">Ejemplo Visual</th>
+                                <th style="padding: 10px;">Fuente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fragment">
+                                <td style="padding: 10px;"><strong>Usabilidad</strong></td>
+                                <td style="padding: 10px;">Qué tan fácil y eficiente es usar un sistema para lograr objetivos específicos.</td>
+                                <td style="padding: 10px;">📱➡️✅</td>
+                                <td style="padding: 10px;">Nielsen, 1994</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td style="padding: 10px;"><strong>Affordance</strong></td>
+                                <td style="padding: 10px;">Pistas visuales que indican cómo interactuar con un objeto.</td>
+                                <td style="padding: 10px;">🔘🖱️</td>
+                                <td style="padding: 10px;">Norman, 2013</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td style="padding: 10px;"><strong>User Persona</strong></td>
+                                <td style="padding: 10px;">Representación ficticia de un usuario típico basada en datos reales.</td>
+                                <td style="padding: 10px;">👤📊</td>
+                                <td style="padding: 10px;">Cooper, 1999</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="fragment small-text" style="margin-top: 20px;">
+                    Hoy agregarán estos 3 + <strong>2 más</strong> al final de la clase.
+                </p>
+            </section>
+
+            <!-- SLIDE 17: INSTRUCCIONES DEL PITCH -->
+            <section>
+                <h3>🎤 El Pitch Relàmpago</h3>
+                <p class="small-text">Al final de la clase, cada equipo presenta en <strong>1 minuto máximo</strong>:</p>
+                <div class="card small-text" style="text-align: left;">
+                    <ol>
+                        <li><strong>¿Quiénes son?</strong> (Nombres del equipo)</li>
+                        <li><strong>¿Qué problema van a resolver?</strong> (1 frase)</li>
+                        <li><strong>¿Para quién?</strong> (Tipo de usuario)</li>
+                        <li><strong>¿Por qué es real?</strong> (1 evidencia clave)</li>
+                        <li><strong>¿Cuál es el riesgo mayor según la IA?</strong> (Y cómo lo mitigarán)</li>
+                    </ol>
+                </div>
+                <div class="fragment" style="margin-top: 20px; padding: 15px; background: rgba(255, 184, 108, 0.2); border-radius: 8px;">
+                    <p class="warning-text" style="font-size: 0.7em;">
+                        ⏱️ Si se pasan de 1 minuto, los cortaré. Practiquen el elevator pitch.
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 18: EJEMPLO DE BUEN PITCH -->
+            <section>
+                <h3>Ejemplo de un Buen Pitch</h3>
+                <div class="card" style="font-size: 0.7em; text-align: left; padding: 25px;">
+                    <p><strong>"Somos el equipo Delta."</strong></p>
+                    <p style="margin-top: 15px;">
+                        <strong>Problema:</strong> Los estudiantes de SSC pierden en promedio 3 horas al mes buscando información dispersa entre portales.
+                    </p>
+                    <p style="margin-top: 15px;">
+                        <strong>Usuario:</strong> Estudiantes activos en servicio social.
+                    </p>
+                    <p style="margin-top: 15px;">
+                        <strong>Evidencia:</strong> Hicimos una encuesta rápida a 10 compañeros: 8 de 10 no sabían dónde subir su informe intersemestral.
+                    </p>
+                    <p style="margin-top: 15px;">
+                        <strong>Riesgo IA:</strong> "Ya existe el portal actual." <em>Mitigación:</em> Nuestro diseño unificará 3 flujos en uno solo con mejor UX.
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 19: TIMER PLACEHOLDER -->
+            <section data-auto-animate>
+                <h3>⏱️ ¡Manos a la obra!</h3>
+                <p class="small-text">Enlace a Miro en Classroom</p>
+                <div class="timer-box">45:00</div>
+                <p class="tiny-text" style="margin-top: 15px;">(Circularé por los equipos resolviendo dudas)</p>
+            </section>
+
+            <!-- SLIDE 20: CIERRE -->
+            <section data-background-gradient="linear-gradient(135deg, #1e1e2e, #2d2d44)">
+                <h2>Para la próxima clase</h2>
+                <div class="card">
+                    <ul class="small-text">
+                        <li>✅ Copien el Roadmap a su tablero de equipo</li>
+                        <li>✅ Completen su Survival Guide con 2 conceptos más</li>
+                        <li>✅ Prepárense para empezar <strong>User Research</strong> (A1: Etnografía)</li>
+                    </ul>
+                </div>
+                <p class="fragment highlight" style="margin-top: 30px; font-size: 0.8em;">
+                    La próxima sesión arranca con un mini-quiz Kahoot. ⚡
+                </p>
+            </section>
+
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({ 
+            hash: false, 
+            history: false, 
+            controls: true,
+            progress: true,
+            center: true,
+            transition: 'slide'
+        });
+        lucide.createIcons();
+    </script>
+</body>
+</html>
