@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesión 7 - Tree Testing y Wireframes | DEIU</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --bg: #282a36;
+            --current-line: #44475a;
+            --foreground: #f8f8f2;
+            --comment: #6272a4;
+            --cyan: #8be9fd;
+            --green: #50fa7b;
+            --orange: #ffb86c;
+            --pink: #ff79c6;
+            --purple: #bd93f9;
+            --red: #ff5555;
+            --yellow: #f1fa8c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--foreground);
+            overflow: hidden;
+        }
+        
+        .reveal {
+            font-size: 20px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .reveal .slides {
+            height: auto;
+        }
+        
+        .reveal .slides section {
+            padding: 40px 60px 120px 60px;
+            height: auto;
+            min-height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        .reveal h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.4em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .reveal h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--purple);
+            margin-bottom: 0.6em;
+        }
+        
+        .reveal h3 {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--green);
+            margin-bottom: 0.5em;
+        }
+        
+        .reveal h4 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--yellow);
+            margin-bottom: 0.4em;
+        }
+        
+        .reveal p, .reveal li {
+            font-size: 1em;
+            line-height: 1.5;
+            margin-bottom: 0.6em;
+        }
+        
+        .reveal ul, .reveal ol {
+            margin-left: 1.2em;
+        }
+        
+        .reveal li {
+            margin-bottom: 0.4em;
+        }
+        
+        .reveal strong {
+            color: var(--orange);
+            font-weight: 600;
+        }
+        
+        .reveal em {
+            color: var(--pink);
+            font-style: italic;
+        }
+        
+        .reveal .subtitle {
+            font-size: 1.1em;
+            color: var(--comment);
+            margin-top: -0.3em;
+            margin-bottom: 1.5em;
+        }
+        
+        .reveal .highlight-box {
+            background: var(--current-line);
+            border-left: 4px solid var(--cyan);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .success-box {
+            background: rgba(80, 250, 123, 0.1);
+            border-left: 4px solid var(--green);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .warning-box {
+            background: rgba(255, 184, 108, 0.1);
+            border-left: 4px solid var(--orange);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .error-box {
+            background: rgba(255, 85, 85, 0.1);
+            border-left: 4px solid var(--red);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5em;
+            margin: 1em 0;
+        }
+        
+        .reveal .three-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1em;
+            margin: 1em 0;
+        }
+        
+        .reveal table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+            font-size: 0.9em;
+        }
+        
+        .reveal th {
+            background: var(--current-line);
+            color: var(--cyan);
+            padding: 0.6em;
+            border: 1px solid var(--comment);
+            font-weight: 600;
+        }
+        
+        .reveal td {
+            padding: 0.6em;
+            border: 1px solid var(--comment);
+        }
+        
+        .reveal .small-text {
+            font-size: 0.85em;
+            color: var(--comment);
+        }
+        
+        .reveal .large-text {
+            font-size: 1.15em;
+            font-weight: 600;
+        }
+        
+        .reveal .quote {
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--yellow);
+            border-left: 4px solid var(--yellow);
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        .reveal .grid-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8em;
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .reveal .grid-list li {
+            background: var(--current-line);
+            padding: 0.8em;
+            border-radius: 8px;
+            border-left: 3px solid var(--purple);
+        }
+        
+        .reveal .step-box {
+            background: var(--current-line);
+            padding: 1em;
+            margin: 0.6em 0;
+            border-radius: 8px;
+            border-left: 4px solid var(--green);
+        }
+        
+        .reveal .step-number {
+            display: inline-block;
+            background: var(--green);
+            color: var(--bg);
+            width: 1.6em;
+            height: 1.6em;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 1.6em;
+            font-weight: 700;
+            margin-right: 0.4em;
+            font-size: 0.9em;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .controls button {
+            background: var(--current-line);
+            color: var(--foreground);
+            border: 2px solid var(--cyan);
+            padding: 10px 20px;
+            font-size: 0.95em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            opacity: 0.9;
+        }
+        
+        .controls button:hover {
+            background: var(--cyan);
+            color: var(--bg);
+            transform: translateY(-2px);
+            opacity: 1;
+        }
+        
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--current-line);
+            color: var(--comment);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Título -->
+            <section>
+                <h1>Tree Testing<br>y Wireframes</h1>
+                <p class="subtitle">Sesión 7 • Jueves 26 de Febrero, 2026</p>
+                <p class="subtitle">DEIU - Diseño y Evaluación de Interfaces de Usuario</p>
+                <p class="subtitle">Ing. Ricardo Jaramillo Velasco</p>
+            </section>
+
+            <!-- Slide 2: Agenda -->
+            <section>
+                <h2>📋 Agenda de Hoy</h2>
+                <div class="highlight-box">
+                    <ol>
+                        <li><strong>Check-in A4</strong> - ¿Sitemap listo? (10 min)</li>
+                        <li><strong>¿Qué es Tree Testing?</strong> - Validar sitemap (20 min)</li>
+                        <li><strong>Cómo hacer Tree Testing</strong> - Metodología (15 min)</li>
+                        <li><strong>Actividad</strong> - Tree Test con compañero (20 min)</li>
+                        <li><strong>¿Qué son Wireframes?</strong> - Teoría + fidelidad (20 min)</li>
+                        <li><strong>Cómo crear Wireframes</strong> - Metodología (25 min)</li>
+                        <li><strong>Cierre</strong> - Próximos pasos (10 min)</li>
+                    </ol>
+                </div>
+                <p class="small-text">Total: 120 minutos</p>
+            </section>
+
+            <!-- Slide 3: Posición en DCU -->
+            <section>
+                <h2>🔄 ¿Dónde Estamos en el Ciclo DCU?</h2>
+                <div class="highlight-box large-text">
+                    <p><strong style="color: var(--comment);">01-05. Investigación y análisis</strong> → Sesiones 1-5 ✓</p>
+                    <p><strong style="color: var(--comment);">06. Organizar información</strong> → Sesión 6 (A4) ✓</p>
+                    <p><strong style="color: var(--green);">07. Validar y Prototipar</strong> → Sesión 7 (HOY) 👈</p>
+                    <p style="margin-left: 2em;">• Tree Testing: Validar sitemap</p>
+                    <p style="margin-left: 2em;">• Wireframes: Prototipar estructura</p>
+                    <p><strong style="color: var(--comment);">08+. Iterar y refinar</strong> → Sesiones siguientes</p>
+                </div>
+                <p class="small-text">Hoy validamos ANTES de diseñar interfaces completas</p>
+            </section>
+
+            <!-- Slide 4: ¿Qué es Tree Testing? -->
+            <section>
+                <h2>🌳 ¿Qué es Tree Testing?</h2>
+                <div class="success-box">
+                    <p class="large-text"><strong>Tree Testing</strong> es una técnica para validar si tu sitemap es intuitivo ANTES de diseñar interfaces visuales.</p>
+                </div>
+                <h3>¿Cómo funciona?</h3>
+                <p>Le das al usuario una <strong>tarea</strong> ("Encuentra dónde cambiar tu contraseña") y le muestras el sitemap como un <strong>árbol de texto</strong> (sin diseño visual).</p>
+                <p>El usuario navega el árbol hasta donde cree que está esa función.</p>
+                <h3>Resultado:</h3>
+                <ul>
+                    <li>Si llega al lugar correcto → ✅ Sitemap funciona</li>
+                    <li>Si NO llega o se confunde → ❌ Sitemap necesita ajustes</li>
+                </ul>
+            </section>
+
+            <!-- Slide 5: ¿Para Qué Sirve? -->
+            <section>
+                <h2>🎯 ¿Para Qué Sirve Tree Testing?</h2>
+                <div class="success-box">
+                    <h4>✅ Propósito principal:</h4>
+                    <p>Validar que tu arquitectura de información es <strong>intuitiva</strong> ANTES de invertir tiempo en diseñar pantallas.</p>
+                </div>
+                <h3>Pregunta que responde:</h3>
+                <p class="highlight-box">"Si un usuario busca [X], ¿puede encontrarlo fácilmente en mi estructura?"</p>
+                <h3>Ventajas:</h3>
+                <ul>
+                    <li>Detectar problemas de navegación TEMPRANO (cuando es barato arreglarlos)</li>
+                    <li>Validar nombres de categorías</li>
+                    <li>Identificar dónde usuarios se pierden</li>
+                    <li>Tomar decisiones basadas en datos, no opiniones</li>
+                </ul>
+            </section>
+
+            <!-- Slide 6: Tree Testing vs Card Sorting -->
+            <section>
+                <h2>🔀 Tree Testing vs Card Sorting</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th>Card Sorting (A4)</th>
+                            <th>Tree Testing (HOY)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Propósito</strong></td>
+                            <td>CONSTRUIR estructura</td>
+                            <td>VALIDAR estructura</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Input</strong></td>
+                            <td>Cards sueltas (features)</td>
+                            <td>Sitemap completo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output</strong></td>
+                            <td>Categorías + Sitemap</td>
+                            <td>Métricas de éxito</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Usuario hace</strong></td>
+                            <td>Agrupar y nombrar</td>
+                            <td>Buscar y encontrar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cuándo</strong></td>
+                            <td>ANTES de tener sitemap</td>
+                            <td>DESPUÉS de tener sitemap</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="warning-box"><strong>Secuencia correcta:</strong> Card Sorting → Sitemap → Tree Testing → Wireframes</p>
+            </section>
+
+            <!-- Slide 7: Cuándo Hacer Tree Testing -->
+            <section>
+                <h2>📅 ¿Cuándo Hacer Tree Testing?</h2>
+                <div class="step-box">
+                    <p><span class="step-number">1</span><strong>Situación ideal:</strong></p>
+                    <p class="small-text">Después de Card Sorting, cuando tienes sitemap draft pero ANTES de diseñar pantallas</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">2</span><strong>También útil para:</strong></p>
+                    <ul class="small-text">
+                        <li>Rediseño de navegación existente</li>
+                        <li>Comparar 2 estructuras diferentes (A vs B)</li>
+                        <li>Validar cambios de nombres de categorías</li>
+                    </ul>
+                </div>
+                <div class="error-box">
+                    <p><strong>NO hacer Tree Testing si:</strong></p>
+                    <ul>
+                        <li>No tienes sitemap (primero Card Sorting)</li>
+                        <li>Ya diseñaste todas las pantallas (muy tarde)</li>
+                        <li>El sitemap tiene solo 2-3 opciones (demasiado obvio)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 8: Cómo Funciona - Ejemplo Visual -->
+            <section>
+                <h2>🖥️ Ejemplo: Cómo Se Ve Tree Testing</h2>
+                <div class="two-columns">
+                    <div>
+                        <h4>Tarea dada al usuario:</h4>
+                        <p class="highlight-box">"Quieres ver tu horario semanal. ¿Dónde irías?"</p>
+                        <h4>Árbol que ve (TaskSync):</h4>
+                        <div style="font-family: monospace; font-size: 0.8em; line-height: 1.8;">
+                            <p>📱 Home</p>
+                            <p>├── 🔄 Sincronización</p>
+                            <p>│   ├── Importar Notion</p>
+                            <p>│   ├── Importar Calendar</p>
+                            <p>│   └── Leer WhatsApp</p>
+                            <p><strong style="color: var(--green);">├── 📅 Vista ← Usuario hace clic</strong></p>
+                            <p><strong style="color: var(--green);">│   ├── Ver semanal ← CORRECTO ✓</strong></p>
+                            <p>│   ├── Ver diaria</p>
+                            <p>│   └── Filtrar materia</p>
+                            <p>├── ⚙️ Configuración</p>
+                            <p>└── 💡 Ayuda</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Resultado:</h4>
+                        <div class="success-box">
+                            <p><strong>✅ Éxito directo</strong></p>
+                            <p class="small-text">Usuario encontró en primer intento</p>
+                        </div>
+                        <h4>Si hubiera ido a:</h4>
+                        <div class="warning-box">
+                            <p><strong>⚠️ Éxito indirecto</strong></p>
+                            <p class="small-text">Configuración → (retrocede) → Vista → Ver semanal</p>
+                        </div>
+                        <div class="error-box">
+                            <p><strong>❌ Fracaso</strong></p>
+                            <p class="small-text">Fue a Sincronización (lugar equivocado)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 9: Métricas Clave -->
+            <section>
+                <h2>📊 Métricas Clave de Tree Testing</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Descripción</th>
+                            <th>Objetivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color: var(--green);"><strong>Éxito directo</strong></td>
+                            <td>Usuario llegó al lugar correcto en primer intento</td>
+                            <td>>70%</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--orange);"><strong>Éxito indirecto</strong></td>
+                            <td>Llegó después de explorar/retroceder</td>
+                            <td><20%</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--red);"><strong>Fracaso</strong></td>
+                            <td>NO llegó o llegó al lugar equivocado</td>
+                            <td><10%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tiempo promedio</strong></td>
+                            <td>Segundos que tardó en completar tarea</td>
+                            <td><30 seg</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Primer clic</strong></td>
+                            <td>¿El primer clic fue correcto?</td>
+                            <td>>80%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="highlight-box">
+                    <p><strong>Regla general:</strong> Si <strong>tasa de éxito total</strong> (directo + indirecto) es <strong>>70%</strong> → Sitemap funciona ✓</p>
+                    <p>Si <strong><60%</strong> → Necesita rediseño ❌</p>
+                </div>
+            </section>
+
+            <!-- Slide 10: Herramientas -->
+            <section>
+                <h2>🛠️ Herramientas para Tree Testing</h2>
+                <div class="three-columns" style="font-size: 0.9em;">
+                    <div class="success-box">
+                        <h4>Optimal Workshop</h4>
+                        <p class="small-text"><strong>Treejack</strong></p>
+                        <ul class="small-text">
+                            <li>Específico para tree testing</li>
+                            <li>Métricas automáticas</li>
+                            <li>Remoto, asíncrono</li>
+                            <li>Plan gratis limitado</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>Miro (Manual)</h4>
+                        <p class="small-text"><strong>Simulación</strong></p>
+                        <ul class="small-text">
+                            <li>Gratis</li>
+                            <li>Crear árbol visual</li>
+                            <li>Síncrono (con observación)</li>
+                            <li>Métricas manuales</li>
+                        </ul>
+                    </div>
+                    <div class="warning-box">
+                        <h4>Maze / UserZoom</h4>
+                        <p class="small-text"><strong>Plataformas</strong></p>
+                        <ul class="small-text">
+                            <li>Herramientas avanzadas</li>
+                            <li>Análisis detallado</li>
+                            <li>Plan educativo a veces</li>
+                            <li>Curva de aprendizaje</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="warning-box"><strong>Para actividad de hoy:</strong> Usaremos Miro (manual) porque es gratis y tienen acceso</p>
+            </section>
+
+            <!-- Slide 11: Paso 1 - Preparar Árbol -->
+            <section>
+                <h2>📐 Paso 1: Preparar el Árbol del Sitemap</h2>
+                <div class="step-box">
+                    <p><strong>Convertir sitemap visual → árbol de texto</strong></p>
+                </div>
+                <h3>Ejemplo: TaskSync</h3>
+                <div class="two-columns">
+                    <div>
+                        <h4>Sitemap visual (A4):</h4>
+                        <div style="font-size: 0.8em;">
+                            <p>Home</p>
+                            <p>├─ Sincronización</p>
+                            <p>│  ├─ Importar Notion</p>
+                            <p>│  ├─ Importar Calendar</p>
+                            <p>├─ Vista</p>
+                            <p>│  ├─ Ver semanal</p>
+                            <p>│  ├─ Ver diaria</p>
+                            <p>├─ Configuración</p>
+                            <p>│  ├─ Notificaciones</p>
+                            <p>│  ├─ Tema oscuro</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Árbol para Tree Testing:</h4>
+                        <div class="highlight-box" style="font-size: 0.8em;">
+                            <p><strong>Igual estructura, pero:</strong></p>
+                            <ul>
+                                <li>Solo texto (sin íconos, colores)</li>
+                                <li>Nombres exactos del sitemap</li>
+                                <li>Mismo orden</li>
+                                <li>Misma jerarquía</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <p class="warning-box"><strong>Importante:</strong> NO cambies nombres en el árbol. Si el sitemap dice "Vista", el árbol dice "Vista".</p>
+            </section>
+
+            <!-- Slide 12: Paso 2 - Crear Tareas -->
+            <section>
+                <h2>✍️ Paso 2: Crear Tareas/Escenarios</h2>
+                <div class="step-box">
+                    <p><strong>Crear 5-8 tareas</strong> que representen acciones reales que los usuarios harían</p>
+                </div>
+                <h3>¿De dónde salen las tareas?</h3>
+                <p>Del <strong>Task Analysis (A3)</strong>. Las tareas críticas que identificaron.</p>
+                <h3>Estructura de una buena tarea:</h3>
+                <div class="success-box">
+                    <p><strong>Formato:</strong> "[Escenario]. ¿Dónde irías?"</p>
+                    <p><strong>Ejemplo:</strong> "Acabas de crear una tarea y quieres marcarla como completada. ¿Dónde irías?"</p>
+                </div>
+                <h3>Características de buenas tareas:</h3>
+                <ul>
+                    <li><strong>Realistas:</strong> Situaciones que realmente pasan</li>
+                    <li><strong>Específicas:</strong> No ambiguas</li>
+                    <li><strong>Sin palabras del menú:</strong> No decir "quieres ir a Vista" (demasiado obvio)</li>
+                    <li><strong>Variadas:</strong> Cubren diferentes partes del sitemap</li>
+                </ul>
+            </section>
+
+            <!-- Slide 13: Ejemplo de 6 Tareas -->
+            <section>
+                <h2>📝 Ejemplo: 6 Tareas para TaskSync</h2>
+                <div style="font-size: 0.85em;">
+                    <div class="step-box">
+                        <p><strong>Tarea 1:</strong> "Necesitas conectar tu cuenta de Google Calendar con la app. ¿Dónde irías?"</p>
+                        <p class="small-text">Respuesta correcta: Sincronización → Importar Calendar</p>
+                    </div>
+                    <div class="step-box">
+                        <p><strong>Tarea 2:</strong> "Quieres ver qué tienes programado para toda la semana. ¿Dónde irías?"</p>
+                        <p class="small-text">Respuesta correcta: Vista → Ver semanal</p>
+                    </div>
+                    <div class="step-box">
+                        <p><strong>Tarea 3:</strong> "Te diste cuenta que hay un conflicto entre un turno de trabajo y una entrega. Quieres que la app te avise cuando esto pase. ¿Dónde irías?"</p>
+                        <p class="small-text">Respuesta correcta: Configuración → Notificaciones (o Alertas → Detectar conflictos)</p>
+                    </div>
+                    <div class="step-box">
+                        <p><strong>Tarea 4:</strong> "Acabas de crear una tarea manual y ahora quieres marcarla como completada. ¿Dónde irías?"</p>
+                        <p class="small-text">Respuesta correcta: Tareas → Marcar completada</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 14: Paso 3-5 Resumen -->
+            <section>
+                <h2>🔄 Pasos 3-5: Ejecutar y Analizar</h2>
+                <div class="step-box">
+                    <p><span class="step-number">3</span><strong>Reclutar participantes (5-10)</strong></p>
+                    <p class="small-text">Mismo perfil que Card Sorting. Idealmente del A2.</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">4</span><strong>Conducir prueba</strong></p>
+                    <ul class="small-text">
+                        <li>Dar 1 tarea a la vez</li>
+                        <li>Usuario navega árbol hasta donde cree que está</li>
+                        <li>NO ayudar ni dar pistas</li>
+                        <li>Documentar: ¿Llegó? ¿Cuántos clics? ¿Cuánto tiempo?</li>
+                        <li>Repetir con todas las tareas</li>
+                    </ul>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">5</span><strong>Analizar resultados</strong></p>
+                    <ul class="small-text">
+                        <li>Calcular % de éxito por tarea</li>
+                        <li>Identificar dónde fallan más</li>
+                        <li>Si <60% éxito → rediseñar sitemap</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 15: Actividad Tree Testing -->
+            <section>
+                <h2>⚡ Actividad en Clase (20 min)</h2>
+                <div class="warning-box large-text">
+                    <p><strong>En sus equipos:</strong></p>
+                    <ol>
+                        <li>Convertir su sitemap del A4 en árbol de texto (5 min)</li>
+                        <li>Crear 3 tareas basadas en su A3 (5 min)</li>
+                        <li>Reclutar 1 compañero de OTRO equipo (1 min)</li>
+                        <li>Conducir mini Tree Test con las 3 tareas (7 min)</li>
+                        <li>Documentar resultados (2 min)</li>
+                    </ol>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>Documentar:</strong></p>
+                    <ul>
+                        <li>Tarea 1: ¿Llegó? ✓/✗ | Ruta que tomó | Tiempo</li>
+                        <li>Tarea 2: ¿Llegó? ✓/✗ | Ruta que tomó | Tiempo</li>
+                        <li>Tarea 3: ¿Llegó? ✓/✗ | Ruta que tomó | Tiempo</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 16: Checklist Actividad -->
+            <section>
+                <h2>✅ Checklist - Actividad Tree Testing</h2>
+                <div class="step-box">
+                    <p>□ Árbol de texto creado (basado en sitemap A4)</p>
+                </div>
+                <div class="step-box">
+                    <p>□ 3 tareas creadas (realistas, del A3)</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Tareas NO usan palabras exactas del menú</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Participante navegó SIN ayuda</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Documentaron: ✓/✗, ruta, tiempo por cada tarea</p>
+                </div>
+                <div class="step-box">
+                    <p>□ Si falló, identificaron POR QUÉ (nombre confuso, categoría mal ubicada, etc.)</p>
+                </div>
+            </section>
+
+            <!-- Slide 17: Transición a Wireframes -->
+            <section>
+                <h2>🔀 De Tree Testing a Wireframes</h2>
+                <div class="highlight-box">
+                    <p class="large-text"><strong>Secuencia correcta:</strong></p>
+                    <p>Card Sorting → Sitemap → <strong style="color: var(--green);">Tree Testing</strong> → Wireframes</p>
+                </div>
+                <h3>¿Por qué Tree Testing primero?</h3>
+                <ul>
+                    <li>Si el sitemap NO funciona → Arreglarlo ANTES de diseñar</li>
+                    <li>Wireframes sin sitemap validado = trabajo desperdiciado</li>
+                    <li>Tree Testing toma 2-3 horas. Wireframes toman días/semanas.</li>
+                </ul>
+                <div class="success-box">
+                    <p><strong>Ahora que validaron (o identificaron problemas):</strong></p>
+                    <p>Es momento de empezar a <strong>prototipar</strong> con Wireframes.</p>
+                </div>
+            </section>
+
+            <!-- Slide 18: ¿Qué son Wireframes? -->
+            <section>
+                <h2>📱 ¿Qué son Wireframes?</h2>
+                <div class="success-box">
+                    <p class="large-text"><strong>Wireframes</strong> son representaciones de baja/media fidelidad de la estructura y contenido de tus pantallas.</p>
+                </div>
+                <h3>Analogía:</h3>
+                <p>Si el sitemap es el <strong>plano arquitectónico</strong> de una casa (dónde van las habitaciones), los wireframes son los <strong>planos detallados</strong> de cada habitación (dónde va cada mueble).</p>
+                <h3>Propósito:</h3>
+                <ul>
+                    <li>Definir <strong>estructura</strong> y <strong>layout</strong> de cada pantalla</li>
+                    <li>Mostrar <strong>jerarquía</strong> de información</li>
+                    <li>Planificar <strong>navegación</strong> entre pantallas</li>
+                    <li>Validar <strong>flujos</strong> de usuario</li>
+                </ul>
+                <p class="warning-box"><strong>NO son diseños finales.</strong> Son bocetos estructurales.</p>
+            </section>
+
+            <!-- Slide 19: ¿Para Qué Sirven? -->
+            <section>
+                <h2>🎯 ¿Para Qué Sirven los Wireframes?</h2>
+                <div class="two-columns">
+                    <div class="success-box">
+                        <h4>✅ SÍ son para:</h4>
+                        <ul>
+                            <li>Definir dónde va cada elemento</li>
+                            <li>Mostrar jerarquía visual</li>
+                            <li>Validar flujos con usuarios</li>
+                            <li>Comunicar ideas a equipo</li>
+                            <li>Iterar rápidamente</li>
+                        </ul>
+                    </div>
+                    <div class="error-box">
+                        <h4>❌ NO son para:</h4>
+                        <ul>
+                            <li>Decidir colores finales</li>
+                            <li>Elegir tipografía específica</li>
+                            <li>Diseñar íconos detallados</li>
+                            <li>Escribir copy final</li>
+                            <li>Mostrar a clientes como "final"</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="highlight-box"><strong>Mantra:</strong> Wireframes son sobre <strong>estructura</strong>, no sobre <strong>estética</strong>.</p>
+            </section>
+
+            <!-- Slide 20: Fidelidad -->
+            <section>
+                <h2>📐 Niveles de Fidelidad</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nivel</th>
+                            <th>Descripción</th>
+                            <th>Cuándo usar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color: var(--comment);"><strong>Low-fi</strong></td>
+                            <td>Sketches en papel/pizarra. Muy rápidos. Grises, cajas, líneas.</td>
+                            <td>Brainstorming inicial, exploración rápida</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--green);"><strong>Mid-fi</strong></td>
+                            <td>Digital (Figma). Escala de grises. Estructura clara. Algunos detalles.</td>
+                            <td><strong>Este curso</strong> - Validar con usuarios</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--orange);"><strong>Hi-fi</strong></td>
+                            <td>Digital con colores, tipografía, imágenes reales. Casi diseño final.</td>
+                            <td>Después de validar Mid-fi (no en DEIU)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="warning-box">
+                    <p><strong>Para este curso:</strong> Trabajarán en <strong>Mid-fi</strong> (digital, gris, estructura clara)</p>
+                </div>
+            </section>
+
+            <!-- Slide 21: Cuándo Usar Cada Nivel -->
+            <section>
+                <h2>🤔 ¿Cuál Nivel Usar?</h2>
+                <div class="three-columns" style="font-size: 0.85em;">
+                    <div class="highlight-box">
+                        <h4>Low-fi (Papel)</h4>
+                        <p><strong>Usar cuando:</strong></p>
+                        <ul class="small-text">
+                            <li>Explorando muchas ideas rápido</li>
+                            <li>Brainstorming en equipo</li>
+                            <li>No sabes qué va en la pantalla</li>
+                            <li>Primeras 2-3 iteraciones</li>
+                        </ul>
+                        <p class="small-text"><strong>Tiempo:</strong> 5-10 min por pantalla</p>
+                    </div>
+                    <div class="success-box">
+                        <h4>Mid-fi (Figma gris)</h4>
+                        <p><strong>Usar cuando:</strong></p>
+                        <ul class="small-text">
+                            <li>Ya sabes qué va en la pantalla</li>
+                            <li>Quieres validar con usuarios</li>
+                            <li>Comunicar a desarrolladores</li>
+                            <li>Crear prototipos clicables</li>
+                        </ul>
+                        <p class="small-text"><strong>Tiempo:</strong> 30-60 min por pantalla</p>
+                    </div>
+                    <div class="warning-box">
+                        <h4>Hi-fi (Diseño final)</h4>
+                        <p><strong>Usar cuando:</strong></p>
+                        <ul class="small-text">
+                            <li>Mid-fi ya validado</li>
+                            <li>Listo para handoff</li>
+                            <li>Presentar a stakeholders</li>
+                            <li>Última iteración</li>
+                        </ul>
+                        <p class="small-text"><strong>Tiempo:</strong> 2-4 hrs por pantalla</p>
+                    </div>
+                </div>
+                <p class="error-box"><strong>Error común:</strong> Saltar directo a Hi-fi. Pierdes flexibilidad y tiempo.</p>
+            </section>
+
+            <!-- Slide 22: Anatomía de un Wireframe -->
+            <section>
+                <h2>🔍 Anatomía de un Wireframe (Mid-fi)</h2>
+                <div class="two-columns">
+                    <div>
+                        <h4>✅ Debe incluir:</h4>
+                        <div class="success-box">
+                            <ul>
+                                <li><strong>Estructura/Layout:</strong> Dónde va cada sección</li>
+                                <li><strong>Jerarquía:</strong> Qué es más importante (tamaños relativos)</li>
+                                <li><strong>Navegación:</strong> Menús, botones, breadcrumbs</li>
+                                <li><strong>Contenido placeholder:</strong> "Lorem ipsum" o texto genérico</li>
+                                <li><strong>Elementos UI:</strong> Cajas, botones, inputs, cards</li>
+                                <li><strong>Anotaciones:</strong> Notas sobre comportamiento</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>❌ NO debe incluir:</h4>
+                        <div class="error-box">
+                            <ul>
+                                <li>Colores (solo grises: #FFFFFF, #F5F5F5, #CCCCCC, #333333)</li>
+                                <li>Fotos reales</li>
+                                <li>Logos elaborados</li>
+                                <li>Íconos detallados (usar placeholders)</li>
+                                <li>Texto final/copy</li>
+                                <li>Sombras complejas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 23: Qué Incluir vs NO Incluir -->
+            <section>
+                <h2>✅❌ Ejemplos: Qué SÍ / NO en Wireframes</h2>
+                <table style="font-size: 0.85em;">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>❌ NO (Hi-fi)</th>
+                            <th>✅ SÍ (Mid-fi)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Imagen de perfil</td>
+                            <td>Foto real del usuario</td>
+                            <td>Círculo gris con "👤"</td>
+                        </tr>
+                        <tr>
+                            <td>Botón</td>
+                            <td>Botón azul #4A90E2 con sombra</td>
+                            <td>Rectángulo gris oscuro con "Botón"</td>
+                        </tr>
+                        <tr>
+                            <td>Texto de título</td>
+                            <td>"Bienvenido a TaskSync, Laura"</td>
+                            <td>"Título de bienvenida"</td>
+                        </tr>
+                        <tr>
+                            <td>Ícono</td>
+                            <td>Ícono detallado de calendar.svg</td>
+                            <td>Cuadrado con "📅" o "Icon"</td>
+                        </tr>
+                        <tr>
+                            <td>Lista de items</td>
+                            <td>Texto real de 10 tareas</td>
+                            <td>"Item 1", "Item 2", "Item 3"</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="warning-box"><strong>Regla:</strong> Si te tardas más de 2 minutos en un elemento, estás en demasiado detalle.</p>
+            </section>
+
+            <!-- Slide 24: Herramientas -->
+            <section>
+                <h2>🛠️ Herramientas para Wireframes</h2>
+                <div class="three-columns" style="font-size: 0.85em;">
+                    <div class="success-box">
+                        <h4>Figma</h4>
+                        <p class="small-text"><strong>Recomendado</strong></p>
+                        <ul class="small-text">
+                            <li>Gratis</li>
+                            <li>Colaborativo (en tiempo real)</li>
+                            <li>Basado en web</li>
+                            <li>Prototipos clicables</li>
+                            <li>Componentes reutilizables</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>Papel + Marcador</h4>
+                        <p class="small-text"><strong>Para Low-fi</strong></p>
+                        <ul class="small-text">
+                            <li>Lo más rápido</li>
+                            <li>Bueno para brainstorming</li>
+                            <li>Fácil iterar</li>
+                            <li>Limita compartir</li>
+                        </ul>
+                    </div>
+                    <div class="warning-box">
+                        <h4>Otras: Sketch, Adobe XD</h4>
+                        <p class="small-text"><strong>Alternativas</strong></p>
+                        <ul class="small-text">
+                            <li>Sketch: Mac only, pago</li>
+                            <li>Adobe XD: Gratis pero menos usado</li>
+                            <li>Balsamiq: Wireframes específico</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="warning-box"><strong>Para este curso:</strong> Usarán <strong>Figma</strong> (Mid-fi, digital, gris)</p>
+            </section>
+
+            <!-- Slide 25: Del Sitemap a Wireframes -->
+            <section>
+                <h2>🔗 Del Sitemap a Wireframes</h2>
+                <div class="step-box">
+                    <p><span class="step-number">1</span><strong>Sitemap te dice QUÉ pantallas diseñar</strong></p>
+                    <p class="small-text">Ejemplo: Sitemap tiene "Vista → Ver semanal" → Necesitas wireframe de pantalla "Ver semanal"</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">2</span><strong>Task Analysis (A3) te dice QUÉ va en cada pantalla</strong></p>
+                    <p class="small-text">Ejemplo: Tarea "Revisar deadlines" → Pantalla debe mostrar lista de deadlines, filtros, fechas</p>
+                </div>
+                <div class="step-box">
+                    <p><span class="step-number">3</span><strong>User Flows te dicen CÓMO conectar pantallas</strong></p>
+                    <p class="small-text">Ejemplo: Usuario hace clic en tarea → Va a pantalla de detalle → Puede marcar completada</p>
+                </div>
+                <p class="highlight-box"><strong>Fórmula:</strong> Sitemap (estructura) + A3 (contenido) + User Flows (navegación) = Wireframes completos</p>
+            </section>
+
+            <!-- Slide 26: Ejemplo Low-fi -->
+            <section>
+                <h2>📝 Ejemplo: Low-fi (Papel)</h2>
+                <div class="highlight-box">
+                    <p><strong>Pantalla: Ver semanal (TaskSync)</strong></p>
+                    <p class="small-text">Sketch rápido en papel - 5 minutos</p>
+                </div>
+                <div style="border: 2px solid var(--comment); padding: 1.5em; margin: 1em 0; font-family: monospace;">
+                    <p style="text-align: center; font-size: 1.2em;">─────────────────────</p>
+                    <p style="text-align: center;">[ ☰ Menu ] TaskSync [👤]</p>
+                    <p style="text-align: center;">─────────────────────</p>
+                    <p style="margin: 1em 0;">Vista Semanal - Febrero 24-28</p>
+                    <p style="margin: 0.5em 0;">┌─────────────────────┐</p>
+                    <p>│ Lun 24: [Tarea 1]   │</p>
+                    <p>│         [Tarea 2]   │</p>
+                    <p>│ Mar 25: [Tarea 3]   │</p>
+                    <p>│ Mié 26: [Tarea 4]   │</p>
+                    <p>│         [Tarea 5]   │</p>
+                    <p style="margin: 0.5em 0;">└─────────────────────┘</p>
+                    <p style="text-align: center; margin-top: 1em;">[+ Agregar tarea]</p>
+                </div>
+                <p class="small-text">Nivel de detalle correcto para Low-fi: cajas, líneas, texto placeholder</p>
+            </section>
+
+            <!-- Slide 27: Ejemplo Mid-fi -->
+            <section>
+                <h2>💻 Ejemplo: Mid-fi (Figma gris)</h2>
+                <div class="highlight-box">
+                    <p><strong>Misma pantalla: Ver semanal (TaskSync)</strong></p>
+                    <p class="small-text">Digital en Figma - escala de grises - 30-45 minutos</p>
+                </div>
+                <div style="border: 2px solid var(--comment); padding: 2em; margin: 1em 0; background: #F5F5F5; color: #333;">
+                    <div style="background: #FFFFFF; padding: 1em; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1em; border-bottom: 1px solid #CCC;">
+                            <span style="font-size: 1.2em;">☰ TaskSync</span>
+                            <span>👤</span>
+                        </div>
+                        <h3 style="margin: 1em 0; color: #333;">Vista Semanal</h3>
+                        <p style="font-size: 0.9em; color: #666;">Febrero 24-28, 2026</p>
+                        <div style="background: #E0E0E0; padding: 0.8em; margin: 0.5em 0; border-radius: 4px;">
+                            <strong>Lunes 24</strong> • Tarea 1: Entrega proyecto DEIU
+                        </div>
+                        <div style="background: #E0E0E0; padding: 0.8em; margin: 0.5em 0; border-radius: 4px;">
+                            <strong>Martes 25</strong> • Tarea 2: Turno trabajo 14:00-18:00
+                        </div>
+                        <div style="background: #E0E0E0; padding: 0.8em; margin: 0.5em 0; border-radius: 4px;">
+                            <strong>Miércoles 26</strong> • Tarea 3: Examen Matemáticas
+                        </div>
+                        <button style="background: #333; color: #FFF; border: none; padding: 0.8em; width: 100%; border-radius: 4px; margin-top: 1em;">+ Agregar nueva tarea</button>
+                    </div>
+                </div>
+                <p class="small-text">Más detalle que Low-fi: jerarquía clara, espaciado, algunos detalles de UI</p>
+            </section>
+
+            <!-- Slide 28: NO hacer Hi-fi -->
+            <section>
+                <h2>🚫 NO Hacer Hi-fi en Este Curso</h2>
+                <div class="error-box">
+                    <h4>Ejemplo Hi-fi (NO para DEIU):</h4>
+                    <ul>
+                        <li>Colores de marca (#4A90E2 para botones, #FF5555 para alertas)</li>
+                        <li>Tipografía específica (Roboto 16px, Inter Bold 24px)</li>
+                        <li>Fotos reales de usuarios</li>
+                        <li>Íconos personalizados diseñados</li>
+                        <li>Sombras, gradientes, efectos visuales</li>
+                        <li>Texto final (copy específico)</li>
+                    </ul>
+                </div>
+                <h3>¿Por qué NO hacer Hi-fi ahora?</h3>
+                <ul>
+                    <li>Toma 3-4x más tiempo que Mid-fi</li>
+                    <li>Dificulta iterar (ya invertiste mucho tiempo)</li>
+                    <li>Usuarios se distraen con colores/fotos en vez de evaluar estructura</li>
+                    <li>Primero validen estructura, LUEGO añadan estética</li>
+                </ul>
+                <p class="warning-box"><strong>Para proyecto final:</strong> Pueden hacer Hi-fi AL FINAL, después de validar Mid-fi</p>
+            </section>
+
+            <!-- Slide 29: Próxima Sesión -->
+            <section>
+                <h2>🔜 Próxima Sesión</h2>
+                <div class="highlight-box large-text">
+                    <p><strong>Sesión 8 - Martes 3 de Marzo</strong></p>
+                    <p>Prototipos Interactivos y Testing de Usabilidad</p>
+                </div>
+                <h3>Temas:</h3>
+                <ul>
+                    <li>De Wireframes estáticos a Prototipos clicables</li>
+                    <li>Cómo crear prototipos en Figma</li>
+                    <li>Testing de usabilidad con usuarios</li>
+                    <li>Análisis de resultados de testing</li>
+                    <li>Iterar basado en feedback</li>
+                </ul>
+                <p class="warning-box"><strong>Prerequisito:</strong> Tener wireframes Mid-fi de 3-5 pantallas clave</p>
+            </section>
+
+            <!-- Slide 30: Recordatorios y Cierre -->
+            <section>
+                <h2>⏰ Recordatorios</h2>
+                <div class="warning-box">
+                    <p><strong>📅 Miércoles 10 Mar - PRÓXIMO ENTREGABLE</strong></p>
+                    <p>Entrega A4. Card Sorting + Sitemap (23:59)</p>
+                    <p class="small-text">Si Tree Testing reveló problemas, iterar sitemap antes de entregar</p>
+                </div>
+                <div class="highlight-box" style="margin-top: 1em;">
+                    <h3>Para próxima clase (3 Mar):</h3>
+                    <ul>
+                        <li>Terminar A4 (Card Sorting + Sitemap)</li>
+                        <li>Si hicieron Tree Testing, ajustar sitemap según resultados</li>
+                        <li>Empezar wireframes Mid-fi de 3 pantallas clave</li>
+                        <li>Instalar Figma (gratis)</li>
+                    </ul>
+                </div>
+                <h2 style="margin-top: 2em;">📝 Resumen de Hoy</h2>
+                <ul class="grid-list">
+                    <li>Tree Testing valida sitemap</li>
+                    <li>Métricas: >70% éxito = funciona</li>
+                    <li>Wireframes = estructura, no estética</li>
+                    <li>Mid-fi (Figma gris) para este curso</li>
+                    <li>Sitemap + A3 + Flows = Wireframes</li>
+                </ul>
+                <div class="quote" style="margin-top: 2em;">
+                    "Validar estructura antes de diseñar estética."
+                </div>
+            </section>
+
+            <!-- Slide 31: Cierre -->
+            <section>
+                <h2>❓ ¿Preguntas?</h2>
+                <div class="highlight-box" style="margin-top: 3em;">
+                    <p class="large-text">Nos vemos el martes 3 de marzo.</p>
+                    <p class="subtitle">¡Empiecen sus wireframes!</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <div class="slide-number" id="slideNumber">1 / 31</div>
+    
+    <div class="controls">
+        <button onclick="navigateSlide(-1)">← Anterior</button>
+        <button onclick="navigateSlide(1)">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slides section');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => {
+                slide.style.display = 'none';
+            });
+            
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].style.display = 'flex';
+            
+            slides[currentSlide].scrollTop = 0;
+            
+            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function navigateSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') navigateSlide(-1);
+            if (e.key === 'ArrowRight') navigateSlide(1);
+        });
+
+        showSlide(0);
+    </script>
+</body>
+</html>
