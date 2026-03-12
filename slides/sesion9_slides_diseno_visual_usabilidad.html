@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesión 9 - Principios de Diseño Visual Web y Usabilidad | DEIU</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --bg: #282a36;
+            --current-line: #44475a;
+            --foreground: #f8f8f2;
+            --comment: #6272a4;
+            --cyan: #8be9fd;
+            --green: #50fa7b;
+            --orange: #ffb86c;
+            --pink: #ff79c6;
+            --purple: #bd93f9;
+            --red: #ff5555;
+            --yellow: #f1fa8c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--foreground);
+            overflow: hidden;
+        }
+        
+        .reveal {
+            font-size: 20px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .reveal .slides {
+            height: auto;
+        }
+        
+        .reveal .slides section {
+            padding: 40px 60px 120px 60px;
+            height: auto;
+            min-height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        .reveal h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.4em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .reveal h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--purple);
+            margin-bottom: 0.6em;
+        }
+        
+        .reveal h3 {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--green);
+            margin-bottom: 0.5em;
+        }
+        
+        .reveal h4 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--yellow);
+            margin-bottom: 0.4em;
+        }
+        
+        .reveal p, .reveal li {
+            font-size: 1em;
+            line-height: 1.5;
+            margin-bottom: 0.6em;
+        }
+        
+        .reveal ul, .reveal ol {
+            margin-left: 1.2em;
+        }
+        
+        .reveal li {
+            margin-bottom: 0.4em;
+        }
+        
+        .reveal strong {
+            color: var(--orange);
+            font-weight: 600;
+        }
+        
+        .reveal em {
+            color: var(--pink);
+            font-style: italic;
+        }
+        
+        .reveal .subtitle {
+            font-size: 1.1em;
+            color: var(--comment);
+            margin-top: -0.3em;
+            margin-bottom: 1.5em;
+        }
+        
+        .reveal .highlight-box {
+            background: var(--current-line);
+            border-left: 4px solid var(--cyan);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .success-box {
+            background: rgba(80, 250, 123, 0.1);
+            border-left: 4px solid var(--green);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .warning-box {
+            background: rgba(255, 184, 108, 0.1);
+            border-left: 4px solid var(--orange);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .error-box {
+            background: rgba(255, 85, 85, 0.1);
+            border-left: 4px solid var(--red);
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+        
+        .reveal .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5em;
+            margin: 1em 0;
+        }
+        
+        .reveal .three-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1em;
+            margin: 1em 0;
+        }
+        
+        .reveal table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+            font-size: 0.9em;
+        }
+        
+        .reveal th {
+            background: var(--current-line);
+            color: var(--cyan);
+            padding: 0.6em;
+            border: 1px solid var(--comment);
+            font-weight: 600;
+        }
+        
+        .reveal td {
+            padding: 0.6em;
+            border: 1px solid var(--comment);
+        }
+        
+        .reveal .small-text {
+            font-size: 0.85em;
+            color: var(--comment);
+        }
+        
+        .reveal .large-text {
+            font-size: 1.15em;
+            font-weight: 600;
+        }
+        
+        .reveal .quote {
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--yellow);
+            border-left: 4px solid var(--yellow);
+            padding-left: 1em;
+            margin: 1em 0;
+        }
+        
+        .reveal .grid-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8em;
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .reveal .grid-list li {
+            background: var(--current-line);
+            padding: 0.8em;
+            border-radius: 8px;
+            border-left: 3px solid var(--purple);
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .controls button {
+            background: var(--current-line);
+            color: var(--foreground);
+            border: 2px solid var(--cyan);
+            padding: 10px 20px;
+            font-size: 0.95em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            opacity: 0.9;
+        }
+        
+        .controls button:hover {
+            background: var(--cyan);
+            color: var(--bg);
+            transform: translateY(-2px);
+            opacity: 1;
+        }
+        
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--current-line);
+            color: var(--comment);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Título -->
+            <section>
+                <h1>Principios de<br>Diseño Visual Web<br>y Usabilidad</h1>
+                <p class="subtitle">Sesión 9 • Martes 12 de Marzo, 2026</p>
+                <p class="subtitle">DEIU - Diseño y Evaluación de Interfaces de Usuario</p>
+                <p class="subtitle">Ing. Ricardo Jaramillo Velasco</p>
+            </section>
+
+            <!-- Slide 2: Agenda -->
+            <section>
+                <h2>📋 Agenda de Hoy</h2>
+                <div class="highlight-box">
+                    <ol>
+                        <li><strong>¿Por qué importa el diseño visual?</strong> (5 min)</li>
+                        <li><strong>Color</strong> - Teoría y aplicación web (15 min)</li>
+                        <li><strong>Tipografía</strong> - Jerarquía y legibilidad (15 min)</li>
+                        <li><strong>Espaciado</strong> - White space y ritmo (10 min)</li>
+                        <li><strong>Jerarquía Visual</strong> - Guiar al usuario (10 min)</li>
+                        <li><strong>Contraste</strong> - Figura-fondo y CTAs (10 min)</li>
+                        <li><strong>Usabilidad Web</strong> - Don't Make Me Think (15 min)</li>
+                        <li><strong>Aplicación práctica</strong> - Ejemplos (10 min)</li>
+                    </ol>
+                </div>
+                <p class="small-text">Total: 90 minutos</p>
+            </section>
+
+            <!-- Slide 3: Contexto -->
+            <section>
+                <h2>🔄 De Wireframes a Diseño Visual</h2>
+                <div class="highlight-box large-text">
+                    <p><strong>Hasta ahora:</strong> Wireframes Mid-fi (estructura, jerarquía, grises)</p>
+                    <p><strong>Hoy:</strong> Principios para cuando llegue el momento de diseñar visualmente</p>
+                </div>
+                <h3>Recordatorio importante:</h3>
+                <div class="warning-box">
+                    <p>Para el A5, siguen trabajando en <strong>Mid-fi</strong> (grises, sin diseño visual completo).</p>
+                    <p>Lo que aprendan hoy lo aplicarán en etapas posteriores del proyecto cuando pasen a Hi-fi.</p>
+                </div>
+                <p class="small-text">Hoy establecemos fundamentos que usarán después</p>
+            </section>
+
+            <!-- Slide 4: ¿Por Qué Importa? -->
+            <section>
+                <h2>🎨 ¿Por Qué Importa el Diseño Visual?</h2>
+                <div class="success-box">
+                    <p class="large-text"><strong>Primer impacto: 50 milisegundos</strong></p>
+                    <p>Los usuarios juzgan tu sitio en menos de 1 segundo.</p>
+                </div>
+                <h3>Diseño visual afecta:</h3>
+                <ul>
+                    <li><strong>Credibilidad:</strong> 75% de usuarios juzgan credibilidad basado en diseño</li>
+                    <li><strong>Usabilidad percibida:</strong> Diseño atractivo se percibe como más usable</li>
+                    <li><strong>Engagement:</strong> Buen diseño mantiene usuarios en el sitio</li>
+                    <li><strong>Conversión:</strong> Diseño claro aumenta conversiones 200%</li>
+                </ul>
+                <div class="quote">
+                    "Los usuarios perdonan problemas de usabilidad en sitios bien diseñados, pero no perdonan mal diseño en sitios usables."
+                </div>
+            </section>
+
+            <!-- Slide 5: Los 6 Principios -->
+            <section>
+                <h2>📐 Los 6 Principios de Diseño Visual Web</h2>
+                <div class="grid-list">
+                    <li><strong>1. Color</strong> - Significado, contraste, paleta</li>
+                    <li><strong>2. Tipografía</strong> - Jerarquía, legibilidad, web fonts</li>
+                    <li><strong>3. Espaciado</strong> - White space, breathing room</li>
+                    <li><strong>4. Jerarquía Visual</strong> - Orden de importancia</li>
+                    <li><strong>5. Contraste</strong> - Figura-fondo, CTAs</li>
+                    <li><strong>6. Consistencia</strong> - Patrones predecibles</li>
+                </div>
+                <p class="highlight-box"><strong>Meta:</strong> Guiar al usuario sin que se dé cuenta</p>
+            </section>
+
+            <!-- Slide 6: Principio 1 - Color -->
+            <section>
+                <h2>🎨 Principio 1: Color</h2>
+                <h3>Teoría del Color Básica:</h3>
+                <div class="two-columns">
+                    <div>
+                        <h4>Colores Primarios Web:</h4>
+                        <ul class="small-text">
+                            <li><strong style="color: #FF0000;">Rojo (RGB):</strong> Urgencia, error, acción</li>
+                            <li><strong style="color: #00FF00;">Verde:</strong> Éxito, confirmación, positivo</li>
+                            <li><strong style="color: #0000FF;">Azul:</strong> Confianza, profesional, calma</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Psicología del Color:</h4>
+                        <ul class="small-text">
+                            <li><strong style="color: #FFA500;">Naranja:</strong> Energía, llamados a la acción</li>
+                            <li><strong style="color: #FFFF00; background: #333; padding: 0.2em;">Amarillo:</strong> Advertencia, atención</li>
+                            <li><strong style="color: #800080;">Morado:</strong> Creatividad, lujo</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3 style="margin-top: 1em;">Regla 60-30-10:</h3>
+                <div class="highlight-box">
+                    <p><strong>60%</strong> Color dominante (fondo, áreas grandes)</p>
+                    <p><strong>30%</strong> Color secundario (secciones, elementos)</p>
+                    <p><strong>10%</strong> Color de acento (botones, CTAs, links)</p>
+                </div>
+            </section>
+
+            <!-- Slide 7: Color - Contraste -->
+            <section>
+                <h2>🔍 Color: Contraste y Accesibilidad</h2>
+                <h3>WCAG Ratios de Contraste:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nivel</th>
+                            <th>Ratio</th>
+                            <th>Uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color: var(--green);"><strong>AAA</strong></td>
+                            <td>7:1</td>
+                            <td>Ideal para texto body</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--yellow);"><strong>AA</strong></td>
+                            <td>4.5:1</td>
+                            <td>Mínimo para texto normal</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--orange);"><strong>AA Large</strong></td>
+                            <td>3:1</td>
+                            <td>Texto grande (18pt+)</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--red);"><strong>Falla</strong></td>
+                            <td><3:1</td>
+                            <td>No accesible</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="warning-box">
+                    <p><strong>Herramienta:</strong> WebAIM Contrast Checker</p>
+                    <p class="small-text">webaim.org/resources/contrastchecker/</p>
+                </div>
+                <p class="error-box"><strong>Error común:</strong> Gris claro (#CCCCCC) sobre blanco (#FFFFFF) = ratio 1.6:1 ❌ Falla accesibilidad</p>
+            </section>
+
+            <!-- Slide 8: Color - Paletas -->
+            <section>
+                <h2>🎨 Color: Cómo Crear Paleta Web</h2>
+                <h3>Método 1: 1 Color Base + Variaciones</h3>
+                <div class="success-box">
+                    <p><strong>Color base:</strong> #3498db (azul)</p>
+                    <p><strong>Más oscuro (-30%):</strong> #2980b9 (hover states)</p>
+                    <p><strong>Más claro (+30%):</strong> #5dade2 (backgrounds)</p>
+                    <p><strong>Muy claro (+60%):</strong> #ebf5fb (subtle backgrounds)</p>
+                </div>
+                <h3>Método 2: Herramientas de Paletas</h3>
+                <ul>
+                    <li><strong>Coolors.co:</strong> Generador automático</li>
+                    <li><strong>Adobe Color:</strong> Desde imagen o reglas de color</li>
+                    <li><strong>Material Design Palette:</strong> Paletas predefinidas</li>
+                </ul>
+                <div class="warning-box">
+                    <p><strong>Regla de oro:</strong> No más de 3-4 colores principales + grises neutros</p>
+                </div>
+            </section>
+
+            <!-- Slide 9: Principio 2 - Tipografía -->
+            <section>
+                <h2>🔤 Principio 2: Tipografía</h2>
+                <h3>Anatomía de una Fuente Web:</h3>
+                <div class="highlight-box">
+                    <p style="font-size: 2em; font-weight: 700; line-height: 1.2;">Título Principal (H1)</p>
+                    <p style="font-size: 1.5em; font-weight: 600; line-height: 1.3;">Subtítulo (H2)</p>
+                    <p style="font-size: 1.2em; font-weight: 600; line-height: 1.4;">Sección (H3)</p>
+                    <p style="font-size: 1em; line-height: 1.6;">Texto del cuerpo (Body) - Debe ser legible a distancia y en pantallas de diferentes tamaños.</p>
+                    <p style="font-size: 0.85em; color: var(--comment); line-height: 1.5;">Texto pequeño (Caption) - Para notas y metadatos.</p>
+                </div>
+                <h3>Tamaños Mínimos Web:</h3>
+                <ul>
+                    <li><strong>Body text:</strong> 16px mínimo (18px ideal)</li>
+                    <li><strong>Mobile:</strong> 16px+ (evita zoom en iOS)</li>
+                    <li><strong>Captions:</strong> 14px mínimo</li>
+                </ul>
+            </section>
+
+            <!-- Slide 10: Tipografía - Jerarquía -->
+            <section>
+                <h2>📊 Tipografía: Jerarquía</h2>
+                <h3>Escala Tipográfica (ratio 1.25 - Major Third):</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nivel</th>
+                            <th>Tamaño</th>
+                            <th>Peso</th>
+                            <th>Uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>H1</strong></td>
+                            <td>48px</td>
+                            <td>700 (Bold)</td>
+                            <td>Título página</td>
+                        </tr>
+                        <tr>
+                            <td><strong>H2</strong></td>
+                            <td>36px</td>
+                            <td>600 (Semi-bold)</td>
+                            <td>Secciones principales</td>
+                        </tr>
+                        <tr>
+                            <td><strong>H3</strong></td>
+                            <td>28px</td>
+                            <td>600</td>
+                            <td>Subsecciones</td>
+                        </tr>
+                        <tr>
+                            <td><strong>H4</strong></td>
+                            <td>22px</td>
+                            <td>600</td>
+                            <td>Grupos pequeños</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Body</strong></td>
+                            <td>18px</td>
+                            <td>400 (Regular)</td>
+                            <td>Texto principal</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Caption</strong></td>
+                            <td>14px</td>
+                            <td>400</td>
+                            <td>Metadatos</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="warning-box"><strong>Regla:</strong> Saltos de al menos 20% entre niveles para jerarquía clara</p>
+            </section>
+
+            <!-- Slide 11: Tipografía - Legibilidad -->
+            <section>
+                <h2>👁️ Tipografía: Legibilidad</h2>
+                <h3>Line Height (Interlineado):</h3>
+                <div class="two-columns">
+                    <div class="error-box">
+                        <h4>❌ Muy apretado (1.2):</h4>
+                        <p style="line-height: 1.2;">Este texto está demasiado apretado y dificulta la lectura. Las líneas se sienten amontonadas y el ojo tiene dificultad para seguir de una línea a otra.</p>
+                    </div>
+                    <div class="success-box">
+                        <h4>✅ Ideal (1.6):</h4>
+                        <p style="line-height: 1.6;">Este texto tiene un interlineado ideal. Es cómodo de leer y el ojo puede moverse fácilmente de una línea a otra sin perderse.</p>
+                    </div>
+                </div>
+                <h3 style="margin-top: 1em;">Ancho de Línea (Measure):</h3>
+                <div class="highlight-box">
+                    <p><strong>Ideal:</strong> 50-75 caracteres por línea (promedio 66)</p>
+                    <p><strong>Muy estrecho (<40):</strong> Ojo salta mucho, cansa</p>
+                    <p><strong>Muy ancho (>90):</strong> Usuario se pierde entre líneas</p>
+                </div>
+                <h3>Reglas de Oro:</h3>
+                <ul>
+                    <li>Line-height: 1.5-1.7 para body text</li>
+                    <li>Max-width: 600-700px para párrafos</li>
+                    <li>Evita justificación completa (espaciado irregular)</li>
+                </ul>
+            </section>
+
+            <!-- Slide 12: Tipografía - Pares de Fuentes -->
+            <section>
+                <h2>🔗 Tipografía: Pares de Fuentes</h2>
+                <h3>Regla: Contraste entre Heading y Body</h3>
+                <div class="two-columns">
+                    <div class="success-box">
+                        <h4 style="font-family: 'Georgia', serif;">✅ Serif + Sans-serif</h4>
+                        <p style="font-family: 'Inter', sans-serif;">Contraste claro entre encabezados (Georgia) y cuerpo (Inter). Funciona bien.</p>
+                    </div>
+                    <div class="error-box">
+                        <h4 style="font-family: 'Arial', sans-serif;">❌ Sans + Sans similar</h4>
+                        <p style="font-family: 'Helvetica', sans-serif;">Arial y Helvetica son muy similares. Poco contraste, confunde jerarquía.</p>
+                    </div>
+                </div>
+                <h3>Combinaciones Clásicas Web:</h3>
+                <ul>
+                    <li><strong>Playfair Display (headings)</strong> + Lato (body)</li>
+                    <li><strong>Montserrat (headings)</strong> + Open Sans (body)</li>
+                    <li><strong>Merriweather (headings)</strong> + Roboto (body)</li>
+                    <li><strong>Inter (headings y body)</strong> - una sola fuente con pesos variados</li>
+                </ul>
+                <div class="warning-box">
+                    <p><strong>Regla simple:</strong> Máximo 2 fuentes. Si usas 1, varía pesos (300, 400, 600, 700)</p>
+                </div>
+            </section>
+
+            <!-- Slide 13: Principio 3 - Espaciado -->
+            <section>
+                <h2>⬜ Principio 3: Espaciado (White Space)</h2>
+                <div class="quote">
+                    "White space is not wasted space. It's breathing room."
+                </div>
+                <h3>Tipos de Espaciado:</h3>
+                <div class="two-columns">
+                    <div class="highlight-box">
+                        <h4>Micro Espaciado:</h4>
+                        <ul class="small-text">
+                            <li>Entre letras (letter-spacing)</li>
+                            <li>Entre líneas (line-height)</li>
+                            <li>Entre palabras</li>
+                            <li>Padding interno de botones</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>Macro Espaciado:</h4>
+                        <ul class="small-text">
+                            <li>Entre secciones</li>
+                            <li>Márgenes de contenedores</li>
+                            <li>Espacios en blanco grandes</li>
+                            <li>Separación de elementos UI</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3>Sistema de Espaciado (múltiplos de 8):</h3>
+                <div class="success-box">
+                    <p><strong>8px</strong> → Elementos muy cercanos (ícono + texto)</p>
+                    <p><strong>16px</strong> → Elementos relacionados (título + párrafo)</p>
+                    <p><strong>24px</strong> → Grupos pequeños</p>
+                    <p><strong>32px</strong> → Secciones diferentes</p>
+                    <p><strong>48px+</strong> → Separación mayor</p>
+                </div>
+            </section>
+
+            <!-- Slide 14: Espaciado - Ejemplo -->
+            <section>
+                <h2>⬜ Espaciado: Antes vs Después</h2>
+                <div class="two-columns">
+                    <div class="error-box">
+                        <h4>❌ Sin suficiente espaciado:</h4>
+                        <div style="padding: 8px; line-height: 1.2;">
+                            <h4 style="margin-bottom: 4px;">TaskSync</h4>
+                            <p style="margin-bottom: 4px; font-size: 0.85em;">Organiza tus tareas</p>
+                            <button style="padding: 4px 8px; margin-top: 4px; font-size: 0.8em;">Empezar</button>
+                        </div>
+                        <p class="small-text">Se siente apretado, difícil de escanear</p>
+                    </div>
+                    <div class="success-box">
+                        <h4>✅ Con espaciado adecuado:</h4>
+                        <div style="padding: 24px; line-height: 1.6;">
+                            <h4 style="margin-bottom: 16px;">TaskSync</h4>
+                            <p style="margin-bottom: 24px; font-size: 0.9em;">Organiza tus tareas</p>
+                            <button style="padding: 12px 24px; font-size: 0.9em;">Empezar</button>
+                        </div>
+                        <p class="small-text">Respira, fácil de entender</p>
+                    </div>
+                </div>
+                <p class="warning-box" style="margin-top: 1em;"><strong>Regla:</strong> Cuando dudes, añade MÁS espacio, no menos</p>
+            </section>
+
+            <!-- Slide 15: Principio 4 - Jerarquía Visual -->
+            <section>
+                <h2>📊 Principio 4: Jerarquía Visual</h2>
+                <h3>¿Qué es Jerarquía Visual?</h3>
+                <div class="success-box">
+                    <p>El orden en que el usuario percibe elementos en la página.</p>
+                    <p><strong>Meta:</strong> Guiar la vista del usuario de lo más a lo menos importante.</p>
+                </div>
+                <h3>3 Formas de Crear Jerarquía:</h3>
+                <div class="highlight-box">
+                    <p><strong>1. Tamaño:</strong> Grande = importante, pequeño = secundario</p>
+                    <p><strong>2. Peso:</strong> Bold = importante, regular = normal</p>
+                    <p><strong>3. Posición:</strong> Arriba/izquierda = visto primero (patrón F)</p>
+                </div>
+                <h3>Patrón F de Lectura Web:</h3>
+                <div class="warning-box">
+                    <p>Usuarios leen en forma de "F":</p>
+                    <ol class="small-text">
+                        <li>Horizontal en la parte superior (barra principal)</li>
+                        <li>Hacia abajo por el lado izquierdo</li>
+                        <li>Horizontal menor a la mitad de la página</li>
+                    </ol>
+                    <p class="small-text">Pon contenido más importante arriba-izquierda</p>
+                </div>
+            </section>
+
+            <!-- Slide 16: Jerarquía Visual - Ejemplo -->
+            <section>
+                <h2>📊 Jerarquía Visual: Ejemplo TaskSync</h2>
+                <div class="highlight-box">
+                    <h3 style="font-size: 2em; font-weight: 700; margin-bottom: 0.2em;">Nivel 1: TaskSync</h3>
+                    <p style="font-size: 0.9em; color: var(--comment); margin-bottom: 1em;">Nivel 4: Subtítulo - "Organiza tu vida académica"</p>
+                    <h4 style="font-size: 1.4em; font-weight: 600; margin-bottom: 0.5em;">Nivel 2: Próximas Tareas</h4>
+                    <div style="background: var(--current-line); padding: 1em; margin-bottom: 0.5em;">
+                        <p style="font-weight: 600;">Nivel 3: Tarea individual - "Entrega A5"</p>
+                        <p style="font-size: 0.85em; color: var(--comment);">Nivel 5: Metadata - "Vence: 17 marzo"</p>
+                    </div>
+                    <button style="background: var(--green); color: var(--bg); border: none; padding: 12px 24px; font-weight: 600; border-radius: 4px;">Nivel 2: Botón CTA - "Agregar Tarea"</button>
+                </div>
+                <p class="small-text" style="margin-top: 1em;">Nota cómo tu ojo se mueve: Título → Sección → Tarea → CTA → Metadata</p>
+            </section>
+
+            <!-- Slide 17: Principio 5 - Contraste -->
+            <section>
+                <h2>⚡ Principio 5: Contraste</h2>
+                <h3>Contraste = Diferencia Visual</h3>
+                <div class="success-box">
+                    <p>Contraste hace que elementos importantes destaquen.</p>
+                </div>
+                <h3>Tipos de Contraste:</h3>
+                <ul>
+                    <li><strong>Color:</strong> Oscuro vs claro</li>
+                    <li><strong>Tamaño:</strong> Grande vs pequeño</li>
+                    <li><strong>Peso:</strong> Bold vs regular</li>
+                    <li><strong>Forma:</strong> Redondo vs cuadrado</li>
+                    <li><strong>Textura:</strong> Liso vs texturizado</li>
+                </ul>
+                <h3>Contraste Figura-Fondo:</h3>
+                <div class="two-columns">
+                    <div class="error-box" style="background: #CCCCCC; color: #999999; padding: 1em;">
+                        <p><strong>❌ Bajo contraste</strong></p>
+                        <p>Difícil de leer</p>
+                    </div>
+                    <div class="success-box" style="background: #FFFFFF; color: #000000; padding: 1em;">
+                        <p><strong>✅ Alto contraste</strong></p>
+                        <p>Fácil de leer</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 18: Contraste - CTAs -->
+            <section>
+                <h2>🎯 Contraste: Call-to-Actions (CTAs)</h2>
+                <h3>Los botones más importantes deben destacar</h3>
+                <div class="highlight-box">
+                    <div style="display: flex; gap: 1em; align-items: center; margin: 1em 0;">
+                        <button style="background: var(--green); color: var(--bg); border: none; padding: 12px 32px; font-weight: 700; border-radius: 4px; font-size: 1em;">Acción Primaria</button>
+                        <button style="background: transparent; color: var(--foreground); border: 2px solid var(--comment); padding: 12px 32px; font-weight: 600; border-radius: 4px; font-size: 1em;">Acción Secundaria</button>
+                        <button style="background: transparent; color: var(--comment); border: none; padding: 12px 32px; font-weight: 400; text-decoration: underline; font-size: 0.9em;">Acción Terciaria</button>
+                    </div>
+                </div>
+                <h3>Jerarquía de Botones:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Estilo</th>
+                            <th>Cuándo Usar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color: var(--green);"><strong>Primario</strong></td>
+                            <td>Color de acento, sólido, bold</td>
+                            <td>Acción principal (1 por página)</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--cyan);"><strong>Secundario</strong></td>
+                            <td>Borde, sin relleno</td>
+                            <td>Acciones alternativas</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--comment);"><strong>Terciario</strong></td>
+                            <td>Solo texto, underline</td>
+                            <td>Acciones menores (cancelar, etc.)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="warning-box"><strong>Regla:</strong> Solo UN botón primario visible a la vez</p>
+            </section>
+
+            <!-- Slide 19: Principio 6 - Consistencia -->
+            <section>
+                <h2>🔄 Principio 6: Consistencia</h2>
+                <div class="quote">
+                    "Los usuarios pasan la mayor parte de su tiempo en OTROS sitios web."<br>
+                    — Ley de Jakob Nielsen
+                </div>
+                <h3>¿Qué es Consistencia?</h3>
+                <div class="success-box">
+                    <p>Usar los mismos patrones visuales para las mismas funciones.</p>
+                </div>
+                <h3>Tipos de Consistencia:</h3>
+                <div class="two-columns">
+                    <div class="highlight-box">
+                        <h4>Interna:</h4>
+                        <ul class="small-text">
+                            <li>Mismo estilo de botón primario en todo el sitio</li>
+                            <li>Misma navegación en todas las páginas</li>
+                            <li>Colores consistentes para estados (éxito, error)</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>Externa:</h4>
+                        <ul class="small-text">
+                            <li>Logo arriba-izquierda (convención web)</li>
+                            <li>Links azules y subrayados</li>
+                            <li>Ícono de hamburguesa para menú móvil</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="warning-box" style="margin-top: 1em;"><strong>Regla:</strong> Rompe convenciones SOLO si tienes muy buena razón (y pruebas con usuarios)</p>
+            </section>
+
+            <!-- Slide 20: Transición a Usabilidad -->
+            <section>
+                <h2>🔀 De Diseño Visual a Usabilidad</h2>
+                <div class="highlight-box large-text">
+                    <p><strong>Diseño visual atractivo</strong> atrae usuarios</p>
+                    <p style="text-align: center; font-size: 1.5em; margin: 0.3em 0;">↓</p>
+                    <p><strong>Usabilidad</strong> los mantiene y convierte</p>
+                </div>
+                <h3>Pregunta clave:</h3>
+                <div class="warning-box">
+                    <p class="large-text">¿Un sitio hermoso pero confuso sirve?</p>
+                    <p class="small-text">NO. La belleza sin usabilidad = frustración</p>
+                </div>
+                <h3>Balance perfecto:</h3>
+                <div class="success-box">
+                    <p><strong>Diseño visual</strong> (estética, credibilidad, primera impresión)</p>
+                    <p>+</p>
+                    <p><strong>Usabilidad</strong> (facilidad de uso, eficiencia, satisfacción)</p>
+                    <p>=</p>
+                    <p><strong>Excelente experiencia de usuario</strong></p>
+                </div>
+            </section>
+
+            <!-- Slide 21: ¿Qué es Usabilidad? -->
+            <section>
+                <h2>🎯 ¿Qué es Usabilidad?</h2>
+                <div class="success-box">
+                    <p class="large-text">Usabilidad es el grado en que un producto puede ser usado por usuarios específicos para lograr objetivos específicos con efectividad, eficiencia y satisfacción.</p>
+                    <p class="small-text">— ISO 9241-11</p>
+                </div>
+                <h3>Los 5 Componentes de Usabilidad (Jakob Nielsen):</h3>
+                <div class="grid-list">
+                    <li><strong>1. Learnability</strong> - Fácil de aprender</li>
+                    <li><strong>2. Efficiency</strong> - Eficiente de usar</li>
+                    <li><strong>3. Memorability</strong> - Fácil de recordar</li>
+                    <li><strong>4. Errors</strong> - Pocos errores, fácil recuperación</li>
+                    <li><strong>5. Satisfaction</strong> - Agradable de usar</li>
+                </div>
+            </section>
+
+            <!-- Slide 22: Don't Make Me Think -->
+            <section>
+                <h2>🧠 Don't Make Me Think</h2>
+                <div class="quote">
+                    "Don't make me think!"<br>
+                    — Steve Krug
+                </div>
+                <h3>Primera Ley de Usabilidad de Krug:</h3>
+                <div class="success-box">
+                    <p class="large-text">Una página web debe ser obvia y auto-explicativa.</p>
+                    <p>Los usuarios NO deben tener que pensar dónde hacer clic, qué hacer, o cómo funciona.</p>
+                </div>
+                <h3>Ejemplos de "Don't Make Me Think":</h3>
+                <div class="two-columns">
+                    <div class="success-box">
+                        <h4>✅ Obvio:</h4>
+                        <ul class="small-text">
+                            <li>Botón dice "Comprar Ahora"</li>
+                            <li>Logo clickeable va a Home</li>
+                            <li>Links azules y subrayados</li>
+                            <li>Búsqueda con ícono de lupa</li>
+                        </ul>
+                    </div>
+                    <div class="error-box">
+                        <h4>❌ Confuso:</h4>
+                        <ul class="small-text">
+                            <li>Botón dice "Proceder" (¿A dónde?)</li>
+                            <li>Logo no es clickeable</li>
+                            <li>Links sin subrayar ni color</li>
+                            <li>Búsqueda sin ícono ni label</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 23: Convenciones Web -->
+            <section>
+                <h2>📐 Convenciones Web (No Reinventar la Rueda)</h2>
+                <h3>Convenciones que TODOS esperan:</h3>
+                <table style="font-size: 0.85em;">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>Convención</th>
+                            <th>Por Qué Funciona</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Logo</strong></td>
+                            <td>Arriba-izquierda, clickeable → Home</td>
+                            <td>99% de sitios lo hacen así</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Navegación</strong></td>
+                            <td>Arriba (horizontal) o izquierda (vertical)</td>
+                            <td>Usuarios buscan ahí primero</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Búsqueda</strong></td>
+                            <td>Arriba-derecha, ícono lupa</td>
+                            <td>Reconocible instantáneamente</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Links</strong></td>
+                            <td>Azules, subrayados (o cambian en hover)</td>
+                            <td>Señal visual universal</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Carrito</strong></td>
+                            <td>Arriba-derecha, ícono carrito</td>
+                            <td>E-commerce estándar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Footer</strong></td>
+                            <td>Abajo, links secundarios + contacto</td>
+                            <td>Lugar esperado para info extra</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="warning-box"><strong>Regla de Krug:</strong> No reinventes convenciones a menos que tu nuevo diseño sea 10X mejor (rara vez lo es)</p>
+            </section>
+
+            <!-- Slide 24: Ejemplo Práctico -->
+            <section>
+                <h2>🖥️ Ejemplo: TaskSync con Principios Aplicados</h2>
+                <div style="border: 2px solid var(--comment); padding: 2em; background: #FFFFFF; color: #000000; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1em; border-bottom: 2px solid #E0E0E0; margin-bottom: 1.5em;">
+                        <h3 style="margin: 0; color: #2196F3; font-size: 1.5em;">TaskSync</h3>
+                        <div style="display: flex; gap: 1.5em; font-size: 0.9em;">
+                            <a href="#" style="color: #333;">Tareas</a>
+                            <a href="#" style="color: #333;">Calendario</a>
+                            <a href="#" style="color: #333;">Perfil</a>
+                        </div>
+                    </div>
+                    <h2 style="font-size: 2em; margin-bottom: 0.3em; color: #000;">Próximas Tareas</h2>
+                    <p style="color: #666; margin-bottom: 1.5em;">Martes 17 de Marzo, 2026</p>
+                    <div style="background: #F5F5F5; padding: 1em; margin-bottom: 0.8em; border-radius: 4px; border-left: 4px solid #FF5722;">
+                        <p style="font-weight: 600; margin-bottom: 0.3em; color: #000;">Entregar A5 - Tree Testing + Wireframes</p>
+                        <p style="font-size: 0.85em; color: #666;">DEIU • Vence hoy 23:59</p>
+                    </div>
+                    <div style="background: #F5F5F5; padding: 1em; border-radius: 4px;">
+                        <p style="font-weight: 600; margin-bottom: 0.3em; color: #000;">Estudiar para Parcial 1</p>
+                        <p style="font-size: 0.85em; color: #666;">DEIU • 19 de Marzo</p>
+                    </div>
+                    <button style="background: #4CAF50; color: #FFF; border: none; padding: 12px 24px; font-weight: 600; border-radius: 4px; margin-top: 1.5em; font-size: 1em;">+ Agregar Tarea</button>
+                </div>
+                <p class="small-text" style="margin-top: 1em;">✅ Color (azul marca, verde CTA), Tipografía (jerarquía H2→Body), Espaciado (padding generoso), Contraste (botón verde destaca), Convenciones (nav arriba)</p>
+            </section>
+
+            <!-- Slide 25: Aplicación a Tu Proyecto -->
+            <section>
+                <h2>🚀 Aplicación a Tu Proyecto</h2>
+                <h3>Para el A5 (ahora - Mid-fi):</h3>
+                <div class="warning-box">
+                    <p><strong>Enfócate en:</strong></p>
+                    <ul>
+                        <li>✅ Jerarquía Visual (tamaños relativos correctos)</li>
+                        <li>✅ Espaciado (usar sistema 8px, 16px, 24px)</li>
+                        <li>✅ Contraste figura-fondo (grises que contrasten)</li>
+                        <li>✅ Convenciones (nav arriba, logo arriba-izquierda)</li>
+                    </ul>
+                    <p><strong>AÚN NO:</strong></p>
+                    <ul>
+                        <li>❌ Color (solo grises por ahora)</li>
+                        <li>❌ Tipografía específica (placeholder está bien)</li>
+                    </ul>
+                </div>
+                <h3>Para etapas futuras (Hi-fi):</h3>
+                <div class="success-box">
+                    <p>Aplicarán TODO: paleta de color, tipografía específica, imágenes reales, micro-interacciones</p>
+                </div>
+            </section>
+
+            <!-- Slide 26: Checklist de Diseño Visual -->
+            <section>
+                <h2>✅ Checklist de Diseño Visual</h2>
+                <div class="highlight-box">
+                    <h4>Color:</h4>
+                    <p>☐ Paleta de máximo 3-4 colores + grises</p>
+                    <p>☐ Contraste texto-fondo cumple WCAG AA (4.5:1)</p>
+                    <p>☐ Regla 60-30-10 aplicada</p>
+                </div>
+                <div class="highlight-box">
+                    <h4>Tipografía:</h4>
+                    <p>☐ Body text ≥16px</p>
+                    <p>☐ Line-height 1.5-1.7 para lectura</p>
+                    <p>☐ Máximo 2 fuentes (o 1 con pesos variados)</p>
+                    <p>☐ Jerarquía clara (H1 > H2 > H3 > Body)</p>
+                </div>
+                <div class="highlight-box">
+                    <h4>Espaciado:</h4>
+                    <p>☐ Sistema consistente (múltiplos de 8)</p>
+                    <p>☐ Suficiente white space (cuando dudes, más)</p>
+                </div>
+                <div class="highlight-box">
+                    <h4>Usabilidad:</h4>
+                    <p>☐ Sigue convenciones web (logo arriba-izq, nav arriba)</p>
+                    <p>☐ Solo 1 botón primario visible a la vez</p>
+                    <p>☐ Links obvios (color + underline o hover)</p>
+                </div>
+            </section>
+
+            <!-- Slide 27: Recursos -->
+            <section>
+                <h2>📚 Recursos Recomendados</h2>
+                <h3>Herramientas:</h3>
+                <ul>
+                    <li><strong>WebAIM Contrast Checker:</strong> webaim.org/resources/contrastchecker/</li>
+                    <li><strong>Coolors:</strong> coolors.co (generador de paletas)</li>
+                    <li><strong>Google Fonts:</strong> fonts.google.com (fuentes web gratis)</li>
+                    <li><strong>Type Scale:</strong> type-scale.com (escalas tipográficas)</li>
+                </ul>
+                <h3>Libros:</h3>
+                <ul>
+                    <li><strong>"Don't Make Me Think"</strong> - Steve Krug (usabilidad)</li>
+                    <li><strong>"The Design of Everyday Things"</strong> - Don Norman</li>
+                    <li><strong>"Refactoring UI"</strong> - Adam Wathan (diseño visual práctico)</li>
+                </ul>
+                <h3>Sitios de Inspiración:</h3>
+                <ul>
+                    <li><strong>Dribbble:</strong> dribbble.com (diseños UI)</li>
+                    <li><strong>Behance:</strong> behance.net (portfolios)</li>
+                    <li><strong>Awwwards:</strong> awwwards.com (sitios premiados)</li>
+                </ul>
+            </section>
+
+            <!-- Slide 28: Próxima Sesión -->
+            <section>
+                <h2>🔜 Próxima Sesión</h2>
+                <div class="highlight-box large-text">
+                    <p><strong>Sesión 10 - Martes 17 de Marzo</strong></p>
+                    <p>Heurísticas de Nielsen</p>
+                </div>
+                <h3>Temas:</h3>
+                <ul>
+                    <li>Las 10 heurísticas de usabilidad de Jakob Nielsen</li>
+                    <li>Cómo evaluar interfaces con heurísticas</li>
+                    <li>Identificar problemas de usabilidad</li>
+                    <li>Priorizar y documentar hallazgos</li>
+                    <li>Práctica: Evaluación heurística de sitio real</li>
+                </ul>
+            </section>
+
+            <!-- Slide 29: Recordatorios -->
+            <section>
+                <h2>⏰ Recordatorios</h2>
+                <div class="warning-box">
+                    <p><strong>📅 Martes 17 Mar - Entrega A5</strong></p>
+                    <p>Tree Testing + Wireframes Mid-fi (23:59)</p>
+                </div>
+                <div class="highlight-box" style="margin-top: 1em;">
+                    <h3>Para próxima clase (17 Mar):</h3>
+                    <ul>
+                        <li>Terminar wireframes Mid-fi del A5</li>
+                        <li>Aplicar principios de hoy (jerarquía, espaciado, contraste)</li>
+                        <li>Revisar convenciones web en tus wireframes</li>
+                    </ul>
+                </div>
+                <h2 style="margin-top: 2em;">📝 Resumen de Hoy</h2>
+                <ul class="grid-list">
+                    <li>6 principios de diseño visual</li>
+                    <li>Color: contraste y accesibilidad</li>
+                    <li>Tipografía: jerarquía y legibilidad</li>
+                    <li>Espaciado: white space</li>
+                    <li>Usabilidad: Don't Make Me Think</li>
+                    <li>Convenciones web: no reinventar</li>
+                </ul>
+            </section>
+
+            <!-- Slide 30: Cierre -->
+            <section>
+                <h2>❓ ¿Preguntas?</h2>
+                <div class="quote" style="margin-top: 3em;">
+                    "Good design is obvious.<br>Great design is transparent."
+                </div>
+                <div class="highlight-box" style="margin-top: 2em;">
+                    <p class="large-text">Nos vemos el martes 17 de marzo.</p>
+                    <p class="subtitle">Siguiente: Heurísticas de Nielsen</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <div class="slide-number" id="slideNumber">1 / 30</div>
+    
+    <div class="controls">
+        <button onclick="navigateSlide(-1)">← Anterior</button>
+        <button onclick="navigateSlide(1)">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slides section');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => {
+                slide.style.display = 'none';
+            });
+            
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].style.display = 'flex';
+            
+            slides[currentSlide].scrollTop = 0;
+            
+            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function navigateSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') navigateSlide(-1);
+            if (e.key === 'ArrowRight') navigateSlide(1);
+        });
+
+        showSlide(0);
+    </script>
+</body>
+</html>
