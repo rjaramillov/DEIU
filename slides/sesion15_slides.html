@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesión 15 — Heurísticas de Nielsen + Design Critique | DEIU 2026</title>
+    <style>
+        :root {
+            --bg:           #282a36;
+            --current-line: #44475a;
+            --fg:           #f8f8f2;
+            --comment:      #6272a4;
+            --cyan:         #8be9fd;
+            --green:        #50fa7b;
+            --orange:       #ffb86c;
+            --pink:         #ff79c6;
+            --purple:       #bd93f9;
+            --red:          #ff5555;
+            --yellow:       #f1fa8c;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide {
+            padding: 40px 60px 100px 60px;
+            height: 100vh;
+            overflow-y: auto;
+            animation: fadeIn .25s ease;
+        }
+
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+        h1 { font-size: 2em; color: var(--purple); margin-bottom: .4em; }
+        h2 { font-size: 1.45em; color: var(--cyan); margin-bottom: .5em; text-transform: none; }
+        h3 { font-size: 1.05em; color: var(--orange); margin-bottom: .3em; }
+        p, li { line-height: 1.6; }
+        ul { padding-left: 1.3em; }
+        strong { color: var(--pink); }
+        em { color: var(--cyan); font-style: normal; }
+
+        .tag {
+            display: inline-block;
+            background: var(--purple);
+            color: var(--bg);
+            font-size: .62em;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 20px;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        .tag.green  { background: var(--green); }
+        .tag.orange { background: var(--orange); }
+        .tag.red    { background: var(--red); }
+        .tag.cyan   { background: var(--cyan); color: var(--bg); }
+        .tag.pink   { background: var(--pink); color: var(--bg); }
+
+        .card {
+            background: var(--current-line);
+            border-left: 4px solid var(--purple);
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin: 8px 0;
+        }
+        .card.green  { border-color: var(--green); }
+        .card.orange { border-color: var(--orange); }
+        .card.red    { border-color: var(--red); }
+        .card.cyan   { border-color: var(--cyan); }
+        .card.yellow { border-color: var(--yellow); }
+        .card.pink   { border-color: var(--pink); }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+        .heuristica-num {
+            font-size: 2.4em;
+            font-weight: 900;
+            color: var(--purple);
+            line-height: 1;
+            margin-bottom: .1em;
+        }
+
+        .badge-ok  { color: var(--green);  font-weight: 700; }
+        .badge-bad { color: var(--red);    font-weight: 700; }
+        .badge-tip { color: var(--yellow); font-weight: 700; }
+
+        .timeline {
+            border-left: 3px solid var(--purple);
+            padding-left: 20px;
+            margin-left: 8px;
+        }
+        .timeline-item {
+            margin-bottom: 14px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: '';
+            width: 12px; height: 12px;
+            background: var(--purple);
+            border-radius: 50%;
+            position: absolute;
+            left: -27px; top: 5px;
+        }
+        .timeline-item.green::before  { background: var(--green); }
+        .timeline-item.orange::before { background: var(--orange); }
+        .timeline-item.cyan::before   { background: var(--cyan); }
+        .timeline-item.pink::before   { background: var(--pink); }
+
+        .time-label {
+            font-size: .72em;
+            color: var(--comment);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .center { text-align: center; }
+        .muted  { color: var(--comment); font-size: .85em; }
+
+        .rubric-table { width: 100%; border-collapse: collapse; font-size: .82em; margin-top: 10px; }
+        .rubric-table th { background: var(--purple); color: var(--bg); padding: 7px 10px; text-align: left; }
+        .rubric-table td { padding: 7px 10px; border-bottom: 1px solid var(--current-line); }
+        .rubric-table tr:nth-child(even) td { background: rgba(68,71,90,.4); }
+
+        .ejemplo-box {
+            background: rgba(68,71,90,.5);
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin: 6px 0;
+            font-size: .88em;
+        }
+
+        /* ── nav ── */
+        .nav-btns {
+            position: fixed; bottom: 22px; right: 28px;
+            display: flex; gap: 10px; z-index: 9999;
+        }
+        .nav-btn {
+            background: var(--comment); color: var(--fg);
+            border: none; padding: 10px 22px;
+            font-size: 1em; border-radius: 6px;
+            cursor: pointer; transition: background .2s;
+        }
+        .nav-btn:hover { background: var(--purple); }
+        .nav-btn:disabled { background: var(--current-line); opacity: .5; cursor: not-allowed; }
+
+        .slide-counter {
+            position: fixed; bottom: 22px; left: 28px;
+            background: var(--current-line); padding: 8px 18px;
+            border-radius: 6px; font-size: .85em; z-index: 9999;
+            color: var(--comment);
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-btns">
+    <button class="nav-btn" id="btnPrev" onclick="nav(-1)" disabled>&#8592;</button>
+    <button class="nav-btn" id="btnNext" onclick="nav(1)">&#8594;</button>
+</div>
+<div class="slide-counter" id="counter">1 / 23</div>
+
+        <div class="slide" id="slide-0" style="display:block;">
+
+    <p class="muted" style="margin-bottom:10px;">DEIU 2026 · Facultad de Telemática · Universidad de Colima</p>
+    <h1 style="font-size:2em; margin-bottom:.3em;">Sesión 15</h1>
+    <h2 style="font-size:1.5em; color:var(--pink);">Heurísticas de Nielsen<br>+ Design Critique</h2>
+    <div style="margin-top:30px;" class="card cyan">
+        <p>📅 <strong>Martes 24 de Marzo, 2026</strong> &nbsp;|&nbsp; 07:00 – 09:00 hrs &nbsp;|&nbsp; 120 min</p>
+    </div>
+    <p class="muted" style="margin-top:20px;">Ing. Ricardo Jaramillo &nbsp;·&nbsp; rjaramillo0@ucol.mx</p>
+
+        </div>
+        <div class="slide" id="slide-1" style="display:none;">
+
+    <h2>Agenda de hoy</h2>
+    <div class="timeline">
+        <div class="timeline-item">
+            <span class="time-label">07:00 – 07:05 · 5 min</span>
+            <strong>Apertura</strong> — Encuadre del bloque 2 del semestre
+        </div>
+        <div class="timeline-item green">
+            <span class="time-label">07:05 – 07:25 · 20 min</span>
+            <strong>Teoría:</strong> Las 10 Heurísticas de Nielsen (con ejemplos reales)
+        </div>
+        <div class="timeline-item orange">
+            <span class="time-label">07:25 – 07:40 · 15 min</span>
+            <strong>Práctica guiada:</strong> Evalúan un wireframe de ejemplo con la rúbrica
+        </div>
+        <div class="timeline-item cyan">
+            <span class="time-label">07:40 – 08:40 · 60 min</span>
+            <strong>Design Critique:</strong> Cada equipo evalúa los wireframes de otro equipo
+        </div>
+        <div class="timeline-item pink">
+            <span class="time-label">08:40 – 09:00 · 20 min</span>
+            <strong>Cierre:</strong> Cada equipo presenta hallazgos · Discusión grupal · Próximos pasos
+        </div>
+    </div>
+    <div class="card" style="margin-top:18px;">
+        <p>🎯 <strong>Objetivo de la sesión:</strong> Conocer las 10 Heurísticas de Nielsen y aplicarlas como marco de evaluación a los wireframes del A5.</p>
+    </div>
+
+        </div>
+        <div class="slide" id="slide-2" style="display:none;">
+
+    <h2>¿Qué son las Heurísticas de Nielsen?</h2>
+    <div class="card cyan">
+        <p>Son <strong>10 principios generales de diseño de interacción</strong> propuestos por Jakob Nielsen (1994) para evaluar la usabilidad de interfaces. No son reglas exactas — son <em>heurísticas</em>: reglas de dedo basadas en experiencia.</p>
+    </div>
+    <div class="grid-2" style="margin-top:14px;">
+        <div class="card green">
+            <h3>¿Para qué sirven?</h3>
+            <ul>
+                <li>Identificar problemas de usabilidad <strong>sin usuarios</strong></li>
+                <li>Evaluar prototipos en etapas tempranas</li>
+                <li>Dar feedback estructurado en un Design Critique</li>
+                <li>Priorizar qué corregir antes de desarrollar</li>
+            </ul>
+        </div>
+        <div class="card orange">
+            <h3>¿Quién es Jakob Nielsen?</h3>
+            <ul>
+                <li>Co-fundador del Nielsen Norman Group</li>
+                <li>Pionero de la usabilidad web desde los 90s</li>
+                <li>Publicó las 10 heurísticas en <em>1994</em></li>
+                <li>Son el estándar de la industria hasta hoy</li>
+            </ul>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p>💡 <strong>Dato clave:</strong> Una evaluación heurística con 3–5 evaluadores detecta ~75% de los problemas de usabilidad de una interfaz.</p>
+    </div>
+
+        </div>
+        <div class="slide" id="slide-3" style="display:none;">
+
+    <h2>Las 10 Heurísticas — Vista general</h2>
+    <div class="grid-2" style="font-size:.88em;">
+        <div>
+            <div class="card" style="margin-bottom:8px;"><span class="heuristica-num" style="font-size:1.1em;">H1</span> &nbsp;Visibilidad del estado del sistema</div>
+            <div class="card" style="margin-bottom:8px;"><span class="heuristica-num" style="font-size:1.1em;">H2</span> &nbsp;Coincidencia con el mundo real</div>
+            <div class="card" style="margin-bottom:8px;"><span class="heuristica-num" style="font-size:1.1em;">H3</span> &nbsp;Control y libertad del usuario</div>
+            <div class="card" style="margin-bottom:8px;"><span class="heuristica-num" style="font-size:1.1em;">H4</span> &nbsp;Consistencia y estándares</div>
+            <div class="card" style="margin-bottom:8px;"><span class="heuristica-num" style="font-size:1.1em;">H5</span> &nbsp;Prevención de errores</div>
+        </div>
+        <div>
+            <div class="card" style="margin-bottom:8px;"><span class="heuristica-num" style="font-size:1.1em;">H6</span> &nbsp;Reconocimiento sobre recuerdo</div>
+            <div class="card" style="margin-bottom:8px;"><span class="heuristica-num" style="font-size:1.1em;">H7</span> &nbsp;Flexibilidad y eficiencia de uso</div>
+            <div class="card" style="margin-bottom:8px;"><span class="heuristica-num" style="font-size:1.1em;">H8</span> &nbsp;Diseño estético y minimalista</div>
+            <div class="card" style="margin-bottom:8px;"><span class="heuristica-num" style="font-size:1.1em;">H9</span> &nbsp;Ayuda a reconocer y recuperarse de errores</div>
+            <div class="card" style="margin-bottom:8px;"><span class="heuristica-num" style="font-size:1.1em;">H10</span> &nbsp;Ayuda y documentación</div>
+        </div>
+    </div>
+
+        </div>
+        <div class="slide" id="slide-4" style="display:none;">
+
+    <div class="heuristica-num">H1</div>
+    <h2>Visibilidad del estado del sistema</h2>
+    <div class="card cyan">
+        <p>El sistema debe <strong>siempre mantener informado al usuario</strong> sobre lo que está pasando, con retroalimentación apropiada en tiempo razonable.</p>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+        <div>
+            <p class="badge-ok">✅ Bien:</p>
+            <div class="ejemplo-box">Barra de progreso al subir un archivo. Indicador "Guardando…" en Google Docs. Notificación "Tu pedido fue confirmado".</div>
+        </div>
+        <div>
+            <p class="badge-bad">❌ Mal:</p>
+            <div class="ejemplo-box">Hacer clic en un botón y que no pase nada visible. Formulario que demora 10 seg sin indicar que está procesando.</div>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p class="badge-tip">🔍 En tus wireframes busca:</p> ¿Hay indicadores de carga? ¿Se confirma visualmente cuando el usuario completa una acción? ¿Existe feedback en formularios?
+    </div>
+
+        </div>
+        <div class="slide" id="slide-5" style="display:none;">
+
+    <div class="heuristica-num">H2</div>
+    <h2>Coincidencia con el mundo real</h2>
+    <div class="card cyan">
+        <p>El sistema debe <strong>hablar el idioma del usuario</strong> — palabras, frases y conceptos familiares, no jerga del sistema. Seguir convenciones del mundo real.</p>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+        <div>
+            <p class="badge-ok">✅ Bien:</p>
+            <div class="ejemplo-box">Ícono de carrito de supermercado para "agregar al carrito". Ícono de lupa para "buscar". Metáfora del "escritorio" en sistemas operativos.</div>
+        </div>
+        <div>
+            <p class="badge-bad">❌ Mal:</p>
+            <div class="ejemplo-box">Botón que dice "Ejecutar query" en vez de "Buscar". Formulario con campos llamados "usr_id" o "param_1".</div>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p class="badge-tip">🔍 En tus wireframes busca:</p> ¿El vocabulario refleja cómo hablan tus usuarios (del A2)? ¿Los íconos son intuitivos para tu contexto?
+    </div>
+
+        </div>
+        <div class="slide" id="slide-6" style="display:none;">
+
+    <div class="heuristica-num">H3</div>
+    <h2>Control y libertad del usuario</h2>
+    <div class="card cyan">
+        <p>Los usuarios cometen errores. Necesitan una <strong>"salida de emergencia"</strong> claramente marcada para salir de estados no deseados sin pasar por procesos largos.</p>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+        <div>
+            <p class="badge-ok">✅ Bien:</p>
+            <div class="ejemplo-box">Botón "Deshacer" (Ctrl+Z). Confirmación antes de eliminar: "¿Estás seguro?". Botón "Cancelar" en formularios largos.</div>
+        </div>
+        <div>
+            <p class="badge-bad">❌ Mal:</p>
+            <div class="ejemplo-box">Eliminar un registro sin confirmación y sin posibilidad de recuperarlo. Formulario de 5 pasos sin botón "Atrás".</div>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p class="badge-tip">🔍 En tus wireframes busca:</p> ¿Hay botón "Cancelar" o "Volver"? ¿Las acciones destructivas (eliminar, confirmar pedido) piden confirmación?
+    </div>
+
+        </div>
+        <div class="slide" id="slide-7" style="display:none;">
+
+    <div class="heuristica-num">H4</div>
+    <h2>Consistencia y estándares</h2>
+    <div class="card cyan">
+        <p>Los usuarios no deben preguntarse si diferentes palabras, situaciones o acciones significan lo mismo. <strong>Seguir las convenciones de la plataforma.</strong></p>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+        <div>
+            <p class="badge-ok">✅ Bien:</p>
+            <div class="ejemplo-box">El botón primario siempre es del mismo color. "Guardar" siempre está en el mismo lugar. El logo siempre lleva al inicio.</div>
+        </div>
+        <div>
+            <p class="badge-bad">❌ Mal:</p>
+            <div class="ejemplo-box">En una pantalla dice "Guardar", en otra "Registrar", en otra "Confirmar" para la misma acción. Menú de navegación en posición diferente en cada pantalla.</div>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p class="badge-tip">🔍 En tus wireframes busca:</p> ¿La navegación es igual en todas las pantallas? ¿Los botones de acción tienen el mismo nombre y posición?
+    </div>
+
+        </div>
+        <div class="slide" id="slide-8" style="display:none;">
+
+    <div class="heuristica-num">H5</div>
+    <h2>Prevención de errores</h2>
+    <div class="card cyan">
+        <p>Mejor que buenos mensajes de error es un <strong>diseño cuidadoso que previene que los problemas ocurran</strong>. Eliminar condiciones propensas a error o verificar antes de ejecutar.</p>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+        <div>
+            <p class="badge-ok">✅ Bien:</p>
+            <div class="ejemplo-box">Campo de fecha con calendario (evita formato incorrecto). Autocompletar en búsquedas. Resaltar campos obligatorios antes de enviar.</div>
+        </div>
+        <div>
+            <p class="badge-bad">❌ Mal:</p>
+            <div class="ejemplo-box">Campo de teléfono que acepta letras. Formulario que no valida el email hasta después de enviar. Opción "Eliminar todo" sin confirmación.</div>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p class="badge-tip">🔍 En tus wireframes busca:</p> ¿Los campos tienen indicadores de formato esperado? ¿Las acciones peligrosas tienen barreras de confirmación?
+    </div>
+
+        </div>
+        <div class="slide" id="slide-9" style="display:none;">
+
+    <div class="heuristica-num">H6</div>
+    <h2>Reconocimiento sobre recuerdo</h2>
+    <div class="card cyan">
+        <p>Minimizar la carga de memoria del usuario. <strong>Las opciones, acciones y objetos deben ser visibles</strong>. El usuario no debe recordar información de una parte a otra.</p>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+        <div>
+            <p class="badge-ok">✅ Bien:</p>
+            <div class="ejemplo-box">Historial de búsquedas recientes. Breadcrumbs ("Inicio > Categoría > Producto"). Mostrar el carrito con los artículos seleccionados durante el checkout.</div>
+        </div>
+        <div>
+            <p class="badge-bad">❌ Mal:</p>
+            <div class="ejemplo-box">Pedir que el usuario recuerde su número de cliente sin mostrárselo. Menú sin indicador de "dónde estás". Formulario en varios pasos sin resumen.</div>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p class="badge-tip">🔍 En tus wireframes busca:</p> ¿Hay breadcrumbs o indicador de sección activa? ¿Se muestra contexto relevante en cada pantalla?
+    </div>
+
+        </div>
+        <div class="slide" id="slide-10" style="display:none;">
+
+    <div class="heuristica-num">H7</div>
+    <h2>Flexibilidad y eficiencia de uso</h2>
+    <div class="card cyan">
+        <p>Los aceleradores — invisibles para el usuario novato — <strong>permiten al usuario experto trabajar más rápido</strong>. El sistema debe atender tanto a usuarios expertos como novatos.</p>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+        <div>
+            <p class="badge-ok">✅ Bien:</p>
+            <div class="ejemplo-box">Atajos de teclado (Ctrl+S). Favoritos o accesos rápidos. Autocompletar basado en historial. Modo avanzado vs. modo básico.</div>
+        </div>
+        <div>
+            <p class="badge-bad">❌ Mal:</p>
+            <div class="ejemplo-box">Forzar a todos los usuarios a pasar por un tutorial antes de usar la app. No ofrecer ningún atajo para tareas frecuentes.</div>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p class="badge-tip">🔍 En tus wireframes busca:</p> ¿Las tareas más frecuentes del A3 tienen acceso rápido? ¿El flujo principal es eficiente para quien lo usa diario?
+    </div>
+
+        </div>
+        <div class="slide" id="slide-11" style="display:none;">
+
+    <div class="heuristica-num">H8</div>
+    <h2>Diseño estético y minimalista</h2>
+    <div class="card cyan">
+        <p>Los diálogos no deben contener <strong>información irrelevante o rara vez necesitada</strong>. Cada unidad extra de información compite con la información relevante y reduce su visibilidad.</p>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+        <div>
+            <p class="badge-ok">✅ Bien:</p>
+            <div class="ejemplo-box">Google.com: solo la barra de búsqueda. Pantallas con jerarquía visual clara. Un call-to-action principal por pantalla.</div>
+        </div>
+        <div>
+            <p class="badge-bad">❌ Mal:</p>
+            <div class="ejemplo-box">Pantalla de inicio con 20 opciones igual de prominentes. Formulario con campos que el usuario nunca necesita llenar. Popups y banners que compiten por atención.</div>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p class="badge-tip">🔍 En tus wireframes busca:</p> ¿Hay elementos innecesarios? ¿La jerarquía visual (tamaño, peso) refleja importancia real?
+    </div>
+
+        </div>
+        <div class="slide" id="slide-12" style="display:none;">
+
+    <div class="heuristica-num">H9</div>
+    <h2>Ayuda a reconocer y recuperarse de errores</h2>
+    <div class="card cyan">
+        <p>Los mensajes de error deben <strong>expresarse en lenguaje claro (sin códigos)</strong>, indicar el problema precisamente y sugerir constructivamente una solución.</p>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+        <div>
+            <p class="badge-ok">✅ Bien:</p>
+            <div class="ejemplo-box">"El correo no es válido. Usa el formato: ejemplo@correo.com". "Contraseña incorrecta. ¿Olvidaste tu contraseña?" con link directo.</div>
+        </div>
+        <div>
+            <p class="badge-bad">❌ Mal:</p>
+            <div class="ejemplo-box">"Error 404". "Operación fallida: código -1". "El campo no es válido" sin indicar qué campo ni por qué.</div>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p class="badge-tip">🔍 En tus wireframes busca:</p> ¿Están diseñados los estados de error? ¿El mensaje explica qué salió mal y cómo resolverlo?
+    </div>
+
+        </div>
+        <div class="slide" id="slide-13" style="display:none;">
+
+    <div class="heuristica-num">H10</div>
+    <h2>Ayuda y documentación</h2>
+    <div class="card cyan">
+        <p>Aunque es mejor que el sistema no necesite explicación, <strong>puede ser necesario proveer ayuda y documentación</strong>. Debe ser fácil de buscar, orientada a la tarea del usuario y concisa.</p>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+        <div>
+            <p class="badge-ok">✅ Bien:</p>
+            <div class="ejemplo-box">Tooltip al pasar sobre un ícono. "?" contextual junto a campos complejos. Onboarding de 3 pasos para usuarios nuevos. FAQ accesible desde cualquier pantalla.</div>
+        </div>
+        <div>
+            <p class="badge-bad">❌ Mal:</p>
+            <div class="ejemplo-box">Manual de 50 páginas que nadie lee. Ayuda genérica que no responde la duda del momento. Ningún tipo de orientación en pantallas complejas.</div>
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p class="badge-tip">🔍 En tus wireframes busca:</p> ¿Las pantallas más complejas tienen apoyo contextual? ¿Existe algún flujo de onboarding para usuarios nuevos?
+    </div>
+
+        </div>
+        <div class="slide" id="slide-14" style="display:none;">
+
+    <h2>Escala de Severidad de Problemas</h2>
+    <p class="muted" style="margin-bottom:12px;">Al encontrar un problema heurístico, no todos pesan igual. Nielsen propone esta escala:</p>
+    <div class="card green">
+        <strong>Severidad 0 — No es un problema</strong>: No afecta la usabilidad.
+    </div>
+    <div class="card yellow" style="margin-top:8px;">
+        <strong>Severidad 1 — Cosmético</strong>: Solo se corrige si hay tiempo disponible.
+    </div>
+    <div class="card orange" style="margin-top:8px;">
+        <strong>Severidad 2 — Menor</strong>: Baja prioridad para corregir.
+    </div>
+    <div class="card" style="border-color:var(--red); margin-top:8px;">
+        <strong>Severidad 3 — Mayor</strong>: Alta prioridad, debe corregirse.
+    </div>
+    <div class="card red" style="margin-top:8px;">
+        <strong>Severidad 4 — Catastrófico</strong>: Imperativo corregirlo antes de lanzar.
+    </div>
+    <div class="card cyan" style="margin-top:14px;">
+        <p>💡 En el Design Critique de hoy usarás <strong>Severidad 1–4</strong> para clasificar cada hallazgo que encuentres.</p>
+    </div>
+
+        </div>
+        <div class="slide" id="slide-15" style="display:none;">
+
+    <h2>Práctica guiada <span class="tag orange">15 min</span></h2>
+    <div class="card orange">
+        <p>El profesor proyecta un wireframe de <strong>TaskSync (Laura)</strong>. En equipos, tienen <strong>5 minutos</strong> para anotar en Miro:</p>
+        <ul style="margin-top:8px;">
+            <li>¿Qué heurística se viola?</li>
+            <li>¿Cuál es el problema específico?</li>
+            <li>¿Qué severidad le asignan?</li>
+        </ul>
+    </div>
+    <div class="grid-2" style="margin-top:14px;">
+        <div class="card green">
+            <h3>Wireframe de ejemplo</h3>
+            <p>Pantalla de "Agregar tarea" de TaskSync con los siguientes problemas intencionados:</p>
+            <ul style="font-size:.85em; margin-top:6px;">
+                <li>Sin confirmación al guardar (H1)</li>
+                <li>Botón "Submit" en inglés (H2)</li>
+                <li>Sin campo de fecha visible (H5)</li>
+                <li>Sin botón "Cancelar" (H3)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Discusión grupal (10 min)</h3>
+            <ul style="font-size:.85em; margin-top:6px;">
+                <li>¿Qué encontró cada equipo?</li>
+                <li>¿Coincidieron en la severidad?</li>
+                <li>¿Qué propondrían como solución?</li>
+            </ul>
+        </div>
+    </div>
+
+        </div>
+        <div class="slide" id="slide-16" style="display:none;">
+
+    <h2>Rúbrica del Design Critique</h2>
+    <p class="muted" style="margin-bottom:10px;">Cada equipo evalúa los wireframes de otro equipo usando esta tabla:</p>
+    <table class="rubric-table">
+        <tr>
+            <th>Heurística</th>
+            <th>¿Cumple? (S/N/Parcial)</th>
+            <th>Evidencia (pantalla)</th>
+            <th>Severidad (1–4)</th>
+            <th>Sugerencia</th>
+        </tr>
+        <tr><td>H1 – Visibilidad del estado</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>H2 – Mundo real</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>H3 – Control y libertad</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>H4 – Consistencia</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>H5 – Prevención de errores</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>H6 – Reconocimiento</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>H7 – Flexibilidad</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>H8 – Estética minimalista</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>H9 – Recuperación de errores</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>H10 – Ayuda</td><td></td><td></td><td></td><td></td></tr>
+    </table>
+
+        </div>
+        <div class="slide" id="slide-17" style="display:none;">
+
+    <h2>Design Critique — Instrucciones <span class="tag cyan">60 min</span></h2>
+    <div class="card cyan" style="margin-bottom:12px;">
+        <p>🔄 <strong>Rotación de equipos:</strong> Cada equipo evalúa los wireframes del equipo siguiente (E1→E2, E2→E3, E3→E4, E4→E1)</p>
+    </div>
+    <div class="timeline">
+        <div class="timeline-item green">
+            <span class="time-label">07:40 – 07:45 · 5 min</span>
+            <strong>El equipo dueño presenta brevemente su proyecto</strong> (contexto, usuario, flujo principal) al equipo evaluador.
+        </div>
+        <div class="timeline-item orange">
+            <span class="time-label">07:45 – 08:20 · 35 min</span>
+            <strong>El equipo evaluador revisa los wireframes</strong> en Figma y llena la rúbrica heurística en Miro. Mínimo <strong>3 hallazgos</strong> documentados.
+        </div>
+        <div class="timeline-item cyan">
+            <span class="time-label">08:20 – 08:40 · 20 min</span>
+            <strong>Presentación de hallazgos al equipo dueño.</strong> Formato: "Encontramos [problema] en [pantalla], viola H[N], severidad [X], sugerimos [solución]."
+        </div>
+    </div>
+    <div class="card yellow" style="margin-top:12px;">
+        <p>⚠️ <strong>Regla de oro del critique:</strong> El feedback debe ser sobre el <em>diseño</em>, no sobre el equipo. "Esta pantalla no tiene confirmación de guardado" — no "Ustedes olvidaron poner confirmación".</p>
+    </div>
+
+        </div>
+        <div class="slide" id="slide-18" style="display:none;">
+
+    <h2>Asignación de equipos</h2>
+    <div class="grid-2" style="margin-top:10px;">
+        <div class="card cyan">
+            <h3>E1 DevCrew</h3>
+            <p>evalúa los wireframes de</p>
+            <h3 style="color:var(--green); margin-top:6px;">E2</h3>
+        </div>
+        <div class="card green">
+            <h3>E2</h3>
+            <p>evalúa los wireframes de</p>
+            <h3 style="color:var(--orange); margin-top:6px;">E3</h3>
+        </div>
+        <div class="card orange">
+            <h3>E3</h3>
+            <p>evalúa los wireframes de</p>
+            <h3 style="color:var(--pink); margin-top:6px;">E4</h3>
+        </div>
+        <div class="card pink">
+            <h3>E4</h3>
+            <p>evalúa los wireframes de</p>
+            <h3 style="color:var(--cyan); margin-top:6px;">E1 DevCrew</h3>
+        </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+        <p>📋 <strong>Entregable:</strong> Rúbrica heurística completada en Miro (frame del Design Critique). Mínimo 3 hallazgos por equipo evaluador, con pantalla, heurística, severidad y sugerencia.</p>
+    </div>
+
+        </div>
+        <div class="slide" id="slide-19" style="display:none;">
+
+    <h2>Cómo dar feedback constructivo</h2>
+    <div class="grid-2">
+        <div>
+            <p class="badge-bad" style="margin-bottom:8px;">❌ Feedback vago o personal</p>
+            <div class="ejemplo-box">"Esto se ve feo."</div>
+            <div class="ejemplo-box">"No entiendo nada de esta pantalla."</div>
+            <div class="ejemplo-box">"Ustedes no pensaron en el usuario."</div>
+            <div class="ejemplo-box">"Esto está muy básico."</div>
+        </div>
+        <div>
+            <p class="badge-ok" style="margin-bottom:8px;">✅ Feedback específico y accionable</p>
+            <div class="ejemplo-box">"La pantalla de inicio no muestra si el usuario inició sesión (H1, severidad 3). Sugerimos agregar el nombre/avatar en el header."</div>
+            <div class="ejemplo-box">"El botón 'Submit' debería decir 'Guardar' para coincidir con el idioma del usuario (H2, severidad 2)."</div>
+        </div>
+    </div>
+    <div class="card cyan" style="margin-top:14px;">
+        <p>📌 <strong>Estructura del hallazgo:</strong> [Pantalla] + [Problema específico] + [Heurística] + [Severidad] + [Sugerencia concreta]</p>
+    </div>
+
+        </div>
+        <div class="slide" id="slide-20" style="display:none;">
+
+    <h2>Presentación de hallazgos <span class="tag pink">20 min</span></h2>
+    <div class="card">
+        <p>Cada equipo tiene <strong>4–5 minutos</strong> para compartir con el grupo:</p>
+        <ul style="margin-top:8px;">
+            <li>El hallazgo más crítico (Severidad 3 o 4) que encontraron</li>
+            <li>La heurística que se viola</li>
+            <li>Su sugerencia de solución</li>
+        </ul>
+    </div>
+    <div class="card green" style="margin-top:12px;">
+        <h3>Preguntas de reflexión grupal</h3>
+        <ul style="margin-top:6px;">
+            <li>¿Qué heurística fue la más violada en todos los proyectos?</li>
+            <li>¿Qué coincidencias encontraron entre los wireframes de distintos equipos?</li>
+            <li>¿Qué corregirían primero en su propio proyecto?</li>
+        </ul>
+    </div>
+    <div class="card orange" style="margin-top:12px;">
+        <p>⚡ <strong>Conexión hacia adelante:</strong> Los hallazgos de hoy se convierten en la base para la siguiente iteración de sus wireframes y para la A6 (Pruebas de Usabilidad).</p>
+    </div>
+
+        </div>
+        <div class="slide" id="slide-21" style="display:none;">
+
+    <h2>¿A dónde vamos desde aquí?</h2>
+    <div class="card cyan" style="margin-bottom:14px;">
+        <p>Las Heurísticas de Nielsen son una <strong>evaluación sin usuarios</strong> (expertos evalúan). La próxima etapa es probar con usuarios reales — eso es la <strong>A6: Pruebas de Usabilidad</strong>.</p>
+    </div>
+    <div class="timeline">
+        <div class="timeline-item green">
+            <span class="time-label">Hoy — Sesión 15</span>
+            <strong>Evaluación Heurística</strong> (expertos → sin usuarios)
+        </div>
+        <div class="timeline-item orange">
+            <span class="time-label">Próximas sesiones</span>
+            <strong>Diseño Móvil y Alta Fidelidad</strong> — iterar wireframes con los hallazgos de hoy
+        </div>
+        <div class="timeline-item cyan">
+            <span class="time-label">A6 — Mayo</span>
+            <strong>Pruebas de Usabilidad con usuarios reales</strong> — Test Fest
+        </div>
+        <div class="timeline-item pink">
+            <span class="time-label">A7/A8 — Mayo</span>
+            <strong>Auditoría WCAG</strong> — Accesibilidad del prototipo final
+        </div>
+    </div>
+
+        </div>
+        <div class="slide" id="slide-22" style="display:none;">
+
+    <h2>Resumen de hoy</h2>
+    <div class="grid-2" style="text-align:left; margin-top:16px;">
+        <div class="card green">
+            <p>✅ Conociste las <strong>10 Heurísticas de Nielsen</strong></p>
+        </div>
+        <div class="card green">
+            <p>✅ Aprendiste a calificar problemas por <strong>severidad</strong></p>
+        </div>
+        <div class="card green">
+            <p>✅ Aplicaste las heurísticas a un wireframe real</p>
+        </div>
+        <div class="card green">
+            <p>✅ Diste y recibiste <strong>feedback estructurado</strong> en el Design Critique</p>
+        </div>
+    </div>
+    <div class="card cyan" style="margin-top:20px; text-align:left;">
+        <p>📅 <strong>Próxima sesión — Jueves 26 de Marzo:</strong> Diseño Móvil vs. Escritorio — Touch targets, gestos y contextos de uso interrumpido.</p>
+    </div>
+    <p class="muted" style="margin-top:20px;">DEIU 2026 · Ing. Ricardo Jaramillo · rjaramillo0@ucol.mx</p>
+
+        </div>
+
+
+<script>
+    var current = 0;
+    var total = 23;
+
+    function nav(dir) {
+        document.getElementById('slide-' + current).style.display = 'none';
+        current += dir;
+        if (current < 0) current = 0;
+        if (current >= total) current = total - 1;
+        var slide = document.getElementById('slide-' + current);
+        slide.style.display = 'block';
+        slide.scrollTop = 0;
+        document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+        document.getElementById('btnPrev').disabled = current === 0;
+        document.getElementById('btnNext').disabled = current === total - 1;
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nav(1);
+        if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   nav(-1);
+    });
+</script>
+</body>
+</html>
