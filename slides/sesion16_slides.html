@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesión 16 — Diseño Móvil vs. Escritorio | DEIU 2026</title>
+<style>
+/* ── TOKENS ── */
+:root{
+  --bg:#282a36; --cl:#44475a; --fg:#f8f8f2; --dim:#6272a4;
+  --cyan:#8be9fd; --green:#50fa7b; --orange:#ffb86c;
+  --pink:#ff79c6; --purple:#bd93f9; --red:#ff5555; --yellow:#f1fa8c;
+}
+
+/* ── RESET + BASE ── */
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);
+  font-family:'Segoe UI',system-ui,sans-serif;font-size:clamp(14px,1.4vw,20px);}
+
+/* ── SLIDE SYSTEM ── */
+/* Each slide fills the full viewport and uses flex to distribute content */
+.slide{
+  display:none;
+  width:100vw; height:100vh;
+  flex-direction:column;
+  justify-content:flex-start;
+  padding:3.5vh 5vw 7vh 5vw;
+  overflow:hidden; /* NO scroll — content must fit */
+  animation:fi .2s ease;
+  position:relative;
+}
+.slide.active{display:flex;}
+.slide.scrollable{overflow-y:auto;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── TYPOGRAPHY — scales with viewport ── */
+h1{font-size:clamp(1.6em,3.2vw,2.8em);color:var(--purple);margin-bottom:.3em;line-height:1.15;}
+h2{font-size:clamp(1.2em,2.2vw,1.9em);color:var(--cyan);margin-bottom:.4em;line-height:1.2;}
+h3{font-size:clamp(.85em,1.3vw,1.1em);color:var(--orange);margin-bottom:.2em;}
+p,li{font-size:clamp(.78em,1.1vw,.98em);line-height:1.55;}
+ul{padding-left:1.2em;}
+strong{color:var(--pink);}
+em{color:var(--cyan);font-style:normal;}
+.muted{color:var(--dim);font-size:.8em;}
+.center{text-align:center;align-items:center;}
+
+/* ── CARDS ── */
+.card{background:var(--cl);border-left:4px solid var(--purple);
+  border-radius:8px;padding:.7em 1em;margin:.35em 0;flex-shrink:0;}
+.card.green{border-color:var(--green);}
+.card.orange{border-color:var(--orange);}
+.card.red{border-color:var(--red);}
+.card.cyan{border-color:var(--cyan);}
+.card.yellow{border-color:var(--yellow);}
+.card.pink{border-color:var(--pink);}
+
+/* ── GRID ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.6em;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5em;}
+
+/* ── TAGS ── */
+.tag{display:inline-block;background:var(--purple);color:var(--bg);
+  font-size:.55em;font-weight:700;padding:2px 9px;border-radius:20px;vertical-align:middle;margin-left:6px;}
+.tag.orange{background:var(--orange);}
+.tag.cyan{background:var(--cyan);}
+.tag.pink{background:var(--pink);}
+.tag.green{background:var(--green);}
+
+/* ── TIMELINE ── */
+.tl{border-left:3px solid var(--purple);padding-left:1.2em;margin-left:.4em;flex:1;}
+.tli{margin-bottom:.6em;position:relative;}
+.tli::before{content:'';width:10px;height:10px;background:var(--purple);
+  border-radius:50%;position:absolute;left:-1.55em;top:.3em;}
+.tli.green::before{background:var(--green);}
+.tli.orange::before{background:var(--orange);}
+.tli.cyan::before{background:var(--cyan);}
+.tli.pink::before{background:var(--pink);}
+.tlabel{font-size:.7em;color:var(--dim);display:block;margin-bottom:.1em;}
+
+/* ── SVG WRAPPER — always fills its container proportionally ── */
+.svg-wrap{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
+.svg-wrap svg{width:100%;height:100%;max-height:100%;}
+
+/* ── SPLIT LAYOUT (text left, svg right) ── */
+.split{display:flex;gap:2vw;flex:1;min-height:0;align-items:stretch;}
+.split-text{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.split-svg{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;}
+.split-svg svg{width:100%;height:100%;max-height:45vh;}
+
+/* ── BADGE ── */
+.ok{color:var(--green);font-weight:700;}
+.bad{color:var(--red);font-weight:700;}
+
+/* ── NAV ── */
+.nav{position:fixed;bottom:1.5vh;right:2vw;display:flex;gap:.6em;z-index:9999;}
+.btn{background:var(--dim);color:var(--fg);border:none;
+  padding:.55em 1.4em;font-size:.9em;border-radius:6px;cursor:pointer;transition:background .2s;}
+.btn:hover{background:var(--purple);}
+.btn:disabled{background:var(--cl);opacity:.5;cursor:not-allowed;}
+.ctr{position:fixed;bottom:1.5vh;left:2vw;background:var(--cl);
+  padding:.5em 1em;border-radius:6px;font-size:.85em;z-index:9999;color:var(--dim);}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <button class="btn" id="P" onclick="nav(-1)" disabled>&#8592;</button>
+  <button class="btn" id="N" onclick="nav(1)">&#8594;</button>
+</div>
+<div class="ctr" id="C">1 / 14</div>
+
+<!-- ═══════════════════════════════════════════
+  S1 — PORTADA
+═══════════════════════════════════════════ -->
+<div class="slide active center" style="justify-content:center;">
+  <p class="muted" style="margin-bottom:.5em;">DEIU 2026 · Facultad de Telemática · Universidad de Colima</p>
+  <h1>Sesión 16</h1>
+  <h2 style="color:var(--pink);font-size:clamp(1.3em,2.5vw,2em);">Diseño Móvil vs. Escritorio</h2>
+  <p style="color:var(--orange);margin:.3em 0 1.2em;">Touch targets &nbsp;·&nbsp; Gestos &nbsp;·&nbsp; Contextos de uso interrumpido</p>
+
+  <!-- SVG portada -->
+  <div style="width:60%;max-width:600px;margin:0 auto;">
+  <svg viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+    <!-- desktop -->
+    <rect x="20" y="15" width="210" height="135" rx="8" fill="none" stroke="#6272a4" stroke-width="2"/>
+    <rect x="20" y="15" width="210" height="26" rx="8" fill="#44475a"/>
+    <circle cx="38" cy="28" r="5" fill="#ff5555" opacity=".7"/>
+    <circle cx="54" cy="28" r="5" fill="#ffb86c" opacity=".7"/>
+    <circle cx="70" cy="28" r="5" fill="#50fa7b" opacity=".7"/>
+    <rect x="35" y="55" width="80" height="7" rx="3" fill="#6272a4" opacity=".5"/>
+    <rect x="35" y="70" width="120" height="7" rx="3" fill="#6272a4" opacity=".35"/>
+    <rect x="35" y="85" width="100" height="7" rx="3" fill="#6272a4" opacity=".35"/>
+    <rect x="35" y="100" width="110" height="7" rx="3" fill="#6272a4" opacity=".35"/>
+    <rect x="155" y="112" width="55" height="22" rx="5" fill="#bd93f9"/>
+    <text x="182" y="127" fill="#282a36" font-size="11" text-anchor="middle" font-weight="700">Guardar</text>
+    <rect x="80" y="150" width="70" height="8" rx="2" fill="#44475a"/>
+    <text x="115" y="173" fill="#6272a4" font-size="12" text-anchor="middle">🖥️ Escritorio</text>
+    <!-- NEQ -->
+    <text x="278" y="100" fill="#ff79c6" font-size="40" text-anchor="middle" font-weight="900">≠</text>
+    <!-- phone -->
+    <rect x="340" y="10" width="100" height="165" rx="14" fill="none" stroke="#8be9fd" stroke-width="2"/>
+    <rect x="340" y="10" width="100" height="22" rx="14" fill="#44475a"/>
+    <circle cx="390" cy="21" r="4" fill="#6272a4"/>
+    <rect x="348" y="40" width="84" height="6" rx="3" fill="#6272a4" opacity=".4"/>
+    <rect x="348" y="54" width="84" height="34" rx="6" fill="#44475a"/>
+    <rect x="356" y="61" width="50" height="6" rx="2" fill="#f8f8f2" opacity=".6"/>
+    <rect x="356" y="72" width="35" height="5" rx="2" fill="#6272a4" opacity=".4"/>
+    <rect x="348" y="95" width="84" height="34" rx="6" fill="#44475a" opacity=".7"/>
+    <rect x="356" y="102" width="60" height="6" rx="2" fill="#f8f8f2" opacity=".6"/>
+    <!-- FAB -->
+    <circle cx="413" cy="152" r="14" fill="#bd93f9"/>
+    <text x="413" y="158" fill="#282a36" font-size="18" text-anchor="middle" font-weight="900">+</text>
+    <!-- bottom nav -->
+    <rect x="340" y="152" width="100" height="18" rx="14" fill="#282a36"/>
+    <text x="358" y="164" fill="#50fa7b" font-size="11">⌂</text>
+    <text x="378" y="164" fill="#6272a4" font-size="11">📋</text>
+    <text x="400" y="164" fill="#6272a4" font-size="11">👤</text>
+    <text x="390" y="180" fill="#8be9fd" font-size="12" text-anchor="middle">📱 Móvil</text>
+  </svg>
+  </div>
+
+  <div class="card cyan" style="max-width:500px;margin:1em auto 0;">
+    <p>📅 <strong>Jueves 26 de Marzo, 2026</strong> &nbsp;|&nbsp; 07:00 – 09:00 hrs</p>
+  </div>
+  <p class="muted" style="margin-top:.8em;">Ing. Ricardo Jaramillo &nbsp;·&nbsp; rjaramillo0@ucol.mx</p>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S2 — AGENDA
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>Agenda de hoy</h2>
+  <div class="tl" style="margin-top:.3em;">
+    <div class="tli"><span class="tlabel">07:00 – 07:05 · 5 min</span><strong>Apertura</strong> — Conexión con hallazgos del Design Critique del martes</div>
+    <div class="tli green"><span class="tlabel">07:05 – 07:35 · 30 min</span><strong>Teoría:</strong> Móvil vs. Escritorio — diferencias fundamentales</div>
+    <div class="tli orange"><span class="tlabel">07:35 – 07:50 · 15 min</span><strong>Touch targets</strong> — tamaños, zonas de alcance y errores comunes</div>
+    <div class="tli cyan"><span class="tlabel">07:50 – 08:10 · 20 min</span><strong>Gestos y patrones de navegación móvil</strong></div>
+    <div class="tli pink"><span class="tlabel">08:10 – 08:40 · 30 min</span><strong>Taller:</strong> Analizar sus wireframes del A5 en contexto móvil</div>
+    <div class="tli"><span class="tlabel">08:40 – 09:00 · 20 min</span><strong>Cierre:</strong> Hallazgos + intro a Responsive Design</div>
+  </div>
+  <div class="card" style="margin-top:.8em;">
+    <p>🎯 <strong>Objetivo:</strong> Entender cómo los contextos de uso móvil cambian las decisiones de diseño y aplicarlo a sus proyectos actuales.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S3 — EL CONTEXTO CAMBIA TODO
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>El contexto de uso lo cambia todo</h2>
+  <div class="card cyan" style="margin-bottom:.6em;">
+    <p>Diseñar para móvil no es <strong>"hacer lo mismo pero más pequeño"</strong>. Es rediseñar para un contexto radicalmente diferente.</p>
+  </div>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:44vh;">
+        <!-- LUGAR -->
+        <rect x="5" y="5" width="145" height="135" rx="8" fill="#44475a" opacity=".55"/>
+        <text x="77" y="26" fill="#ffb86c" font-size="12" font-weight="700" text-anchor="middle">📍 Lugar</text>
+        <!-- desktop -->
+        <rect x="15" y="36" width="52" height="34" rx="4" fill="none" stroke="#6272a4" stroke-width="1.5"/>
+        <rect x="15" y="36" width="52" height="10" rx="4" fill="#44475a"/>
+        <rect x="34" y="70" width="14" height="4" rx="1" fill="#6272a4"/>
+        <text x="41" y="85" fill="#6272a4" font-size="8" text-anchor="middle">Oficina</text>
+        <text x="41" y="95" fill="#6272a4" font-size="8" text-anchor="middle">Sentado</text>
+        <!-- phone walking -->
+        <rect x="93" y="38" width="30" height="48" rx="6" fill="none" stroke="#8be9fd" stroke-width="1.5"/>
+        <circle cx="108" cy="47" r="3" fill="#8be9fd"/>
+        <line x1="103" y1="88" x2="97" y2="108" stroke="#8be9fd" stroke-width="2"/>
+        <line x1="113" y1="88" x2="119" y2="108" stroke="#8be9fd" stroke-width="2"/>
+        <text x="108" y="122" fill="#8be9fd" font-size="8" text-anchor="middle">Calle/camión</text>
+        <text x="108" y="132" fill="#8be9fd" font-size="8" text-anchor="middle">En movimiento</text>
+
+        <!-- ATENCIÓN -->
+        <rect x="5" y="155" width="145" height="140" rx="8" fill="#44475a" opacity=".55"/>
+        <text x="77" y="175" fill="#ff79c6" font-size="12" font-weight="700" text-anchor="middle">🧠 Atención</text>
+        <rect x="15" y="185" width="55" height="12" rx="3" fill="#50fa7b"/>
+        <text x="42" y="195" fill="#282a36" font-size="8" text-anchor="middle" font-weight="700">100% enfoque</text>
+        <text x="42" y="212" fill="#6272a4" font-size="8" text-anchor="middle">20–60 min</text>
+        <text x="42" y="222" fill="#6272a4" font-size="8" text-anchor="middle">Sin interrupciones</text>
+        <rect x="83" y="185" width="55" height="12" rx="3" fill="#ff5555" opacity=".6"/>
+        <rect x="83" y="185" width="18" height="12" rx="3" fill="#ffb86c"/>
+        <text x="110" y="212" fill="#8be9fd" font-size="8" text-anchor="middle">1–3 min</text>
+        <text x="110" y="222" fill="#8be9fd" font-size="8" text-anchor="middle">Interrumpido</text>
+        <text x="42" y="255" fill="#6272a4" font-size="9" text-anchor="middle">🖥️ Escritorio</text>
+        <text x="110" y="255" fill="#8be9fd" font-size="9" text-anchor="middle">📱 Móvil</text>
+        <line x1="77" y1="180" x2="77" y2="285" stroke="#6272a4" stroke-width="1" stroke-dasharray="3"/>
+
+        <!-- INTERACCIÓN -->
+        <rect x="165" y="5" width="150" height="290" rx="8" fill="#44475a" opacity=".55"/>
+        <text x="240" y="26" fill="#50fa7b" font-size="12" font-weight="700" text-anchor="middle">✋ Interacción</text>
+        <!-- mouse cursor -->
+        <polygon points="188,45 188,78 194,71 200,85 205,82 199,68 209,68" fill="#f8f8f2" stroke="#6272a4" stroke-width="1"/>
+        <text x="200" y="100" fill="#6272a4" font-size="8" text-anchor="middle">Mouse</text>
+        <text x="200" y="110" fill="#6272a4" font-size="8" text-anchor="middle">Precisión alta</text>
+        <!-- finger -->
+        <ellipse cx="290" cy="65" rx="16" ry="26" fill="#ffb86c" opacity=".75"/>
+        <ellipse cx="290" cy="44" rx="9" ry="11" fill="#ffb86c"/>
+        <text x="290" y="100" fill="#8be9fd" font-size="8" text-anchor="middle">Dedo pulgar</text>
+        <text x="290" y="110" fill="#8be9fd" font-size="8" text-anchor="middle">44–57 px</text>
+        <!-- area circle -->
+        <circle cx="290" cy="65" r="22" fill="none" stroke="#ffb86c" stroke-width="1.5" stroke-dasharray="4" opacity=".5"/>
+        <text x="240" y="145" fill="#6272a4" font-size="8" text-anchor="middle">Mouse: 1px de precisión</text>
+        <text x="240" y="157" fill="#8be9fd" font-size="8" text-anchor="middle">Dedo: área de contacto ±44px</text>
+        <!-- comparison bar -->
+        <rect x="178" y="175" width="4" height="4" rx="1" fill="#6272a4"/>
+        <text x="186" y="179" fill="#6272a4" font-size="8">Mouse = 1px exacto</text>
+        <rect x="178" y="200" width="44" height="10" rx="2" fill="#ffb86c" opacity=".5"/>
+        <text x="178" y="225" fill="#ffb86c" font-size="8">Dedo = 44px área</text>
+        <text x="240" y="265" fill="#yellow" font-size="8" text-anchor="middle" fill="#f1fa8c">↑ Por esto los botones deben ser grandes</text>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="card yellow">
+        <p>🔑 <strong>Principio central:</strong> El diseño móvil debe asumir que el usuario puede ser <strong>interrumpido en cualquier momento</strong> y debe poder retomar la tarea sin esfuerzo.</p>
+      </div>
+      <div class="card green" style="margin-top:.5em;">
+        <h3>¿Por qué importa para su proyecto?</h3>
+        <ul style="margin-top:.3em;">
+          <li>Sus usuarios del <strong>A2</strong> usarán la app en contextos reales</li>
+          <li>Los wireframes del <strong>A5</strong> fueron diseñados para escritorio</li>
+          <li>Hoy identifican qué cambia en móvil</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S4 — TOUCH TARGETS
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>Touch Targets — El problema del dedo</h2>
+  <div class="card red" style="margin-bottom:.5em;">
+    <p>El error más común: elementos interactivos <strong>demasiado pequeños para tocar con el dedo</strong>. Un dedo promedio toca un área de 44–57px.</p>
+  </div>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 300 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:48vh;">
+        <!-- CORRECTO -->
+        <rect x="5" y="5" width="135" height="310" rx="8" fill="#44475a" opacity=".5"/>
+        <text x="72" y="28" fill="#50fa7b" font-size="12" font-weight="700" text-anchor="middle">✅ Correcto</text>
+        <!-- touch area dashed -->
+        <rect x="22" y="45" width="88" height="88" rx="8" fill="#50fa7b" opacity=".08" stroke="#50fa7b" stroke-width="1.5" stroke-dasharray="4"/>
+        <!-- button 44px -->
+        <rect x="38" y="67" width="56" height="44" rx="6" fill="#50fa7b"/>
+        <text x="66" y="93" fill="#282a36" font-size="11" text-anchor="middle" font-weight="700">Guardar</text>
+        <!-- dimension arrows -->
+        <line x1="22" y1="142" x2="110" y2="142" stroke="#50fa7b" stroke-width="1.5"/>
+        <line x1="22" y1="138" x2="22" y2="146" stroke="#50fa7b" stroke-width="1.5"/>
+        <line x1="110" y1="138" x2="110" y2="146" stroke="#50fa7b" stroke-width="1.5"/>
+        <text x="66" y="157" fill="#50fa7b" font-size="10" text-anchor="middle">88px (área toque)</text>
+        <line x1="38" y1="162" x2="94" y2="162" stroke="#6272a4" stroke-width="1.5"/>
+        <text x="66" y="175" fill="#f8f8f2" font-size="10" text-anchor="middle">56px (botón)</text>
+        <!-- finger -->
+        <ellipse cx="66" cy="85" rx="24" ry="34" fill="#ffb86c" opacity=".18"/>
+        <ellipse cx="66" cy="61" rx="13" ry="16" fill="#ffb86c" opacity=".22"/>
+        <!-- standards -->
+        <text x="20" y="200" fill="#6272a4" font-size="9">Estándares:</text>
+        <rect x="20" y="208" width="7" height="7" rx="1" fill="#50fa7b"/>
+        <text x="32" y="215" fill="#f8f8f2" font-size="8.5">Apple HIG: 44×44pt</text>
+        <rect x="20" y="222" width="7" height="7" rx="1" fill="#8be9fd"/>
+        <text x="32" y="229" fill="#f8f8f2" font-size="8.5">Material: 48×48dp</text>
+        <rect x="20" y="236" width="7" height="7" rx="1" fill="#bd93f9"/>
+        <text x="32" y="243" fill="#f8f8f2" font-size="8.5">WCAG 2.5.5: 44×44px</text>
+        <text x="72" y="275" fill="#6272a4" font-size="9" text-anchor="middle">Separación entre targets:</text>
+        <text x="72" y="290" fill="#ffb86c" font-size="14" text-anchor="middle" font-weight="700">≥ 8 px</text>
+
+        <!-- INCORRECTO -->
+        <rect x="160" y="5" width="135" height="310" rx="8" fill="#44475a" opacity=".5"/>
+        <text x="228" y="28" fill="#ff5555" font-size="12" font-weight="700" text-anchor="middle">❌ Incorrecto</text>
+        <!-- finger large -->
+        <ellipse cx="228" cy="95" rx="30" ry="42" fill="#ffb86c" opacity=".18"/>
+        <ellipse cx="228" cy="60" rx="18" ry="22" fill="#ffb86c" opacity=".22"/>
+        <!-- tiny button -->
+        <rect x="220" y="100" width="16" height="16" rx="2" fill="#ff5555"/>
+        <text x="228" y="112" fill="#f8f8f2" font-size="8" text-anchor="middle">✎</text>
+        <!-- dimension -->
+        <line x1="220" y1="125" x2="236" y2="125" stroke="#ff5555" stroke-width="1.5"/>
+        <line x1="220" y1="121" x2="220" y2="129" stroke="#ff5555" stroke-width="1.5"/>
+        <line x1="236" y1="121" x2="236" y2="129" stroke="#ff5555" stroke-width="1.5"/>
+        <text x="228" y="142" fill="#ff5555" font-size="10" text-anchor="middle">16px ❌</text>
+        <!-- two tiny buttons close together -->
+        <rect x="248" y="100" width="14" height="14" rx="2" fill="#ff5555" opacity=".7"/>
+        <text x="255" y="111" fill="#f8f8f2" font-size="7" text-anchor="middle">🗑</text>
+        <line x1="236" y1="118" x2="248" y2="118" stroke="#ff79c6" stroke-width="1.5"/>
+        <text x="242" y="132" fill="#ff79c6" font-size="8" text-anchor="middle">2px</text>
+        <!-- problem box -->
+        <rect x="168" y="165" width="119" height="80" rx="6" fill="#ff5555" opacity=".12" stroke="#ff5555" stroke-width="1"/>
+        <text x="228" y="183" fill="#ff5555" font-size="9.5" text-anchor="middle">Dedo más grande</text>
+        <text x="228" y="196" fill="#ff5555" font-size="9.5" text-anchor="middle">que el botón →</text>
+        <text x="228" y="210" fill="#ff5555" font-size="9.5" text-anchor="middle">toques erróneos</text>
+        <text x="228" y="224" fill="#ff5555" font-size="9.5" text-anchor="middle">y frustración</text>
+        <text x="228" y="275" fill="#6272a4" font-size="9" text-anchor="middle">💡 Si hay que pellizcar</text>
+        <text x="228" y="290" fill="#6272a4" font-size="9" text-anchor="middle">→ muy pequeño</text>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="card green">
+        <h3>En sus wireframes revisen:</h3>
+        <ul style="margin-top:.3em;">
+          <li>¿Los botones tienen al menos <strong>44px de alto</strong>?</li>
+          <li>¿Hay <strong>8px de separación</strong> entre elementos tocables?</li>
+          <li>¿Los íconos tienen padding suficiente?</li>
+          <li>¿Los checkboxes y radios son suficientemente grandes?</li>
+        </ul>
+      </div>
+      <div class="card orange" style="margin-top:.5em;">
+        <h3>Errores más comunes</h3>
+        <ul style="margin-top:.3em;">
+          <li>Links de texto sin área de toque extra</li>
+          <li>Íconos de 16×16px sin padding</li>
+          <li>Botones "Cancelar" y "Confirmar" pegados</li>
+          <li>Filas de tabla con altura de 20px</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S5 — ZONAS DEL PULGAR
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>Zonas de alcance del pulgar</h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>El <strong>75% de las interacciones móviles</strong> se hacen con una sola mano usando el pulgar. No todas las zonas de la pantalla son igual de accesibles.</p>
+  </div>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 200 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:50vh;">
+        <!-- phone -->
+        <rect x="30" y="5" width="140" height="300" rx="20" fill="#1e2030" stroke="#6272a4" stroke-width="2"/>
+        <rect x="30" y="5" width="140" height="24" rx="20" fill="#282a36"/>
+        <rect x="30" y="281" width="140" height="24" rx="20" fill="#282a36"/>
+        <circle cx="100" cy="17" r="4" fill="#6272a4"/>
+        <!-- screen -->
+        <rect x="38" y="27" width="124" height="256" rx="4" fill="#282a36"/>
+        <!-- ZONA ROJA -->
+        <rect x="38" y="27" width="124" height="78" rx="4" fill="#ff5555" opacity=".3"/>
+        <text x="100" y="68" fill="#ff5555" font-size="13" text-anchor="middle" font-weight="700">🔴 Difícil</text>
+        <text x="100" y="82" fill="#ff5555" font-size="9" text-anchor="middle">Esquina superior</text>
+        <!-- ZONA AMARILLA -->
+        <rect x="38" y="105" width="124" height="80" rx="0" fill="#f1fa8c" opacity=".18"/>
+        <text x="100" y="148" fill="#f1fa8c" font-size="13" text-anchor="middle" font-weight="700">🟡 Esfuerzo</text>
+        <text x="100" y="162" fill="#f1fa8c" font-size="9" text-anchor="middle">Centro</text>
+        <!-- ZONA VERDE -->
+        <rect x="38" y="185" width="124" height="98" rx="4" fill="#50fa7b" opacity=".22"/>
+        <text x="100" y="228" fill="#50fa7b" font-size="13" text-anchor="middle" font-weight="700">🟢 Natural</text>
+        <text x="100" y="242" fill="#50fa7b" font-size="9" text-anchor="middle">Parte inferior</text>
+        <!-- thumb arc -->
+        <path d="M 168 330 Q 50 270 75 180 Q 88 130 115 85" fill="none" stroke="#ffb86c" stroke-width="2.5" stroke-dasharray="6,3" opacity=".7"/>
+        <!-- thumb -->
+        <ellipse cx="168" cy="332" rx="16" ry="11" fill="#ffb86c" opacity=".85" transform="rotate(-25,168,332)"/>
+        <text x="100" y="350" fill="#ffb86c" font-size="10" text-anchor="middle">← Arco del pulgar</text>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="card green">
+        <h3>🟢 Zona natural — inferior</h3>
+        <p style="margin-top:.2em;">Fácil de alcanzar sin mover la mano. Aquí van las <strong>acciones más frecuentes</strong>: botón principal, barra de navegación, FAB.</p>
+        <p style="font-size:.82em;color:var(--green);margin-top:.3em;">→ Bottom navigation bar va aquí</p>
+      </div>
+      <div class="card yellow" style="margin-top:.4em;">
+        <h3>🟡 Zona de esfuerzo — centro</h3>
+        <p style="margin-top:.2em;">Requiere ajustar el agarre. Buena para <strong>acciones secundarias</strong> y lectura de contenido principal.</p>
+      </div>
+      <div class="card red" style="margin-top:.4em;">
+        <h3>🔴 Zona difícil — esquina superior</h3>
+        <p style="margin-top:.2em;">Muy difícil de alcanzar con una mano. <strong>Nunca poner acciones críticas aquí.</strong></p>
+        <p style="font-size:.82em;color:var(--red);margin-top:.3em;">→ Nunca el botón "Confirmar" o "Pagar"</p>
+      </div>
+      <div class="card orange" style="margin-top:.4em;">
+        <p>📱 <strong>Por eso la navegación principal va ABAJO en móvil</strong>, no arriba como en escritorio.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S6 — GESTOS
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>Gestos táctiles — El vocabulario del móvil</h2>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 310" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- TAP -->
+      <rect x="8" y="8" width="155" height="135" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="85" y="30" fill="#50fa7b" font-size="13" font-weight="700" text-anchor="middle">👆 Tap</text>
+      <circle cx="85" cy="85" r="22" fill="#50fa7b" opacity=".12" stroke="#50fa7b" stroke-width="1.5"/>
+      <ellipse cx="85" cy="72" rx="10" ry="13" fill="#ffb86c" opacity=".8"/>
+      <line x1="85" y1="58" x2="85" y2="42" stroke="#50fa7b" stroke-width="2.5"/>
+      <polygon points="80,42 90,42 85,32" fill="#50fa7b"/>
+      <text x="85" y="118" fill="#f8f8f2" font-size="10" text-anchor="middle">Clic / selección</text>
+      <text x="85" y="131" fill="#6272a4" font-size="9" text-anchor="middle">Acción principal</text>
+
+      <!-- DOBLE TAP -->
+      <rect x="178" y="8" width="155" height="135" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="255" y="30" fill="#8be9fd" font-size="13" font-weight="700" text-anchor="middle">👆👆 Doble tap</text>
+      <circle cx="245" cy="80" r="14" fill="#8be9fd" opacity=".15"/>
+      <ellipse cx="245" cy="70" rx="9" ry="11" fill="#ffb86c" opacity=".7"/>
+      <circle cx="265" cy="82" r="14" fill="#8be9fd" opacity=".12"/>
+      <ellipse cx="265" cy="72" rx="9" ry="11" fill="#ffb86c" opacity=".6"/>
+      <text x="255" y="118" fill="#f8f8f2" font-size="10" text-anchor="middle">Zoom / like</text>
+      <text x="255" y="131" fill="#6272a4" font-size="9" text-anchor="middle">Acción secundaria</text>
+
+      <!-- SWIPE H -->
+      <rect x="348" y="8" width="155" height="135" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="425" y="30" fill="#ffb86c" font-size="13" font-weight="700" text-anchor="middle">👉 Swipe</text>
+      <ellipse cx="370" cy="80" r="11" fill="#ffb86c" opacity=".7"/>
+      <line x1="370" y1="80" x2="455" y2="80" stroke="#ffb86c" stroke-width="3"/>
+      <polygon points="455,74 468,80 455,86" fill="#ffb86c"/>
+      <text x="425" y="118" fill="#f8f8f2" font-size="10" text-anchor="middle">Navegar / eliminar</text>
+      <text x="425" y="131" fill="#6272a4" font-size="9" text-anchor="middle">Carrusel, drawer lateral</text>
+
+      <!-- SCROLL -->
+      <rect x="518" y="8" width="174" height="135" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="605" y="30" fill="#bd93f9" font-size="13" font-weight="700" text-anchor="middle">☝️ Scroll vertical</text>
+      <ellipse cx="605" cy="95" r="11" fill="#ffb86c" opacity=".7"/>
+      <line x1="605" y1="95" x2="605" y2="48" stroke="#bd93f9" stroke-width="3"/>
+      <polygon points="599,48 611,48 605,35" fill="#bd93f9"/>
+      <text x="605" y="118" fill="#f8f8f2" font-size="10" text-anchor="middle">Navegar contenido</text>
+      <text x="605" y="131" fill="#6272a4" font-size="9" text-anchor="middle">El gesto más común</text>
+
+      <!-- PINCH -->
+      <rect x="8" y="160" width="155" height="143" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="85" y="182" fill="#ff79c6" font-size="13" font-weight="700" text-anchor="middle">🤏 Pinch</text>
+      <ellipse cx="62" cy="230" rx="10" ry="13" fill="#ffb86c" opacity=".7"/>
+      <ellipse cx="108" cy="230" rx="10" ry="13" fill="#ffb86c" opacity=".7"/>
+      <line x1="62" y1="228" x2="40" y2="210" stroke="#ff79c6" stroke-width="1.5"/>
+      <line x1="108" y1="228" x2="130" y2="210" stroke="#ff79c6" stroke-width="1.5"/>
+      <text x="85" y="270" fill="#f8f8f2" font-size="10" text-anchor="middle">Zoom in / out</text>
+      <text x="85" y="285" fill="#6272a4" font-size="9" text-anchor="middle">Mapas, imágenes</text>
+
+      <!-- PRESS LARGO -->
+      <rect x="178" y="160" width="155" height="143" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="255" y="182" fill="#yellow" font-size="13" font-weight="700" text-anchor="middle" fill="#f1fa8c">☝️ Press largo</text>
+      <circle cx="255" cy="232" r="16" fill="#f1fa8c" opacity=".12" stroke="#f1fa8c" stroke-width="1.5"/>
+      <circle cx="255" cy="232" r="25" fill="none" stroke="#f1fa8c" stroke-width="1" opacity=".35"/>
+      <ellipse cx="255" cy="222" rx="11" ry="14" fill="#ffb86c" opacity=".75"/>
+      <text x="255" y="270" fill="#f8f8f2" font-size="10" text-anchor="middle">Menú contextual</text>
+      <text x="255" y="285" fill="#6272a4" font-size="9" text-anchor="middle">Modo selección, arrastrar</text>
+
+      <!-- PULL TO REFRESH -->
+      <rect x="348" y="160" width="155" height="143" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="425" y="182" fill="#50fa7b" font-size="13" font-weight="700" text-anchor="middle">↓ Pull refresh</text>
+      <ellipse cx="425" cy="215" rx="11" ry="14" fill="#ffb86c" opacity=".7"/>
+      <line x1="425" y1="215" x2="425" y2="258" stroke="#50fa7b" stroke-width="3"/>
+      <polygon points="418,258 432,258 425,272" fill="#50fa7b"/>
+      <text x="425" y="285" fill="#6272a4" font-size="9" text-anchor="middle">Actualizar contenido</text>
+
+      <!-- ADVERTENCIA -->
+      <rect x="518" y="160" width="174" height="143" rx="8" fill="#ff5555" opacity=".1" stroke="#ff5555" stroke-width="1.5"/>
+      <text x="605" y="182" fill="#ff5555" font-size="13" font-weight="700" text-anchor="middle">⚠️ Regla</text>
+      <text x="605" y="205" fill="#f8f8f2" font-size="10" text-anchor="middle">Los gestos</text>
+      <text x="605" y="220" fill="#f8f8f2" font-size="10" text-anchor="middle">no son descubribles.</text>
+      <text x="605" y="242" fill="#ffb86c" font-size="10" text-anchor="middle">Funciones críticas</text>
+      <text x="605" y="257" fill="#ffb86c" font-size="10" text-anchor="middle">necesitan botón visible</text>
+      <text x="605" y="272" fill="#ffb86c" font-size="10" text-anchor="middle">además del gesto.</text>
+      <text x="605" y="290" fill="#6272a4" font-size="9" text-anchor="middle">(H10 - Nielsen)</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S7 — PATRONES DE NAVEGACIÓN
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>Patrones de navegación móvil</h2>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- BOTTOM NAV -->
+      <rect x="8" y="8" width="158" height="308" rx="10" fill="#44475a" opacity=".5"/>
+      <text x="87" y="30" fill="#8be9fd" font-size="12" font-weight="700" text-anchor="middle">Bottom Nav Bar</text>
+      <rect x="22" y="38" width="128" height="238" rx="10" fill="#282a36" stroke="#6272a4" stroke-width="1.5"/>
+      <rect x="22" y="38" width="128" height="22" rx="10" fill="#44475a"/>
+      <text x="86" y="52" fill="#f8f8f2" font-size="9" text-anchor="middle">Mis tareas</text>
+      <rect x="30" y="68" width="112" height="18" rx="4" fill="#44475a"/>
+      <rect x="30" y="92" width="112" height="18" rx="4" fill="#44475a" opacity=".7"/>
+      <rect x="30" y="116" width="112" height="18" rx="4" fill="#44475a" opacity=".5"/>
+      <rect x="30" y="140" width="112" height="18" rx="4" fill="#44475a" opacity=".35"/>
+      <!-- FAB -->
+      <circle cx="122" cy="240" r="16" fill="#bd93f9"/>
+      <text x="122" y="246" fill="#282a36" font-size="20" text-anchor="middle" font-weight="900">+</text>
+      <!-- bottom nav bar -->
+      <rect x="22" y="254" width="128" height="22" rx="10" fill="#44475a"/>
+      <text x="44" y="268" fill="#50fa7b" font-size="14">⌂</text>
+      <text x="70" y="268" fill="#6272a4" font-size="14">📋</text>
+      <text x="96" y="268" fill="#6272a4" font-size="14">📅</text>
+      <text x="122" y="268" fill="#6272a4" font-size="14">👤</text>
+      <text x="87" y="295" fill="#f8f8f2" font-size="9" text-anchor="middle">3–5 secciones · siempre visible</text>
+      <text x="87" y="308" fill="#50fa7b" font-size="9" text-anchor="middle">✅ Recomendado</text>
+
+      <!-- HAMBURGER -->
+      <rect x="182" y="8" width="158" height="308" rx="10" fill="#44475a" opacity=".5"/>
+      <text x="261" y="30" fill="#ffb86c" font-size="12" font-weight="700" text-anchor="middle">Hamburger ☰</text>
+      <rect x="196" y="38" width="128" height="238" rx="10" fill="#282a36" stroke="#6272a4" stroke-width="1.5"/>
+      <rect x="196" y="38" width="128" height="22" rx="10" fill="#44475a"/>
+      <rect x="204" y="44" width="20" height="3" rx="1" fill="#f8f8f2"/>
+      <rect x="204" y="50" width="20" height="3" rx="1" fill="#f8f8f2"/>
+      <rect x="204" y="56" width="20" height="3" rx="1" fill="#f8f8f2"/>
+      <!-- side drawer -->
+      <rect x="196" y="60" width="80" height="216" rx="0" fill="#44475a" opacity=".9"/>
+      <rect x="204" y="72" width="64" height="9" rx="3" fill="#6272a4" opacity=".5"/>
+      <rect x="204" y="88" width="64" height="9" rx="3" fill="#6272a4" opacity=".35"/>
+      <rect x="204" y="104" width="64" height="9" rx="3" fill="#6272a4" opacity=".35"/>
+      <rect x="204" y="120" width="64" height="9" rx="3" fill="#6272a4" opacity=".35"/>
+      <rect x="196" y="254" width="128" height="22" rx="10" fill="#282a36"/>
+      <text x="261" y="295" fill="#f8f8f2" font-size="9" text-anchor="middle">Oculta navegación</text>
+      <text x="261" y="308" fill="#ffb86c" font-size="9" text-anchor="middle">⚠️ Solo para secundaria</text>
+
+      <!-- TAB BAR -->
+      <rect x="356" y="8" width="158" height="308" rx="10" fill="#44475a" opacity=".5"/>
+      <text x="435" y="30" fill="#50fa7b" font-size="12" font-weight="700" text-anchor="middle">Tab Bar Superior</text>
+      <rect x="370" y="38" width="128" height="238" rx="10" fill="#282a36" stroke="#6272a4" stroke-width="1.5"/>
+      <rect x="370" y="38" width="128" height="22" rx="10" fill="#44475a"/>
+      <text x="435" y="52" fill="#f8f8f2" font-size="9" text-anchor="middle">App</text>
+      <!-- tabs -->
+      <rect x="370" y="60" width="128" height="24" rx="0" fill="#1e2030"/>
+      <rect x="370" y="60" width="43" height="24" rx="0" fill="#44475a"/>
+      <text x="391" y="75" fill="#50fa7b" font-size="9" text-anchor="middle" font-weight="700">Hoy</text>
+      <text x="434" y="75" fill="#6272a4" font-size="9" text-anchor="middle">Semana</text>
+      <text x="477" y="75" fill="#6272a4" font-size="9" text-anchor="middle">Mes</text>
+      <rect x="378" y="92" width="112" height="16" rx="4" fill="#44475a"/>
+      <rect x="378" y="114" width="112" height="16" rx="4" fill="#44475a" opacity=".7"/>
+      <rect x="378" y="136" width="112" height="16" rx="4" fill="#44475a" opacity=".5"/>
+      <rect x="370" y="254" width="128" height="22" rx="10" fill="#282a36"/>
+      <text x="435" y="295" fill="#f8f8f2" font-size="9" text-anchor="middle">Cambiar entre vistas</text>
+      <text x="435" y="308" fill="#6272a4" font-size="9" text-anchor="middle">Máx. 4 tabs · Ej: WhatsApp</text>
+
+      <!-- FAB SOLO -->
+      <rect x="530" y="8" width="162" height="308" rx="10" fill="#44475a" opacity=".5"/>
+      <text x="611" y="30" fill="#ff79c6" font-size="12" font-weight="700" text-anchor="middle">FAB</text>
+      <rect x="544" y="38" width="128" height="238" rx="10" fill="#282a36" stroke="#6272a4" stroke-width="1.5"/>
+      <rect x="544" y="38" width="128" height="22" rx="10" fill="#44475a"/>
+      <text x="611" y="52" fill="#f8f8f2" font-size="9" text-anchor="middle">Pantalla</text>
+      <rect x="552" y="68" width="112" height="16" rx="4" fill="#44475a"/>
+      <rect x="552" y="90" width="112" height="16" rx="4" fill="#44475a" opacity=".7"/>
+      <rect x="552" y="112" width="112" height="16" rx="4" fill="#44475a" opacity=".5"/>
+      <!-- FAB prominent -->
+      <circle cx="648" cy="252" r="20" fill="#bd93f9"/>
+      <text x="648" y="259" fill="#282a36" font-size="24" text-anchor="middle" font-weight="900">+</text>
+      <rect x="544" y="254" width="128" height="22" rx="10" fill="#282a36"/>
+      <text x="611" y="295" fill="#f8f8f2" font-size="9" text-anchor="middle">Acción primaria siempre visible</text>
+      <text x="611" y="308" fill="#ff79c6" font-size="9" text-anchor="middle">Ej: Redactar en Gmail</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S8 — DISEÑO PARA INTERRUPCIÓN
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>Diseño para la interrupción</h2>
+  <div class="card red" style="margin-bottom:.5em;">
+    <p>El usuario móvil <strong>será interrumpido</strong>: llamada, notificación, bajar del camión. El diseño debe anticiparlo.</p>
+  </div>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- Paso 1 -->
+      <rect x="10" y="30" width="120" height="70" rx="8" fill="#44475a"/>
+      <text x="70" y="55" fill="#8be9fd" font-size="11" text-anchor="middle" font-weight="700">Llena formulario</text>
+      <text x="70" y="70" fill="#6272a4" font-size="10" text-anchor="middle">Paso 2 de 4</text>
+      <rect x="20" y="78" width="100" height="6" rx="3" fill="#50fa7b" opacity=".4"/>
+      <rect x="20" y="78" width="50" height="6" rx="3" fill="#50fa7b"/>
+      <polygon points="130,62 145,67 130,72" fill="#f8f8f2"/>
+      <!-- Interrupción -->
+      <rect x="152" y="18" width="130" height="90" rx="8" fill="#ff5555" opacity=".18" stroke="#ff5555" stroke-width="1.5"/>
+      <text x="217" y="50" fill="#ff5555" font-size="30" text-anchor="middle">📲</text>
+      <text x="217" y="74" fill="#ff5555" font-size="11" text-anchor="middle" font-weight="700">Llamada entrante</text>
+      <text x="217" y="88" fill="#ff5555" font-size="10" text-anchor="middle">Interrumpe el flujo</text>
+      <!-- fork arrows -->
+      <line x1="282" y1="63" x2="315" y2="38" stroke="#ff5555" stroke-width="1.5"/>
+      <line x1="282" y1="63" x2="315" y2="128" stroke="#50fa7b" stroke-width="1.5"/>
+      <!-- MAL -->
+      <rect x="315" y="8" width="145" height="65" rx="8" fill="#ff5555" opacity=".12" stroke="#ff5555" stroke-width="1"/>
+      <text x="387" y="30" fill="#ff5555" font-size="11" text-anchor="middle" font-weight="700">❌ Mal diseño</text>
+      <text x="387" y="47" fill="#f8f8f2" font-size="10" text-anchor="middle">Datos perdidos</text>
+      <text x="387" y="62" fill="#f8f8f2" font-size="10" text-anchor="middle">Empieza de cero → abandona</text>
+      <!-- BIEN -->
+      <rect x="315" y="98" width="145" height="75" rx="8" fill="#50fa7b" opacity=".1" stroke="#50fa7b" stroke-width="1"/>
+      <text x="387" y="118" fill="#50fa7b" font-size="11" text-anchor="middle" font-weight="700">✅ Buen diseño</text>
+      <text x="387" y="135" fill="#f8f8f2" font-size="10" text-anchor="middle">Estado guardado</text>
+      <text x="387" y="150" fill="#f8f8f2" font-size="10" text-anchor="middle">"Continúa donde lo dejaste"</text>
+      <text x="387" y="165" fill="#6272a4" font-size="9" text-anchor="middle">Progreso conservado ✓</text>
+      <!-- resultado buen diseño -->
+      <polygon points="460,132 475,137 460,142" fill="#50fa7b"/>
+      <rect x="480" y="108" width="210" height="90" rx="8" fill="#44475a"/>
+      <text x="585" y="128" fill="#50fa7b" font-size="11" text-anchor="middle" font-weight="700">Al regresar a la app:</text>
+      <rect x="492" y="136" width="186" height="52" rx="6" fill="#282a36"/>
+      <text x="585" y="155" fill="#8be9fd" font-size="10" text-anchor="middle">📋 Paso 2 de 4 — guardado</text>
+      <rect x="504" y="162" width="100" height="3" rx="2" fill="#50fa7b" opacity=".4"/>
+      <rect x="504" y="162" width="50" height="3" rx="2" fill="#50fa7b"/>
+      <rect x="618" y="158" width="50" height="18" rx="4" fill="#50fa7b"/>
+      <text x="643" y="170" fill="#282a36" font-size="9" text-anchor="middle" font-weight="700">Continuar</text>
+    </svg>
+  </div>
+  <div class="grid-2" style="margin-top:.4em;flex-shrink:0;">
+    <div class="card green">
+      <h3>Patrones clave</h3>
+      <ul style="margin-top:.2em;">
+        <li><strong>Guardar estado</strong> automáticamente en formularios</li>
+        <li><strong>Indicador de progreso</strong> (Paso X de Y)</li>
+        <li><strong>Banner</strong> al regresar: "Continúa tu pedido"</li>
+      </ul>
+    </div>
+    <div class="card orange">
+      <h3>Ejemplos reales</h3>
+      <ul style="margin-top:.2em;">
+        <li>✅ <strong>Rappi:</strong> carrito persiste entre sesiones</li>
+        <li>✅ <strong>Duolingo:</strong> "¿Continuar lección?"</li>
+        <li>❌ Formulario que borra al apagarse la pantalla</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S9 — ESCRITORIO VS MÓVIL SIDE BY SIDE
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>El mismo contenido — dos diseños completamente distintos</h2>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- ESCRITORIO -->
+      <text x="185" y="22" fill="#6272a4" font-size="14" text-anchor="middle" font-weight="700">🖥️ Escritorio — Lista de tareas</text>
+      <rect x="10" y="30" width="350" height="255" rx="8" fill="#1e2030" stroke="#6272a4" stroke-width="2"/>
+      <rect x="10" y="30" width="350" height="26" rx="8" fill="#44475a"/>
+      <text x="185" y="47" fill="#f8f8f2" font-size="10" text-anchor="middle">TaskSync · Mis Tareas</text>
+      <!-- sidebar -->
+      <rect x="10" y="56" width="80" height="229" rx="0" fill="#282a36"/>
+      <rect x="18" y="68" width="64" height="8" rx="2" fill="#6272a4" opacity=".5"/>
+      <rect x="18" y="82" width="64" height="8" rx="2" fill="#6272a4" opacity=".3"/>
+      <rect x="18" y="96" width="64" height="8" rx="2" fill="#6272a4" opacity=".3"/>
+      <rect x="18" y="110" width="64" height="8" rx="2" fill="#6272a4" opacity=".3"/>
+      <!-- table header -->
+      <rect x="90" y="56" width="270" height="22" rx="0" fill="#44475a"/>
+      <text x="108" y="70" fill="#6272a4" font-size="8">Tarea</text>
+      <text x="168" y="70" fill="#6272a4" font-size="8">Proyecto</text>
+      <text x="228" y="70" fill="#6272a4" font-size="8">Fecha</text>
+      <text x="278" y="70" fill="#6272a4" font-size="8">Prior.</text>
+      <text x="318" y="70" fill="#6272a4" font-size="8">Estado</text>
+      <!-- rows -->
+      <rect x="90" y="78" width="270" height="22" rx="0" fill="#44475a" opacity=".35"/>
+      <text x="105" y="92" fill="#f8f8f2" font-size="8">Revisar diseño</text>
+      <text x="168" y="92" fill="#6272a4" font-size="8">DEIU</text>
+      <text x="228" y="92" fill="#6272a4" font-size="8">26/03</text>
+      <rect x="272" y="82" width="30" height="10" rx="3" fill="#ff5555" opacity=".5"/>
+      <text x="287" y="90" fill="#f8f8f2" font-size="7" text-anchor="middle">Alta</text>
+      <rect x="310" y="82" width="40" height="10" rx="3" fill="#50fa7b" opacity=".4"/>
+      <text x="330" y="90" fill="#f8f8f2" font-size="7" text-anchor="middle">En curso</text>
+      <!-- hover actions -->
+      <rect x="344" y="80" width="10" height="8" rx="1" fill="#bd93f9" opacity=".6"/>
+      <rect x="344" y="92" width="10" height="8" rx="1" fill="#ff5555" opacity=".6"/>
+      <rect x="90" y="100" width="270" height="22" rx="0" fill="#44475a" opacity=".18"/>
+      <text x="105" y="114" fill="#f8f8f2" font-size="8">Wireframes S16</text>
+      <rect x="90" y="122" width="270" height="22" rx="0" fill="#44475a" opacity=".35"/>
+      <text x="90" y="265" fill="#ff5555" font-size="9">❌ Tabla 5 columnas · sidebar · hover states · no funciona en móvil</text>
+
+      <!-- ARROW -->
+      <text x="388" y="162" fill="#ff79c6" font-size="28" text-anchor="middle">→</text>
+      <text x="388" y="182" fill="#6272a4" font-size="10" text-anchor="middle">rediseño</text>
+
+      <!-- MÓVIL -->
+      <text x="570" y="22" fill="#8be9fd" font-size="14" text-anchor="middle" font-weight="700">📱 Móvil — mismo contenido</text>
+      <rect x="470" y="30" width="190" height="255" rx="18" fill="#1e2030" stroke="#8be9fd" stroke-width="2"/>
+      <rect x="470" y="30" width="190" height="24" rx="18" fill="#282a36"/>
+      <text x="565" y="46" fill="#6272a4" font-size="9" text-anchor="middle">9:41</text>
+      <rect x="470" y="54" width="190" height="26" rx="0" fill="#44475a"/>
+      <text x="565" y="70" fill="#f8f8f2" font-size="10" text-anchor="middle" font-weight="700">Mis Tareas</text>
+      <!-- cards -->
+      <rect x="480" y="86" width="170" height="48" rx="8" fill="#44475a"/>
+      <text x="492" y="102" fill="#f8f8f2" font-size="10" font-weight="700">Revisar diseño</text>
+      <text x="492" y="116" fill="#6272a4" font-size="8">DEIU · 26 Mar</text>
+      <rect x="605" y="90" width="35" height="14" rx="4" fill="#ff5555" opacity=".5"/>
+      <text x="622" y="100" fill="#f8f8f2" font-size="7" text-anchor="middle">Alta</text>
+      <rect x="480" y="140" width="170" height="48" rx="8" fill="#44475a" opacity=".8"/>
+      <text x="492" y="156" fill="#f8f8f2" font-size="10" font-weight="700">Wireframes S16</text>
+      <text x="492" y="170" fill="#6272a4" font-size="8">DEIU · 28 Mar</text>
+      <rect x="480" y="194" width="170" height="48" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="492" y="210" fill="#f8f8f2" font-size="10" font-weight="700">Feedback A5</text>
+      <text x="492" y="224" fill="#6272a4" font-size="8">Proyectos · 30 Mar</text>
+      <!-- FAB -->
+      <circle cx="628" cy="258" r="18" fill="#bd93f9"/>
+      <text x="628" y="265" fill="#282a36" font-size="22" text-anchor="middle" font-weight="900">+</text>
+      <!-- bottom nav -->
+      <rect x="470" y="261" width="190" height="24" rx="18" fill="#282a36"/>
+      <text x="495" y="277" fill="#50fa7b" font-size="13">⌂</text>
+      <text x="525" y="277" fill="#6272a4" font-size="13">📋</text>
+      <text x="555" y="277" fill="#6272a4" font-size="13">📅</text>
+      <text x="585" y="277" fill="#6272a4" font-size="13">👤</text>
+      <text x="565" y="295" fill="#50fa7b" font-size="9">✅ Cards + Bottom Nav + FAB</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S10 — ERRORES COMUNES
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>Errores comunes al adaptar a móvil</h2>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- SHRINK TO FIT -->
+      <rect x="8" y="8" width="210" height="210" rx="8" fill="#ff5555" opacity=".1" stroke="#ff5555" stroke-width="1.5"/>
+      <text x="113" y="30" fill="#ff5555" font-size="12" font-weight="700" text-anchor="middle">❌ Shrink-to-fit</text>
+      <!-- desktop shrunk into phone size -->
+      <rect x="60" y="42" width="105" height="130" rx="12" fill="#1e2030" stroke="#6272a4" stroke-width="1.5"/>
+      <rect x="60" y="42" width="105" height="16" rx="12" fill="#44475a"/>
+      <!-- tiny sidebar -->
+      <rect x="60" y="58" width="22" height="114" rx="0" fill="#282a36"/>
+      <rect x="64" y="64" width="14" height="4" rx="1" fill="#6272a4" opacity=".4"/>
+      <rect x="64" y="72" width="14" height="4" rx="1" fill="#6272a4" opacity=".3"/>
+      <!-- tiny table -->
+      <rect x="82" y="58" width="83" height="8" rx="0" fill="#44475a" opacity=".6"/>
+      <rect x="84" y="60" width="10" height="4" rx="1" fill="#6272a4" opacity=".4"/>
+      <rect x="98" y="60" width="10" height="4" rx="1" fill="#6272a4" opacity=".4"/>
+      <rect x="112" y="60" width="10" height="4" rx="1" fill="#6272a4" opacity=".4"/>
+      <rect x="82" y="68" width="83" height="6" rx="0" fill="#44475a" opacity=".25"/>
+      <rect x="82" y="76" width="83" height="6" rx="0" fill="#44475a" opacity=".25"/>
+      <!-- tiny button -->
+      <rect x="136" y="148" width="20" height="8" rx="2" fill="#bd93f9" opacity=".6"/>
+      <!-- finger comparison -->
+      <ellipse cx="112" cy="95" rx="30" ry="42" fill="#ffb86c" opacity=".18"/>
+      <ellipse cx="112" cy="62" rx="18" ry="22" fill="#ffb86c" opacity=".22"/>
+      <text x="113" y="186" fill="#ff5555" font-size="9" text-anchor="middle">Texto ilegible · targets imposibles</text>
+      <text x="113" y="200" fill="#6272a4" font-size="9" text-anchor="middle">Solo se redujo el tamaño</text>
+      <text x="113" y="214" fill="#6272a4" font-size="9" text-anchor="middle">≠ diseño móvil</text>
+
+      <!-- HAMBURGER PARA TODO -->
+      <rect x="242" y="8" width="210" height="210" rx="8" fill="#ff5555" opacity=".1" stroke="#ff5555" stroke-width="1.5"/>
+      <text x="347" y="30" fill="#ff5555" font-size="12" font-weight="700" text-anchor="middle">❌ Hamburger para todo</text>
+      <rect x="292" y="42" width="110" height="130" rx="12" fill="#1e2030" stroke="#6272a4" stroke-width="1.5"/>
+      <rect x="292" y="42" width="110" height="20" rx="12" fill="#44475a"/>
+      <rect x="300" y="50" width="18" height="2.5" rx="1" fill="#f8f8f2"/>
+      <rect x="300" y="56" width="18" height="2.5" rx="1" fill="#f8f8f2"/>
+      <rect x="300" y="62" width="18" height="2.5" rx="1" fill="#f8f8f2"/>
+      <!-- empty screen with question mark -->
+      <text x="347" y="120" fill="#6272a4" font-size="36" text-anchor="middle" opacity=".5">?</text>
+      <text x="347" y="148" fill="#6272a4" font-size="9" text-anchor="middle">¿Dónde está todo?</text>
+      <text x="347" y="186" fill="#ff5555" font-size="9" text-anchor="middle">Navegación principal oculta</text>
+      <text x="347" y="200" fill="#6272a4" font-size="9" text-anchor="middle">Los usuarios no la descubren</text>
+      <text x="347" y="214" fill="#ffb86c" font-size="9" text-anchor="middle">→ usar Bottom Nav en su lugar</text>
+
+      <!-- TABLA SIN ADAPTAR -->
+      <rect x="476" y="8" width="216" height="210" rx="8" fill="#ff5555" opacity=".1" stroke="#ff5555" stroke-width="1.5"/>
+      <text x="584" y="30" fill="#ff5555" font-size="12" font-weight="700" text-anchor="middle">❌ Tabla sin adaptar</text>
+      <rect x="496" y="42" width="176" height="130" rx="8" fill="#1e2030" stroke="#6272a4" stroke-width="1.5"/>
+      <!-- cramped table header -->
+      <rect x="496" y="42" width="176" height="16" rx="8" fill="#44475a"/>
+      <line x1="528" y1="42" x2="528" y2="172" stroke="#44475a" stroke-width="1"/>
+      <line x1="560" y1="42" x2="560" y2="172" stroke="#44475a" stroke-width="1"/>
+      <line x1="592" y1="42" x2="592" y2="172" stroke="#44475a" stroke-width="1"/>
+      <line x1="624" y1="42" x2="624" y2="172" stroke="#44475a" stroke-width="1"/>
+      <line x1="656" y1="42" x2="656" y2="172" stroke="#44475a" stroke-width="1"/>
+      <!-- tiny column headers -->
+      <text x="512" y="52" fill="#6272a4" font-size="7">Tarea</text>
+      <text x="536" y="52" fill="#6272a4" font-size="7">Proy.</text>
+      <text x="568" y="52" fill="#6272a4" font-size="7">Fecha</text>
+      <text x="600" y="52" fill="#6272a4" font-size="7">Prior</text>
+      <text x="631" y="52" fill="#6272a4" font-size="7">Estado</text>
+      <text x="659" y="52" fill="#6272a4" font-size="7">Acc.</text>
+      <!-- horizontal scroll indicator -->
+      <text x="584" y="110" fill="#ff5555" font-size="10" text-anchor="middle">⟷ scroll horizontal</text>
+      <text x="584" y="125" fill="#6272a4" font-size="9" text-anchor="middle">confuso e inutilizable</text>
+      <text x="584" y="186" fill="#ff5555" font-size="9" text-anchor="middle">Tabla de escritorio en 360px</text>
+      <text x="584" y="200" fill="#50fa7b" font-size="9" text-anchor="middle">→ Solución: Cards por ítem</text>
+      <text x="584" y="214" fill="#6272a4" font-size="9" text-anchor="middle">con info esencial visible</text>
+    </svg>
+  </div>
+  <div class="grid-2" style="flex-shrink:0;margin-top:.4em;">
+    <div class="card green"><h3>✅ En cambio:</h3><p style="margin-top:.2em;">Rediseña el flujo · Bottom nav · Cards · Formularios mínimos · Scroll solo vertical</p></div>
+    <div class="card yellow"><h3>🔑 Regla de oro:</h3><p style="margin-top:.2em;">Identifica las <strong>3 tareas más frecuentes</strong> del usuario en móvil y diseña primero para esas.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S11 — TALLER INTRO
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>Taller — Sus proyectos en contexto móvil <span class="tag orange">30 min</span></h2>
+  <div class="card cyan" style="margin-bottom:.6em;">
+    <p>Analizan sus wireframes del A5 en Figma. <strong>No rediseñan todavía</strong> — identifican qué cambiaría y por qué. Este análisis es el insumo para Alta Fidelidad.</p>
+  </div>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 130" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <rect x="10" y="15" width="150" height="90" rx="8" fill="#44475a"/>
+      <text x="85" y="45" fill="#8be9fd" font-size="13" text-anchor="middle" font-weight="700">1. Abrir</text>
+      <text x="85" y="63" fill="#f8f8f2" font-size="11" text-anchor="middle">Wireframes A5</text>
+      <text x="85" y="78" fill="#f8f8f2" font-size="11" text-anchor="middle">en Figma</text>
+      <polygon points="160,57 178,62 160,67" fill="#f8f8f2"/>
+      <rect x="185" y="15" width="150" height="90" rx="8" fill="#44475a"/>
+      <text x="260" y="45" fill="#50fa7b" font-size="13" text-anchor="middle" font-weight="700">2. Elegir</text>
+      <text x="260" y="63" fill="#f8f8f2" font-size="11" text-anchor="middle">3 pantallas</text>
+      <text x="260" y="78" fill="#f8f8f2" font-size="11" text-anchor="middle">clave del flujo</text>
+      <polygon points="335,57 353,62 335,67" fill="#f8f8f2"/>
+      <rect x="360" y="15" width="150" height="90" rx="8" fill="#44475a"/>
+      <text x="435" y="40" fill="#ffb86c" font-size="13" text-anchor="middle" font-weight="700">3. Responder</text>
+      <text x="435" y="57" fill="#f8f8f2" font-size="11" text-anchor="middle">4 preguntas</text>
+      <text x="435" y="72" fill="#f8f8f2" font-size="11" text-anchor="middle">por pantalla</text>
+      <text x="435" y="87" fill="#6272a4" font-size="10" text-anchor="middle">en Miro</text>
+      <polygon points="510,57 528,62 510,67" fill="#f8f8f2"/>
+      <rect x="535" y="15" width="155" height="90" rx="8" fill="#44475a"/>
+      <text x="612" y="40" fill="#ff79c6" font-size="13" text-anchor="middle" font-weight="700">4. Presentar</text>
+      <text x="612" y="57" fill="#f8f8f2" font-size="11" text-anchor="middle">La pantalla que</text>
+      <text x="612" y="72" fill="#f8f8f2" font-size="11" text-anchor="middle">más cambiaría</text>
+      <text x="612" y="87" fill="#6272a4" font-size="10" text-anchor="middle">al grupo</text>
+    </svg>
+  </div>
+  <div class="card orange" style="flex-shrink:0;margin-top:.4em;">
+    <h3>Rotación: cada equipo evalúa su propio proyecto</h3>
+    <div class="grid-2" style="margin-top:.3em;">
+      <div>❶ ¿Cuál es el <strong>contexto de uso</strong> móvil?<br>❷ ¿Qué elementos son problemáticos para <strong>tocar</strong>?</div>
+      <div>❸ ¿Qué <strong>patrón de navegación</strong> usarían?<br>❹ ¿Qué <strong>contenido quitarían</strong> o moverían?</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S12 — LAS 4 PREGUNTAS
+═══════════════════════════════════════════ -->
+<div class="slide scrollable">
+  <h2>Las 4 preguntas del análisis móvil</h2>
+  <div class="card" style="border-color:var(--purple);margin-bottom:.5em;">
+    <h3 style="color:var(--purple);">❶ ¿Cuál es el contexto de uso?</h3>
+    <p style="margin-top:.2em;">¿Dónde y cuándo usaría <strong>su persona del A2</strong> esta pantalla en el teléfono? ¿Está en movimiento? ¿Tiene las dos manos libres? ¿Con prisa?</p>
+    <p style="font-size:.82em;color:var(--dim);margin-top:.2em;">Ej: "Laura (P01) revisa tareas en el camión al trabajo. Una mano en el pasamanos. Sesión de 2 min."</p>
+  </div>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <h3>❷ ¿Qué elementos son problemáticos para tocar?</h3>
+    <p style="margin-top:.2em;">Revisen cada elemento interactivo. ¿Cumple <strong>44px mínimo</strong>? ¿Hay <strong>8px de separación</strong>? ¿Está en zona del pulgar?</p>
+    <p style="font-size:.82em;color:var(--dim);margin-top:.2em;">Ej: "El ícono de eliminar mide 16×16px. El botón de filtrar está en esquina superior derecha."</p>
+  </div>
+  <div class="card orange" style="margin-bottom:.5em;">
+    <h3>❸ ¿Qué patrón de navegación usarían?</h3>
+    <p style="margin-top:.2em;">Bottom Nav / Tab Bar / FAB / Hamburger. ¿Cómo reemplazarían la navegación actual de escritorio? Justifiquen.</p>
+    <p style="font-size:.82em;color:var(--dim);margin-top:.2em;">Ej: "Bottom Nav con 4 secciones: Hoy / Proyectos / Calendario / Perfil. FAB '+' para crear tarea."</p>
+  </div>
+  <div class="card green">
+    <h3>❹ ¿Qué contenido quitarían o moverían?</h3>
+    <p style="margin-top:.2em;">En 360px no cabe todo. ¿Qué es esencial en el flujo móvil? ¿Qué va a pantalla de detalle o bottom sheet?</p>
+    <p style="font-size:.82em;color:var(--dim);margin-top:.2em;">Ej: "Tabla de 6 columnas → Cards con título, proyecto y prioridad. Descripción en detalle."</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S13 — CHECKLIST
+═══════════════════════════════════════════ -->
+<div class="slide">
+  <h2>Checklist de diseño móvil</h2>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 190 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:52vh;">
+        <rect x="20" y="5" width="150" height="315" rx="20" fill="#1e2030" stroke="#6272a4" stroke-width="2"/>
+        <rect x="20" y="5" width="150" height="22" rx="20" fill="#282a36"/>
+        <rect x="20" y="298" width="150" height="22" rx="20" fill="#282a36"/>
+        <circle cx="95" cy="16" r="4" fill="#6272a4"/>
+        <rect x="28" y="25" width="134" height="275" rx="4" fill="#282a36"/>
+        <!-- touch target area indicator -->
+        <rect x="36" y="32" width="44" height="44" rx="6" fill="#50fa7b" opacity=".12" stroke="#50fa7b" stroke-width="1.5" stroke-dasharray="3"/>
+        <rect x="46" y="42" width="24" height="24" rx="4" fill="#50fa7b"/>
+        <text x="58" y="57" fill="#282a36" font-size="9" text-anchor="middle" font-weight="700">44px</text>
+        <text x="105" y="52" fill="#50fa7b" font-size="8" text-anchor="middle">✓ Touch target correcto</text>
+        <!-- zone indicator -->
+        <rect x="28" y="85" width="134" height="55" rx="0" fill="#50fa7b" opacity=".08"/>
+        <text x="95" y="115" fill="#50fa7b" font-size="8" text-anchor="middle" opacity=".7">🟢 Zona natural del pulgar</text>
+        <!-- card items -->
+        <rect x="36" y="148" width="114" height="32" rx="6" fill="#44475a"/>
+        <rect x="44" y="155" width="65" height="6" rx="2" fill="#f8f8f2" opacity=".6"/>
+        <rect x="44" y="166" width="45" height="5" rx="2" fill="#6272a4" opacity=".4"/>
+        <rect x="36" y="186" width="114" height="32" rx="6" fill="#44475a" opacity=".75"/>
+        <rect x="44" y="193" width="55" height="6" rx="2" fill="#f8f8f2" opacity=".6"/>
+        <rect x="44" y="204" width="38" height="5" rx="2" fill="#6272a4" opacity=".4"/>
+        <!-- bottom nav -->
+        <rect x="28" y="282" width="134" height="18" rx="4" fill="#44475a"/>
+        <text x="48" y="294" fill="#50fa7b" font-size="12">⌂</text>
+        <text x="75" y="294" fill="#6272a4" font-size="12">📋</text>
+        <text x="105" y="294" fill="#6272a4" font-size="12">📅</text>
+        <text x="133" y="294" fill="#6272a4" font-size="12">👤</text>
+        <!-- FAB -->
+        <circle cx="148" cy="276" r="15" fill="#bd93f9"/>
+        <text x="148" y="282" fill="#282a36" font-size="18" text-anchor="middle" font-weight="900">+</text>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="grid-2">
+        <div>
+          <div class="card green" style="margin-bottom:.35em;"><p>☑ Touch targets ≥ 44×44px</p></div>
+          <div class="card green" style="margin-bottom:.35em;"><p>☑ Separación entre targets ≥ 8px</p></div>
+          <div class="card green" style="margin-bottom:.35em;"><p>☑ Acciones frecuentes en zona natural</p></div>
+          <div class="card green" style="margin-bottom:.35em;"><p>☑ Navegación con una mano</p></div>
+          <div class="card green"><p>☑ Solo scroll vertical</p></div>
+        </div>
+        <div>
+          <div class="card cyan" style="margin-bottom:.35em;"><p>☑ Formularios con campos mínimos</p></div>
+          <div class="card cyan" style="margin-bottom:.35em;"><p>☑ Estado guardado en interrupciones</p></div>
+          <div class="card cyan" style="margin-bottom:.35em;"><p>☑ Tipografía ≥ 16px cuerpo</p></div>
+          <div class="card cyan" style="margin-bottom:.35em;"><p>☑ Un CTA principal por pantalla</p></div>
+          <div class="card cyan"><p>☑ Tablas → Cards individuales</p></div>
+        </div>
+      </div>
+      <div class="card yellow" style="margin-top:.5em;">
+        <p>💡 Usen esta lista al revisar sus wireframes en el taller y al iterar en Alta Fidelidad.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  S14 — CIERRE
+═══════════════════════════════════════════ -->
+<div class="slide center" style="justify-content:center;">
+  <h2>Resumen de hoy</h2>
+  <div class="grid-2" style="text-align:left;margin-top:.8em;max-width:700px;width:100%;">
+    <div class="card green"><p>✅ Contexto móvil es radicalmente diferente al escritorio</p></div>
+    <div class="card green"><p>✅ Touch targets: 44px mínimo y zonas del pulgar</p></div>
+    <div class="card green"><p>✅ 8 gestos táctiles y cuándo usarlos</p></div>
+    <div class="card green"><p>✅ 4 patrones de navegación móvil</p></div>
+    <div class="card green"><p>✅ Diseño para la interrupción</p></div>
+    <div class="card green"><p>✅ Análisis de wireframes en contexto móvil</p></div>
+  </div>
+  <div class="card orange" style="max-width:700px;width:100%;margin-top:.8em;text-align:left;">
+    <p>📌 <strong>Tarea:</strong> Identifiquen las 5 pantallas principales que adaptarán a móvil. La próxima sesión entramos a <strong>Responsive Design + Alta Fidelidad</strong> en Figma.</p>
+  </div>
+  <div class="card cyan" style="max-width:700px;width:100%;margin-top:.5em;text-align:left;">
+    <p>📅 <strong>Próxima sesión:</strong> Responsive Design — grid 12 columnas (Web) → 4 columnas (Móvil) con Auto-layout en Figma.</p>
+  </div>
+  <p class="muted" style="margin-top:1em;">DEIU 2026 · Ing. Ricardo Jaramillo · rjaramillo0@ucol.mx</p>
+</div>
+
+<script>
+var c=0,t=14,ids=[];
+document.querySelectorAll('.slide').forEach(function(s,i){ids.push(s.id||i);});
+function nav(d){
+  document.querySelectorAll('.slide')[c].classList.remove('active');
+  c+=d;
+  if(c<0)c=0;
+  if(c>=t)c=t-1;
+  var s=document.querySelectorAll('.slide')[c];
+  s.classList.add('active');
+  s.scrollTop=0;
+  document.getElementById('C').textContent=(c+1)+' / '+t;
+  document.getElementById('P').disabled=c===0;
+  document.getElementById('N').disabled=c===t-1;
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')nav(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')nav(-1);
+});
+</script>
+</body>
+</html>
