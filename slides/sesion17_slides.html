@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesión 17 — Sistemas de Diseño y UI Kits | DEIU 2026</title>
+<style>
+:root{
+  --bg:#282a36;--cl:#44475a;--fg:#f8f8f2;--dim:#6272a4;
+  --cyan:#8be9fd;--green:#50fa7b;--orange:#ffb86c;
+  --pink:#ff79c6;--purple:#bd93f9;--red:#ff5555;--yellow:#f1fa8c;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
+  color:var(--fg);font-family:'Segoe UI',system-ui,sans-serif;
+  font-size:clamp(14px,1.4vw,20px);}
+.slide{display:none;width:100vw;height:100vh;flex-direction:column;
+  justify-content:flex-start;padding:3.5vh 5vw 7vh 5vw;
+  overflow:hidden;animation:fi .2s ease;}
+.slide.active{display:flex;}
+.slide.sc{overflow-y:auto;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h1{font-size:clamp(1.6em,3.2vw,2.8em);color:var(--purple);margin-bottom:.3em;line-height:1.15;}
+h2{font-size:clamp(1.2em,2.2vw,1.9em);color:var(--cyan);margin-bottom:.4em;line-height:1.2;}
+h3{font-size:clamp(.85em,1.3vw,1.1em);color:var(--orange);margin-bottom:.2em;}
+p,li{font-size:clamp(.78em,1.1vw,.98em);line-height:1.55;}
+ul{padding-left:1.2em;}
+strong{color:var(--pink);}
+em{color:var(--cyan);font-style:normal;}
+.muted{color:var(--dim);font-size:.8em;}
+.center{text-align:center;align-items:center;}
+.card{background:var(--cl);border-left:4px solid var(--purple);
+  border-radius:8px;padding:.7em 1em;margin:.35em 0;flex-shrink:0;}
+.card.green{border-color:var(--green);}
+.card.orange{border-color:var(--orange);}
+.card.red{border-color:var(--red);}
+.card.cyan{border-color:var(--cyan);}
+.card.yellow{border-color:var(--yellow);}
+.card.pink{border-color:var(--pink);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.6em;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5em;}
+.tag{display:inline-block;background:var(--purple);color:var(--bg);
+  font-size:.55em;font-weight:700;padding:2px 9px;border-radius:20px;
+  vertical-align:middle;margin-left:6px;}
+.tag.orange{background:var(--orange);}
+.tag.cyan{background:var(--cyan);}
+.tag.green{background:var(--green);}
+.tag.pink{background:var(--pink);}
+.tl{border-left:3px solid var(--purple);padding-left:1.2em;margin-left:.4em;}
+.tli{margin-bottom:.6em;position:relative;}
+.tli::before{content:'';width:10px;height:10px;background:var(--purple);
+  border-radius:50%;position:absolute;left:-1.55em;top:.3em;}
+.tli.green::before{background:var(--green);}
+.tli.orange::before{background:var(--orange);}
+.tli.cyan::before{background:var(--cyan);}
+.tli.pink::before{background:var(--pink);}
+.tlabel{font-size:.7em;color:var(--dim);display:block;margin-bottom:.1em;}
+.split{display:flex;gap:2vw;flex:1;min-height:0;align-items:stretch;}
+.split-text{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.split-svg{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;}
+.split-svg svg{width:100%;height:100%;max-height:48vh;}
+.svg-wrap{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
+.svg-wrap svg{width:100%;height:100%;max-height:100%;}
+.ok{color:var(--green);font-weight:700;}
+.bad{color:var(--red);font-weight:700;}
+.nav{position:fixed;bottom:1.5vh;right:2vw;display:flex;gap:.6em;z-index:9999;}
+.btn{background:var(--dim);color:var(--fg);border:none;padding:.55em 1.4em;
+  font-size:.9em;border-radius:6px;cursor:pointer;transition:background .2s;}
+.btn:hover{background:var(--purple);}
+.btn:disabled{background:var(--cl);opacity:.5;cursor:not-allowed;}
+.ctr{position:fixed;bottom:1.5vh;left:2vw;background:var(--cl);
+  padding:.5em 1em;border-radius:6px;font-size:.85em;z-index:9999;color:var(--dim);}
+/* swatch */
+.swatch{display:inline-block;width:1.2em;height:1.2em;border-radius:4px;
+  vertical-align:middle;margin-right:.4em;}
+/* token row */
+.token-row{display:flex;align-items:center;gap:.5em;padding:.3em .5em;
+  background:rgba(68,71,90,.4);border-radius:6px;margin:.2em 0;font-size:.85em;}
+</style>
+</head>
+<body>
+<div class="nav">
+  <button class="btn" id="P" onclick="nav(-1)" disabled>&#8592;</button>
+  <button class="btn" id="N" onclick="nav(1)">&#8594;</button>
+</div>
+<div class="ctr" id="C">1 / 22</div>
+
+<!-- ═══ S1 PORTADA ═══ -->
+<div class="slide active center" style="justify-content:center;">
+  <p class="muted" style="margin-bottom:.5em;">DEIU 2026 · Unidad IV · Facultad de Telemática · Universidad de Colima</p>
+  <h1>Sesión 17</h1>
+  <h2 style="color:var(--pink);font-size:clamp(1.3em,2.5vw,2em);">Sistemas de Diseño y UI Kits</h2>
+  <p style="color:var(--orange);margin:.3em 0 1em;">Colores · Tipografía · Componentes · Consistencia Web + Móvil</p>
+  <svg viewBox="0 0 560 160" style="width:55%;max-width:580px;height:auto;margin:0 auto;">
+    <!-- UI Kit visual -->
+    <!-- Color swatches -->
+    <rect x="20" y="20" width="40" height="40" rx="6" fill="#bd93f9"/>
+    <rect x="68" y="20" width="40" height="40" rx="6" fill="#8be9fd"/>
+    <rect x="116" y="20" width="40" height="40" rx="6" fill="#50fa7b"/>
+    <rect x="164" y="20" width="40" height="40" rx="6" fill="#ff79c6"/>
+    <rect x="212" y="20" width="40" height="40" rx="6" fill="#ffb86c"/>
+    <text x="130" y="78" fill="#6272a4" font-size="10" text-anchor="middle">Color tokens</text>
+    <!-- Typography -->
+    <text x="290" y="38" fill="#f8f8f2" font-size="22" font-weight="900">Aa</text>
+    <text x="320" y="38" fill="#6272a4" font-size="14" font-weight="600">Bb</text>
+    <text x="344" y="38" fill="#6272a4" font-size="10">Cc</text>
+    <text x="310" y="55" fill="#6272a4" font-size="10" text-anchor="middle">Tipografía</text>
+    <!-- Components -->
+    <rect x="390" y="18" width="90" height="28" rx="6" fill="#bd93f9"/>
+    <text x="435" y="36" fill="#282a36" font-size="11" text-anchor="middle" font-weight="700">Botón primario</text>
+    <rect x="390" y="52" width="90" height="28" rx="6" fill="none" stroke="#bd93f9" stroke-width="2"/>
+    <text x="435" y="70" fill="#bd93f9" font-size="11" text-anchor="middle" font-weight="700">Secundario</text>
+    <text x="435" y="100" fill="#6272a4" font-size="10" text-anchor="middle">Componentes</text>
+    <!-- Spacing grid -->
+    <rect x="20" y="110" width="8" height="8" rx="1" fill="#6272a4" opacity=".4"/>
+    <rect x="36" y="110" width="16" height="8" rx="1" fill="#6272a4" opacity=".4"/>
+    <rect x="60" y="110" width="24" height="8" rx="1" fill="#6272a4" opacity=".4"/>
+    <rect x="92" y="110" width="32" height="8" rx="1" fill="#6272a4" opacity=".4"/>
+    <text x="130" y="132" fill="#6272a4" font-size="10" text-anchor="middle">Espaciado</text>
+    <!-- Icons -->
+    <text x="290" y="125" fill="#6272a4" font-size="20">⌂ 🔍 ✎ 🗑 ⚙</text>
+    <text x="310" y="142" fill="#6272a4" font-size="10" text-anchor="middle">Iconografía</text>
+    <!-- Arrow to screens -->
+    <text x="465" y="125" fill="#ff79c6" font-size="20" text-anchor="middle">→</text>
+    <text x="510" y="120" fill="#8be9fd" font-size="9" text-anchor="middle">Pantallas</text>
+    <text x="510" y="132" fill="#8be9fd" font-size="9" text-anchor="middle">consistentes</text>
+  </svg>
+  <div class="card cyan" style="max-width:500px;margin:.8em auto 0;">
+    <p>📅 <strong>Martes 14 de Abril, 2026</strong> &nbsp;|&nbsp; 07:00 – 09:00 hrs</p>
+  </div>
+  <p class="muted" style="margin-top:.6em;">Ing. Ricardo Jaramillo &nbsp;·&nbsp; rjaramillo0@ucol.mx</p>
+</div>
+
+<!-- ═══ S2 AGENDA ═══ -->
+<div class="slide">
+  <h2>Agenda de hoy</h2>
+  <div class="tl" style="margin-top:.4em;">
+    <div class="tli"><span class="tlabel">07:00 – 07:05 · 5 min</span><strong>Apertura</strong> — Conexión con Semana Santa: ¿dónde quedó su prototipo?</div>
+    <div class="tli green"><span class="tlabel">07:05 – 07:25 · 20 min</span><strong>Teoría:</strong> ¿Qué es un Sistema de Diseño y un UI Kit?</div>
+    <div class="tli orange"><span class="tlabel">07:25 – 07:45 · 20 min</span><strong>Color y tipografía con propósito</strong> — tokens, jerarquía, WCAG</div>
+    <div class="tli cyan"><span class="tlabel">07:45 – 08:05 · 20 min</span><strong>Componentes atómicos</strong> — Design Atómico, estados, variantes en Figma</div>
+    <div class="tli pink"><span class="tlabel">08:05 – 08:40 · 35 min</span><strong>Taller:</strong> Cada equipo construye su UI Kit base en Figma</div>
+    <div class="tli"><span class="tlabel">08:40 – 09:00 · 20 min</span><strong>Cierre:</strong> Presentación rápida + conexión con prototipado interactivo</div>
+  </div>
+  <div class="card" style="margin-top:.6em;">
+    <p>🎯 <strong>Objetivo:</strong> Que cada equipo tenga su propio UI Kit funcional en Figma al terminar la sesión — paleta de colores, tipografía y al menos 5 componentes base.</p>
+  </div>
+</div>
+
+<!-- ═══ S3 ¿QUÉ ES UN SISTEMA DE DISEÑO? ═══ -->
+<div class="slide">
+  <h2>¿Qué es un Sistema de Diseño?</h2>
+  <div class="card cyan" style="margin-bottom:.6em;">
+    <p>Un Sistema de Diseño es el <strong>conjunto de estándares, componentes y guías</strong> que permiten a un equipo construir productos con consistencia visual y funcional a escala.</p>
+  </div>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 280 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:46vh;">
+        <!-- Pirámide DS -->
+        <!-- Base: tokens -->
+        <rect x="10" y="255" width="260" height="50" rx="8" fill="#44475a" opacity=".7"/>
+        <text x="140" y="275" fill="#f1fa8c" font-size="12" text-anchor="middle" font-weight="700">🔑 Design Tokens</text>
+        <text x="140" y="292" fill="#6272a4" font-size="9" text-anchor="middle">Colores · Tipografía · Espaciado · Radios · Sombras</text>
+
+        <!-- Layer 2: componentes -->
+        <rect x="30" y="190" width="220" height="55" rx="8" fill="#44475a" opacity=".6"/>
+        <text x="140" y="210" fill="#8be9fd" font-size="12" text-anchor="middle" font-weight="700">🧩 Componentes</text>
+        <text x="140" y="227" fill="#6272a4" font-size="9" text-anchor="middle">Botones · Inputs · Cards · Nav · Modales</text>
+
+        <!-- Layer 3: patrones -->
+        <rect x="55" y="130" width="170" height="50" rx="8" fill="#44475a" opacity=".6"/>
+        <text x="140" y="150" fill="#ffb86c" font-size="12" text-anchor="middle" font-weight="700">📐 Patrones</text>
+        <text x="140" y="165" fill="#6272a4" font-size="9" text-anchor="middle">Formularios · Navegación · Listas</text>
+
+        <!-- Layer 4: guías -->
+        <rect x="80" y="75" width="120" height="45" rx="8" fill="#44475a" opacity=".6"/>
+        <text x="140" y="94" fill="#ff79c6" font-size="12" text-anchor="middle" font-weight="700">📖 Guías</text>
+        <text x="140" y="108" fill="#6272a4" font-size="9" text-anchor="middle">Tono · Voz · Accesibilidad</text>
+
+        <!-- Top -->
+        <rect x="105" y="25" width="70" height="40" rx="8" fill="#44475a" opacity=".6"/>
+        <text x="140" y="48" fill="#bd93f9" font-size="11" text-anchor="middle" font-weight="700">🎨 Marca</text>
+
+        <!-- Connectors -->
+        <line x1="140" y1="65" x2="140" y2="75" stroke="#6272a4" stroke-width="1.5" stroke-dasharray="3"/>
+        <line x1="140" y1="120" x2="140" y2="130" stroke="#6272a4" stroke-width="1.5" stroke-dasharray="3"/>
+        <line x1="140" y1="180" x2="140" y2="190" stroke="#6272a4" stroke-width="1.5" stroke-dasharray="3"/>
+        <line x1="140" y1="245" x2="140" y2="255" stroke="#6272a4" stroke-width="1.5" stroke-dasharray="3"/>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="card green" style="margin-bottom:.4em;">
+        <h3>UI Kit vs Sistema de Diseño</h3>
+        <p style="margin-top:.2em;"><strong>UI Kit:</strong> la colección visual de componentes en Figma.</p>
+        <p style="margin-top:.2em;"><strong>Sistema de Diseño:</strong> el UI Kit + la documentación + las reglas de uso + los principios de marca.</p>
+        <p style="font-size:.82em;color:var(--dim);margin-top:.2em;">Para su proyecto: construirán el UI Kit. En una empresa, el equipo mantiene el sistema completo.</p>
+      </div>
+      <div class="card orange" style="margin-bottom:.4em;">
+        <h3>Ejemplos reales</h3>
+        <ul style="margin-top:.2em;">
+          <li><strong>Material Design 3</strong> (Google) — Android + Web</li>
+          <li><strong>Apple HIG</strong> — iOS + macOS</li>
+          <li><strong>Fluent Design</strong> (Microsoft) — Windows</li>
+          <li><strong>Atlassian Design System</strong> — Jira, Confluence</li>
+        </ul>
+      </div>
+      <div class="card yellow">
+        <p>💡 <strong>¿Por qué importa?</strong> Sin un UI Kit, cada pantalla que diseñen puede verse diferente. Con un UI Kit, cambiar el color primario actualiza todos los componentes en segundos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S4 DESIGN ATÓMICO ═══ -->
+<div class="slide">
+  <h2>Design Atómico — La estructura de un UI Kit</h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>Brad Frost (2013) propone organizar los componentes de menor a mayor complejidad, igual que la química: <strong>átomos → moléculas → organismos → plantillas → páginas.</strong></p>
+  </div>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 270" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- ÁTOMOS -->
+      <rect x="5" y="10" width="120" height="250" rx="8" fill="#44475a" opacity=".5"/>
+      <text x="65" y="32" fill="#50fa7b" font-size="12" font-weight="700" text-anchor="middle">⚛ Átomos</text>
+      <!-- button -->
+      <rect x="18" y="44" width="94" height="24" rx="5" fill="#bd93f9"/>
+      <text x="65" y="60" fill="#282a36" font-size="9" text-anchor="middle" font-weight="700">Botón</text>
+      <!-- input -->
+      <rect x="18" y="76" width="94" height="24" rx="5" fill="none" stroke="#6272a4" stroke-width="1.5"/>
+      <text x="65" y="92" fill="#6272a4" font-size="8" text-anchor="middle">Input text</text>
+      <!-- label -->
+      <rect x="18" y="108" width="60" height="14" rx="2" fill="#f1fa8c" opacity=".7"/>
+      <text x="48" y="118" fill="#282a36" font-size="7" text-anchor="middle">Label</text>
+      <!-- icon -->
+      <text x="65" y="148" fill="#ff79c6" font-size="22" text-anchor="middle">🔍</text>
+      <!-- color swatch -->
+      <rect x="30" y="162" width="20" height="20" rx="4" fill="#8be9fd"/>
+      <rect x="55" y="162" width="20" height="20" rx="4" fill="#bd93f9"/>
+      <rect x="80" y="162" width="20" height="20" rx="4" fill="#50fa7b"/>
+      <!-- type -->
+      <text x="65" y="205" fill="#f8f8f2" font-size="16" text-anchor="middle" font-weight="900">Aa</text>
+      <text x="65" y="250" fill="#6272a4" font-size="8" text-anchor="middle">Colores · Fuentes · Iconos</text>
+
+      <!-- MOLÉCULAS -->
+      <rect x="140" y="10" width="140" height="250" rx="8" fill="#44475a" opacity=".5"/>
+      <text x="210" y="32" fill="#8be9fd" font-size="12" font-weight="700" text-anchor="middle">🔬 Moléculas</text>
+      <!-- search bar = input + icon + button -->
+      <rect x="152" y="44" width="116" height="28" rx="6" fill="#282a36" stroke="#6272a4" stroke-width="1"/>
+      <text x="165" y="62" fill="#6272a4" font-size="10">🔍</text>
+      <rect x="228" y="48" width="34" height="20" rx="4" fill="#bd93f9"/>
+      <text x="245" y="61" fill="#282a36" font-size="8" text-anchor="middle">Buscar</text>
+      <text x="210" y="88" fill="#6272a4" font-size="8" text-anchor="middle">Barra de búsqueda</text>
+      <!-- form field = label + input -->
+      <text x="160" y="112" fill="#f1fa8c" font-size="9">Nombre *</text>
+      <rect x="152" y="118" width="116" height="22" rx="4" fill="none" stroke="#6272a4" stroke-width="1.5"/>
+      <text x="210" y="148" fill="#6272a4" font-size="8" text-anchor="middle">Campo de formulario</text>
+      <!-- card mini -->
+      <rect x="152" y="162" width="116" height="65" rx="6" fill="#282a36" stroke="#6272a4" stroke-width="1"/>
+      <rect x="160" y="170" width="100" height="18" rx="3" fill="#44475a"/>
+      <rect x="160" y="194" width="70" height="6" rx="2" fill="#6272a4" opacity=".4"/>
+      <rect x="160" y="205" width="50" height="6" rx="2" fill="#6272a4" opacity=".3"/>
+      <text x="210" y="240" fill="#6272a4" font-size="8" text-anchor="middle">Card básica</text>
+
+      <!-- ORGANISMOS -->
+      <rect x="295" y="10" width="150" height="250" rx="8" fill="#44475a" opacity=".5"/>
+      <text x="370" y="32" fill="#ffb86c" font-size="12" font-weight="700" text-anchor="middle">🦠 Organismos</text>
+      <!-- header -->
+      <rect x="305" y="42" width="130" height="28" rx="6" fill="#282a36" stroke="#6272a4" stroke-width="1"/>
+      <rect x="310" y="49" width="20" height="14" rx="3" fill="#bd93f9" opacity=".7"/>
+      <text x="345" y="60" fill="#6272a4" font-size="8">Inicio</text>
+      <text x="380" y="60" fill="#6272a4" font-size="8">Acerca</text>
+      <text x="415" y="56" fill="#50fa7b" font-size="11">👤</text>
+      <text x="370" y="84" fill="#6272a4" font-size="8" text-anchor="middle">Header de navegación</text>
+      <!-- card grid -->
+      <rect x="305" y="96" width="60" height="52" rx="5" fill="#282a36" stroke="#6272a4" stroke-width="1"/>
+      <rect x="313" y="103" width="44" height="18" rx="3" fill="#44475a"/>
+      <rect x="313" y="127" width="30" height="5" rx="2" fill="#6272a4" opacity=".4"/>
+      <rect x="371" y="96" width="60" height="52" rx="5" fill="#282a36" stroke="#6272a4" stroke-width="1"/>
+      <rect x="379" y="103" width="44" height="18" rx="3" fill="#44475a"/>
+      <rect x="379" y="127" width="30" height="5" rx="2" fill="#6272a4" opacity=".4"/>
+      <text x="370" y="162" fill="#6272a4" font-size="8" text-anchor="middle">Grid de tarjetas</text>
+      <!-- form -->
+      <rect x="305" y="175" width="130" height="60" rx="6" fill="#282a36" stroke="#6272a4" stroke-width="1"/>
+      <text x="315" y="192" fill="#f1fa8c" font-size="8">Email</text>
+      <rect x="305" y="195" width="130" height="16" rx="3" fill="#44475a"/>
+      <text x="315" y="222" fill="#f1fa8c" font-size="8">Contraseña</text>
+      <rect x="305" y="225" width="130" height="16" rx="3" fill="#44475a"/>
+      <text x="370" y="250" fill="#6272a4" font-size="8" text-anchor="middle">Formulario de login</text>
+
+      <!-- PLANTILLAS -->
+      <rect x="460" y="10" width="110" height="250" rx="8" fill="#44475a" opacity=".5"/>
+      <text x="515" y="32" fill="#ff79c6" font-size="11" font-weight="700" text-anchor="middle">📐 Plantillas</text>
+      <rect x="470" y="42" width="90" height="195" rx="6" fill="#282a36" stroke="#6272a4" stroke-width="1"/>
+      <!-- wireframe layout -->
+      <rect x="470" y="42" width="90" height="18" rx="6" fill="#44475a"/>
+      <rect x="476" y="68" width="78" height="35" rx="3" fill="#44475a" opacity=".6"/>
+      <rect x="476" y="110" width="36" height="30" rx="3" fill="#44475a" opacity=".5"/>
+      <rect x="518" y="110" width="36" height="30" rx="3" fill="#44475a" opacity=".5"/>
+      <rect x="476" y="148" width="78" height="20" rx="3" fill="#44475a" opacity=".4"/>
+      <rect x="476" y="174" width="78" height="20" rx="3" fill="#44475a" opacity=".4"/>
+      <rect x="470" y="218" width="90" height="19" rx="6" fill="#44475a"/>
+      <text x="515" y="250" fill="#6272a4" font-size="8" text-anchor="middle">Layout sin contenido</text>
+
+      <!-- Flecha -->
+      <text x="640" y="145" fill="#6272a4" font-size="9" text-anchor="middle">→ páginas</text>
+      <text x="640" y="157" fill="#8be9fd" font-size="9" text-anchor="middle">reales</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══ S5 COLOR CON PROPÓSITO ═══ -->
+<div class="slide">
+  <h2>Color con propósito — Design Tokens</h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>Un <strong>design token</strong> es un nombre semántico para un valor de diseño. En lugar de usar <em>#bd93f9</em> directamente, usas <em>--color-primary</em>. Si cambias el token, cambia todo.</p>
+  </div>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 290 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:48vh;">
+        <!-- Paleta estructura -->
+        <text x="145" y="22" fill="#ffb86c" font-size="12" font-weight="700" text-anchor="middle">Estructura de paleta</text>
+
+        <!-- Primarios -->
+        <text x="20" y="42" fill="#6272a4" font-size="10">PRIMARIO</text>
+        <rect x="20" y="48" width="38" height="28" rx="4" fill="#7b5ea7"/>
+        <rect x="62" y="48" width="38" height="28" rx="4" fill="#9575cd"/>
+        <rect x="104" y="48" width="38" height="28" rx="4" fill="#bd93f9"/>
+        <rect x="146" y="48" width="38" height="28" rx="4" fill="#ce9ef9"/>
+        <rect x="188" y="48" width="38" height="28" rx="4" fill="#e0c4ff"/>
+        <text x="20" y="88" fill="#6272a4" font-size="8">900</text>
+        <text x="62" y="88" fill="#6272a4" font-size="8">700</text>
+        <text x="104" y="88" fill="#bd93f9" font-size="8" font-weight="700">500 ←base</text>
+        <text x="146" y="88" fill="#6272a4" font-size="8">300</text>
+        <text x="188" y="88" fill="#6272a4" font-size="8">100</text>
+
+        <!-- Semánticos -->
+        <text x="20" y="108" fill="#6272a4" font-size="10">SEMÁNTICOS</text>
+        <rect x="20" y="115" width="55" height="22" rx="4" fill="#50fa7b"/>
+        <text x="47" y="129" fill="#282a36" font-size="8" text-anchor="middle" font-weight="700">success</text>
+        <rect x="82" y="115" width="55" height="22" rx="4" fill="#ff5555"/>
+        <text x="109" y="129" fill="#f8f8f2" font-size="8" text-anchor="middle" font-weight="700">error</text>
+        <rect x="144" y="115" width="55" height="22" rx="4" fill="#f1fa8c"/>
+        <text x="171" y="129" fill="#282a36" font-size="8" text-anchor="middle" font-weight="700">warning</text>
+        <rect x="206" y="115" width="55" height="22" rx="4" fill="#8be9fd"/>
+        <text x="233" y="129" fill="#282a36" font-size="8" text-anchor="middle" font-weight="700">info</text>
+
+        <!-- Neutros -->
+        <text x="20" y="155" fill="#6272a4" font-size="10">NEUTROS</text>
+        <rect x="20" y="162" width="30" height="22" rx="4" fill="#282a36"/>
+        <rect x="56" y="162" width="30" height="22" rx="4" fill="#44475a"/>
+        <rect x="92" y="162" width="30" height="22" rx="4" fill="#6272a4"/>
+        <rect x="128" y="162" width="30" height="22" rx="4" fill="#a0a8c0"/>
+        <rect x="164" y="162" width="30" height="22" rx="4" fill="#c8cedd"/>
+        <rect x="200" y="162" width="30" height="22" rx="4" fill="#f0f2f8"/>
+        <rect x="236" y="162" width="30" height="22" rx="4" fill="#f8f8f2"/>
+
+        <!-- WCAG -->
+        <rect x="20" y="200" width="250" height="55" rx="8" fill="#ff5555" opacity=".1" stroke="#ff5555" stroke-width="1"/>
+        <text x="145" y="218" fill="#ff5555" font-size="11" font-weight="700" text-anchor="middle">⚠️ WCAG — Contraste mínimo</text>
+        <rect x="30" y="225" width="100" height="22" rx="4" fill="#282a36"/>
+        <text x="80" y="239" fill="#bd93f9" font-size="11" text-anchor="middle">Texto sobre fondo</text>
+        <text x="30" y="252" fill="#50fa7b" font-size="9">✅ 7.2:1 — AAA</text>
+        <rect x="150" y="225" width="100" height="22" rx="4" fill="#6272a4"/>
+        <text x="200" y="239" fill="#f8f8f2" font-size="11" text-anchor="middle">Texto sobre fondo</text>
+        <text x="150" y="252" fill="#ffb86c" font-size="9">⚠️ 2.4:1 — Falla AA</text>
+
+        <!-- Token naming -->
+        <text x="20" y="278" fill="#6272a4" font-size="10">NOMENCLATURA DE TOKENS</text>
+        <rect x="20" y="285" width="250" height="50" rx="6" fill="#282a36"/>
+        <text x="30" y="300" fill="#50fa7b" font-size="9">--color-primary-500</text>
+        <text x="30" y="313" fill="#8be9fd" font-size="9">--color-error</text>
+        <text x="30" y="326" fill="#ff79c6" font-size="9">--spacing-md &nbsp; --radius-sm</text>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="card green">
+        <h3>Regla de los 3 colores</h3>
+        <ul style="margin-top:.3em;">
+          <li><strong>Primario</strong> — acciones principales, CTA, links</li>
+          <li><strong>Secundario</strong> — apoyo, variantes, acentos</li>
+          <li><strong>Neutro</strong> — fondos, textos, bordes</li>
+        </ul>
+        <p style="font-size:.82em;color:var(--dim);margin-top:.3em;">+ colores semánticos: success, error, warning, info</p>
+      </div>
+      <div class="card orange" style="margin-top:.4em;">
+        <h3>WCAG — Contraste mínimo</h3>
+        <ul style="margin-top:.3em;">
+          <li>Texto normal: ratio <strong>≥ 4.5:1</strong> (AA)</li>
+          <li>Texto grande (18px+): ratio <strong>≥ 3:1</strong> (AA)</li>
+          <li>Herramienta: <em>Figma Plugin "Contrast"</em></li>
+        </ul>
+      </div>
+      <div class="card yellow" style="margin-top:.4em;">
+        <p>💡 <strong>En Figma:</strong> Crear colores como <em>Styles</em> o <em>Variables</em>. Al cambiar el valor del estilo, se actualiza en todos los componentes que lo usan.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S6 TIPOGRAFÍA ═══ -->
+<div class="slide">
+  <h2>Tipografía con jerarquía</h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>La tipografía no es decoración — es <strong>arquitectura de la información</strong>. Una jerarquía clara guía al usuario por la pantalla sin que tenga que decidir qué leer primero.</p>
+  </div>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:50vh;">
+        <!-- Type scale -->
+        <text x="10" y="22" fill="#6272a4" font-size="10">ESCALA TIPOGRÁFICA</text>
+        <!-- Display -->
+        <text x="10" y="58" fill="#f8f8f2" font-size="28" font-weight="900">Título display</text>
+        <text x="10" y="70" fill="#6272a4" font-size="8">Display · 32px · Bold 900</text>
+        <line x1="10" y1="76" x2="270" y2="76" stroke="#44475a" stroke-width="1"/>
+        <!-- H1 -->
+        <text x="10" y="100" fill="#f8f8f2" font-size="22" font-weight="700">Encabezado H1</text>
+        <text x="10" y="112" fill="#6272a4" font-size="8">H1 · 24px · Bold 700</text>
+        <line x1="10" y1="118" x2="270" y2="118" stroke="#44475a" stroke-width="1"/>
+        <!-- H2 -->
+        <text x="10" y="138" fill="#f8f8f2" font-size="17" font-weight="600">Encabezado H2</text>
+        <text x="10" y="150" fill="#6272a4" font-size="8">H2 · 20px · Semibold 600</text>
+        <line x1="10" y1="156" x2="270" y2="156" stroke="#44475a" stroke-width="1"/>
+        <!-- Body -->
+        <text x="10" y="175" fill="#f8f8f2" font-size="14">Texto de cuerpo para párrafos y contenido</text>
+        <text x="10" y="187" fill="#6272a4" font-size="8">Body · 16px · Regular 400</text>
+        <line x1="10" y1="193" x2="270" y2="193" stroke="#44475a" stroke-width="1"/>
+        <!-- Caption -->
+        <text x="10" y="210" fill="#6272a4" font-size="11">Texto de apoyo, etiquetas, meta</text>
+        <text x="10" y="222" fill="#6272a4" font-size="8">Caption · 12px · Regular 400</text>
+        <line x1="10" y1="228" x2="270" y2="228" stroke="#44475a" stroke-width="1"/>
+        <!-- Label -->
+        <text x="10" y="244" fill="#f1fa8c" font-size="10" font-weight="700">ETIQUETA / LABEL</text>
+        <text x="10" y="256" fill="#6272a4" font-size="8">Label · 11px · Bold 700 · UPPERCASE</text>
+
+        <!-- Pairing example -->
+        <rect x="10" y="272" width="260" height="78" rx="8" fill="#44475a" opacity=".5"/>
+        <text x="20" y="292" fill="#6272a4" font-size="8">Combinación recomendada:</text>
+        <text x="20" y="312" fill="#bd93f9" font-size="15" font-weight="700">Inter</text>
+        <text x="70" y="312" fill="#6272a4" font-size="12">+</text>
+        <text x="85" y="312" fill="#8be9fd" font-size="14" font-weight="400">Inter</text>
+        <text x="130" y="312" fill="#6272a4" font-size="9">(misma fuente, pesos distintos)</text>
+        <text x="20" y="332" fill="#6272a4" font-size="8">O bien: fuente display + fuente de cuerpo distintas</text>
+        <text x="20" y="344" fill="#ffb86c" font-size="8">Ejemplo: Sora (títulos) + Inter (cuerpo)</text>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="card green">
+        <h3>Reglas para móvil</h3>
+        <ul style="margin-top:.3em;">
+          <li>Cuerpo <strong>mínimo 16px</strong> (recordar S16)</li>
+          <li>Línea de texto: máximo <strong>60–70 caracteres</strong></li>
+          <li>Interlineado: <strong>1.4–1.6×</strong> el tamaño de fuente</li>
+          <li>Máximo <strong>2 fuentes</strong> en el mismo proyecto</li>
+        </ul>
+      </div>
+      <div class="card orange" style="margin-top:.4em;">
+        <h3>En Figma — Text Styles</h3>
+        <ul style="margin-top:.3em;">
+          <li>Crear un estilo por cada nivel: <em>H1, H2, Body, Caption, Label</em></li>
+          <li>Definir: familia, peso, tamaño, interlineado, tracking</li>
+          <li>Aplicar desde el panel de estilos, no manualmente</li>
+        </ul>
+      </div>
+      <div class="card yellow" style="margin-top:.4em;">
+        <p>💡 Fuentes gratuitas recomendadas: <strong>Inter</strong> (neutralidad), <strong>Sora</strong> (modernidad), <strong>Plus Jakarta Sans</strong> (legibilidad móvil).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S7 COMPONENTES Y ESTADOS ═══ -->
+<div class="slide">
+  <h2>Componentes y sus estados</h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>Un componente en Figma es una pieza reutilizable. Cada componente debe tener definidos sus <strong>estados</strong> — la interfaz no siempre está en el estado "ideal".</p>
+  </div>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 290" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+
+      <!-- BOTÓN - estados -->
+      <text x="10" y="22" fill="#ffb86c" font-size="12" font-weight="700">Botón — estados</text>
+      <!-- Default -->
+      <rect x="10" y="32" width="90" height="32" rx="6" fill="#bd93f9"/>
+      <text x="55" y="52" fill="#282a36" font-size="11" text-anchor="middle" font-weight="700">Guardar</text>
+      <text x="55" y="76" fill="#6272a4" font-size="9" text-anchor="middle">Default</text>
+      <!-- Hover -->
+      <rect x="115" y="32" width="90" height="32" rx="6" fill="#a57de8"/>
+      <text x="160" y="52" fill="#282a36" font-size="11" text-anchor="middle" font-weight="700">Guardar</text>
+      <text x="160" y="76" fill="#6272a4" font-size="9" text-anchor="middle">Hover</text>
+      <!-- Pressed -->
+      <rect x="220" y="32" width="90" height="32" rx="6" fill="#8b65cf"/>
+      <text x="265" y="52" fill="#f8f8f2" font-size="11" text-anchor="middle" font-weight="700">Guardar</text>
+      <text x="265" y="76" fill="#6272a4" font-size="9" text-anchor="middle">Pressed</text>
+      <!-- Disabled -->
+      <rect x="325" y="32" width="90" height="32" rx="6" fill="#44475a"/>
+      <text x="370" y="52" fill="#6272a4" font-size="11" text-anchor="middle" font-weight="700">Guardar</text>
+      <text x="370" y="76" fill="#6272a4" font-size="9" text-anchor="middle">Disabled</text>
+      <!-- Loading -->
+      <rect x="430" y="32" width="90" height="32" rx="6" fill="#bd93f9" opacity=".7"/>
+      <text x="475" y="52" fill="#282a36" font-size="11" text-anchor="middle">⏳ Cargando</text>
+      <text x="475" y="76" fill="#6272a4" font-size="9" text-anchor="middle">Loading</text>
+      <!-- Destructive -->
+      <rect x="535" y="32" width="120" height="32" rx="6" fill="#ff5555"/>
+      <text x="595" y="52" fill="#f8f8f2" font-size="11" text-anchor="middle" font-weight="700">Eliminar</text>
+      <text x="595" y="76" fill="#6272a4" font-size="9" text-anchor="middle">Destructive</text>
+
+      <!-- INPUT - estados -->
+      <text x="10" y="100" fill="#ffb86c" font-size="12" font-weight="700">Input — estados</text>
+      <!-- Empty -->
+      <rect x="10" y="110" width="120" height="32" rx="6" fill="none" stroke="#6272a4" stroke-width="1.5"/>
+      <text x="70" y="130" fill="#6272a4" font-size="9" text-anchor="middle">Placeholder...</text>
+      <text x="70" y="155" fill="#6272a4" font-size="9" text-anchor="middle">Empty</text>
+      <!-- Focused -->
+      <rect x="145" y="110" width="120" height="32" rx="6" fill="none" stroke="#bd93f9" stroke-width="2.5"/>
+      <text x="205" y="130" fill="#f8f8f2" font-size="9" text-anchor="middle">usuario@correo|</text>
+      <text x="205" y="155" fill="#6272a4" font-size="9" text-anchor="middle">Focused</text>
+      <!-- Error -->
+      <rect x="280" y="110" width="120" height="32" rx="6" fill="none" stroke="#ff5555" stroke-width="2"/>
+      <text x="340" y="130" fill="#f8f8f2" font-size="9" text-anchor="middle">correo_invalido</text>
+      <text x="340" y="145" fill="#ff5555" font-size="8" text-anchor="middle">Email inválido</text>
+      <text x="340" y="158" fill="#6272a4" font-size="9" text-anchor="middle">Error</text>
+      <!-- Success -->
+      <rect x="415" y="110" width="120" height="32" rx="6" fill="none" stroke="#50fa7b" stroke-width="2"/>
+      <text x="475" y="130" fill="#f8f8f2" font-size="9" text-anchor="middle">usuario@correo.mx ✓</text>
+      <text x="475" y="155" fill="#6272a4" font-size="9" text-anchor="middle">Success</text>
+      <!-- Disabled -->
+      <rect x="550" y="110" width="120" height="32" rx="6" fill="#44475a" stroke="#44475a" stroke-width="1"/>
+      <text x="610" y="130" fill="#6272a4" font-size="9" text-anchor="middle">No editable</text>
+      <text x="610" y="155" fill="#6272a4" font-size="9" text-anchor="middle">Disabled</text>
+
+      <!-- CARD - variantes -->
+      <text x="10" y="185" fill="#ffb86c" font-size="12" font-weight="700">Card — variantes</text>
+      <!-- Basic -->
+      <rect x="10" y="195" width="150" height="80" rx="8" fill="#44475a"/>
+      <rect x="18" y="203" width="134" height="30" rx="4" fill="#282a36"/>
+      <rect x="18" y="240" width="80" height="7" rx="2" fill="#6272a4" opacity=".5"/>
+      <rect x="18" y="252" width="55" height="7" rx="2" fill="#6272a4" opacity=".3"/>
+      <text x="85" y="285" fill="#6272a4" font-size="9" text-anchor="middle">Default</text>
+      <!-- With image -->
+      <rect x="175" y="195" width="150" height="80" rx="8" fill="#44475a"/>
+      <rect x="183" y="203" width="134" height="30" rx="4" fill="#6272a4" opacity=".3"/>
+      <text x="250" y="222" fill="#6272a4" font-size="16" text-anchor="middle">🖼</text>
+      <rect x="183" y="240" width="80" height="7" rx="2" fill="#6272a4" opacity=".5"/>
+      <rect x="183" y="252" width="55" height="7" rx="2" fill="#6272a4" opacity=".3"/>
+      <text x="250" y="285" fill="#6272a4" font-size="9" text-anchor="middle">Con imagen</text>
+      <!-- Horizontal -->
+      <rect x="340" y="195" width="220" height="80" rx="8" fill="#44475a"/>
+      <rect x="348" y="203" width="55" height="64" rx="4" fill="#282a36"/>
+      <text x="375" y="240" fill="#6272a4" font-size="20" text-anchor="middle">🖼</text>
+      <rect x="412" y="210" width="100" height="8" rx="2" fill="#f8f8f2" opacity=".6"/>
+      <rect x="412" y="224" width="70" height="7" rx="2" fill="#6272a4" opacity=".4"/>
+      <rect x="412" y="236" width="80" height="7" rx="2" fill="#6272a4" opacity=".3"/>
+      <rect x="412" y="253" width="50" height="18" rx="4" fill="#bd93f9"/>
+      <text x="437" y="265" fill="#282a36" font-size="8" text-anchor="middle" font-weight="700">Ver más</text>
+      <text x="450" y="285" fill="#6272a4" font-size="9" text-anchor="middle">Horizontal</text>
+
+      <!-- Highlighted -->
+      <rect x="575" y="195" width="120" height="80" rx="8" fill="#bd93f9" opacity=".2" stroke="#bd93f9" stroke-width="1.5"/>
+      <rect x="583" y="203" width="104" height="28" rx="4" fill="#282a36"/>
+      <rect x="583" y="238" width="70" height="7" rx="2" fill="#6272a4" opacity=".5"/>
+      <rect x="583" y="250" width="50" height="7" rx="2" fill="#6272a4" opacity=".3"/>
+      <text x="635" y="285" fill="#6272a4" font-size="9" text-anchor="middle">Destacada</text>
+    </svg>
+  </div>
+  <div class="card yellow" style="flex-shrink:0;margin-top:.4em;">
+    <p>💡 <strong>En Figma:</strong> Usar <em>Properties</em> para crear variantes de un mismo componente. Un componente "Botón" puede tener variante por tipo (primario/secundario) y estado (default/hover/disabled).</p>
+  </div>
+</div>
+
+<!-- ═══ S8 GUÍAS DE DISEÑO ═══ -->
+<div class="slide">
+  <h2>Guías de diseño — Sus referencias obligatorias</h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>Las guías de diseño son los estándares definidos por las plataformas. Para su proyecto, revisen <strong>ambas</strong> — están diseñando para Web y Móvil.</p>
+  </div>
+  <div class="grid-2" style="flex:1;min-height:0;align-content:start;">
+    <div class="card green">
+      <h3>🤖 Material Design 3 (Google)</h3>
+      <p style="margin-top:.3em;"><em>m3.material.io</em></p>
+      <ul style="margin-top:.4em;">
+        <li>Sistema de colores con <strong>Dynamic Color</strong></li>
+        <li>Componentes para Android + Web</li>
+        <li>Tipografía: sistema de roles (Display, Headline, Body, Label)</li>
+        <li>Iconos: Material Symbols (variable)</li>
+        <li>Elevación con sombras y tonos de superficie</li>
+      </ul>
+      <p style="font-size:.82em;color:var(--dim);margin-top:.4em;">Ideal si su proyecto es una app Android o web con estilo Google.</p>
+    </div>
+    <div class="card orange">
+      <h3>🍎 Apple Human Interface Guidelines</h3>
+      <p style="margin-top:.3em;"><em>developer.apple.com/design/hig</em></p>
+      <ul style="margin-top:.4em;">
+        <li>Diseño para iOS/iPadOS/macOS/watchOS</li>
+        <li>SF Symbols — más de 6,000 íconos integrados</li>
+        <li>Blur y transparencias (vibrancy)</li>
+        <li>Gestos nativos de iOS (swipe back, pull to refresh)</li>
+        <li>Énfasis en jerarquía y claridad</li>
+      </ul>
+      <p style="font-size:.82em;color:var(--dim);margin-top:.4em;">Ideal si su proyecto es una app iOS.</p>
+    </div>
+    <div class="card purple" style="border-color:var(--purple);">
+      <h3>🎨 UI Patterns</h3>
+      <p style="margin-top:.3em;"><em>ui-patterns.com</em></p>
+      <ul style="margin-top:.4em;">
+        <li>Colección de patrones de interacción probados</li>
+        <li>Problema → Solución → Ejemplos reales</li>
+        <li>Búsqueda por tipo de problema (navegación, formularios, etc.)</li>
+      </ul>
+      <p style="font-size:.82em;color:var(--dim);margin-top:.4em;">Útil cuando no saben cómo resolver un problema de interacción específico.</p>
+    </div>
+    <div class="card yellow">
+      <h3>🔑 Para su proyecto — ¿qué aplicar?</h3>
+      <ul style="margin-top:.3em;">
+        <li>No copien estilos de Material o Apple — <strong>tomen principios</strong></li>
+        <li>Decidan: ¿su app tiene personalidad de marca propia o sigue un sistema?</li>
+        <li>Justifiquen sus decisiones con referencia a las guías en la entrega</li>
+        <li>Prioridad: consistencia interna > seguir una guía al pie de la letra</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S9 ESPACIADO Y GRIDS ═══ -->
+<div class="slide">
+  <h2>Espaciado, grids y radios</h2>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 290 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:50vh;">
+        <!-- Spacing scale -->
+        <text x="10" y="20" fill="#ffb86c" font-size="11" font-weight="700">Escala de espaciado (base 4px)</text>
+        <rect x="10" y="28" width="4" height="4" rx="1" fill="#bd93f9"/>
+        <text x="20" y="34" fill="#f8f8f2" font-size="9">4px — xs · separación mínima</text>
+        <rect x="10" y="44" width="8" height="8" rx="1" fill="#bd93f9"/>
+        <text x="24" y="52" fill="#f8f8f2" font-size="9">8px — sm · padding íconos</text>
+        <rect x="10" y="62" width="12" height="12" rx="2" fill="#bd93f9"/>
+        <text x="28" y="72" fill="#f8f8f2" font-size="9">12px — md · padding componentes</text>
+        <rect x="10" y="84" width="16" height="16" rx="2" fill="#bd93f9"/>
+        <text x="32" y="96" fill="#f8f8f2" font-size="9">16px — lg · espaciado secciones</text>
+        <rect x="10" y="110" width="24" height="24" rx="3" fill="#bd93f9"/>
+        <text x="40" y="126" fill="#f8f8f2" font-size="9">24px — xl · márgenes pantalla</text>
+        <rect x="10" y="144" width="32" height="32" rx="4" fill="#bd93f9" opacity=".7"/>
+        <text x="48" y="164" fill="#f8f8f2" font-size="9">32px — 2xl · separación bloques</text>
+
+        <!-- Grid móvil -->
+        <text x="10" y="196" fill="#ffb86c" font-size="11" font-weight="700">Grid móvil vs escritorio</text>
+        <!-- Phone grid 4 col -->
+        <rect x="10" y="205" width="70" height="110" rx="8" fill="#282a36" stroke="#6272a4" stroke-width="1"/>
+        <line x1="26" y1="205" x2="26" y2="315" stroke="#8be9fd" stroke-width=".5" opacity=".4"/>
+        <line x1="42" y1="205" x2="42" y2="315" stroke="#8be9fd" stroke-width=".5" opacity=".4"/>
+        <line x1="58" y1="205" x2="58" y2="315" stroke="#8be9fd" stroke-width=".5" opacity=".4"/>
+        <line x1="74" y1="205" x2="74" y2="315" stroke="#8be9fd" stroke-width=".5" opacity=".4"/>
+        <text x="45" y="265" fill="#8be9fd" font-size="8" text-anchor="middle">4 cols</text>
+        <text x="45" y="325" fill="#8be9fd" font-size="8" text-anchor="middle">📱 Móvil</text>
+        <!-- Desktop grid 12 col -->
+        <rect x="100" y="205" width="180" height="110" rx="8" fill="#282a36" stroke="#6272a4" stroke-width="1"/>
+        <line x1="114" y1="205" x2="114" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="128" y1="205" x2="128" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="142" y1="205" x2="142" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="156" y1="205" x2="156" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="170" y1="205" x2="170" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="184" y1="205" x2="184" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="198" y1="205" x2="198" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="212" y1="205" x2="212" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="226" y1="205" x2="226" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="240" y1="205" x2="240" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="254" y1="205" x2="254" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <line x1="268" y1="205" x2="268" y2="315" stroke="#50fa7b" stroke-width=".5" opacity=".4"/>
+        <text x="190" y="265" fill="#50fa7b" font-size="8" text-anchor="middle">12 columnas</text>
+        <text x="190" y="325" fill="#50fa7b" font-size="8" text-anchor="middle">🖥️ Escritorio</text>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="card green">
+        <h3>Sistema de espaciado base-4</h3>
+        <p style="margin-top:.2em;">Usar <strong>múltiplos de 4px</strong>: 4, 8, 12, 16, 24, 32, 48, 64. Esto garantiza consistencia y facilita las implementaciones en código.</p>
+        <p style="font-size:.82em;color:var(--dim);margin-top:.2em;">¿Por qué 4? Es el GCD de la mayoría de resoluciones de pantalla y las fuentes.</p>
+      </div>
+      <div class="card orange" style="margin-top:.4em;">
+        <h3>Grids</h3>
+        <ul style="margin-top:.2em;">
+          <li><strong>Móvil:</strong> 4 columnas, margen 16–20px, gutter 8–12px</li>
+          <li><strong>Tablet:</strong> 8 columnas, margen 24px, gutter 16px</li>
+          <li><strong>Escritorio:</strong> 12 columnas, margen 40–80px, gutter 24px</li>
+        </ul>
+      </div>
+      <div class="card cyan" style="margin-top:.4em;">
+        <h3>Border Radius</h3>
+        <ul style="margin-top:.2em;">
+          <li><em>none</em>: 0px — elementos de sistema, separadores</li>
+          <li><em>sm</em>: 4px — inputs, tags pequeños</li>
+          <li><em>md</em>: 8px — cards, botones</li>
+          <li><em>lg</em>: 12–16px — modales, sheets</li>
+          <li><em>full</em>: 9999px — chips, avatares</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S10 TALLER INTRO ═══ -->
+<div class="slide">
+  <h2>Taller — Construyan su UI Kit en Figma <span class="tag orange">35 min</span></h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>Al terminar el taller, cada equipo debe tener en Figma: <strong>paleta de colores + escala tipográfica + 5 componentes base</strong> como Styles y Components reutilizables.</p>
+  </div>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 170" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- Steps -->
+      <rect x="10" y="15" width="130" height="140" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="75" y="40" fill="#50fa7b" font-size="25" text-anchor="middle">🎨</text>
+      <text x="75" y="65" fill="#50fa7b" font-size="12" font-weight="700" text-anchor="middle">1. Colores</text>
+      <text x="75" y="82" fill="#f8f8f2" font-size="9" text-anchor="middle">Definir paleta en</text>
+      <text x="75" y="94" fill="#f8f8f2" font-size="9" text-anchor="middle">Figma Styles</text>
+      <text x="75" y="110" fill="#6272a4" font-size="8" text-anchor="middle">Primario · Secundario</text>
+      <text x="75" y="121" fill="#6272a4" font-size="8" text-anchor="middle">Neutros · Semánticos</text>
+      <text x="75" y="145" fill="#50fa7b" font-size="8" text-anchor="middle">~8 min</text>
+      <polygon points="140,85 155,90 140,95" fill="#f8f8f2"/>
+
+      <rect x="162" y="15" width="130" height="140" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="227" y="40" fill="#8be9fd" font-size="25" text-anchor="middle">🔤</text>
+      <text x="227" y="65" fill="#8be9fd" font-size="12" font-weight="700" text-anchor="middle">2. Tipografía</text>
+      <text x="227" y="82" fill="#f8f8f2" font-size="9" text-anchor="middle">Elegir fuente y crear</text>
+      <text x="227" y="94" fill="#f8f8f2" font-size="9" text-anchor="middle">Text Styles</text>
+      <text x="227" y="110" fill="#6272a4" font-size="8" text-anchor="middle">H1 · H2 · Body</text>
+      <text x="227" y="121" fill="#6272a4" font-size="8" text-anchor="middle">Caption · Label</text>
+      <text x="227" y="145" fill="#8be9fd" font-size="8" text-anchor="middle">~7 min</text>
+      <polygon points="292,85 307,90 292,95" fill="#f8f8f2"/>
+
+      <rect x="314" y="15" width="130" height="140" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="379" y="40" fill="#ffb86c" font-size="25" text-anchor="middle">🧩</text>
+      <text x="379" y="65" fill="#ffb86c" font-size="12" font-weight="700" text-anchor="middle">3. Componentes</text>
+      <text x="379" y="82" fill="#f8f8f2" font-size="9" text-anchor="middle">Crear 5 componentes</text>
+      <text x="379" y="94" fill="#f8f8f2" font-size="9" text-anchor="middle">base con estados</text>
+      <text x="379" y="110" fill="#6272a4" font-size="8" text-anchor="middle">Botón · Input · Card</text>
+      <text x="379" y="121" fill="#6272a4" font-size="8" text-anchor="middle">Nav Item · Badge</text>
+      <text x="379" y="145" fill="#ffb86c" font-size="8" text-anchor="middle">~15 min</text>
+      <polygon points="444,85 459,90 444,95" fill="#f8f8f2"/>
+
+      <rect x="466" y="15" width="130" height="140" rx="8" fill="#44475a" opacity=".6"/>
+      <text x="531" y="40" fill="#ff79c6" font-size="25" text-anchor="middle">✅</text>
+      <text x="531" y="65" fill="#ff79c6" font-size="12" font-weight="700" text-anchor="middle">4. Verificar</text>
+      <text x="531" y="82" fill="#f8f8f2" font-size="9" text-anchor="middle">Aplicar tokens al</text>
+      <text x="531" y="94" fill="#f8f8f2" font-size="9" text-anchor="middle">primer wireframe</text>
+      <text x="531" y="110" fill="#6272a4" font-size="8" text-anchor="middle">¿Cambia el color</text>
+      <text x="531" y="121" fill="#6272a4" font-size="8" text-anchor="middle">primario en todo?</text>
+      <text x="531" y="145" fill="#ff79c6" font-size="8" text-anchor="middle">~5 min</text>
+    </svg>
+  </div>
+  <div class="grid-2" style="flex-shrink:0;margin-top:.4em;">
+    <div class="card green">
+      <h3>Mínimo requerido por equipo</h3>
+      <ul style="margin-top:.2em;font-size:.88em;">
+        <li>✅ Paleta con al menos 8 colores como Styles</li>
+        <li>✅ 5 Text Styles (H1, H2, Body, Caption, Label)</li>
+        <li>✅ 5 componentes con mínimo 2 estados cada uno</li>
+      </ul>
+    </div>
+    <div class="card orange">
+      <h3>Conexión con su proyecto</h3>
+      <p style="margin-top:.2em;font-size:.88em;">Usen los colores que reflejen la <strong>personalidad</strong> de su app. Un sistema de inventarios para negocios pide neutralidad y confianza. Una app de recetas puede permitirse más color y calidez.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S11 EJEMPLO TASKSYNC ═══ -->
+<div class="slide">
+  <h2>Ejemplo — UI Kit de TaskSync</h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>Así se vería el UI Kit de <strong>Laura / TaskSync</strong> en Figma. Personalidad: <em>productividad, claridad, eficiencia</em> → paleta fría con acento de acción.</p>
+  </div>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 290" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- Section titles -->
+      <text x="10" y="18" fill="#ffb86c" font-size="11" font-weight="700">COLORES</text>
+      <!-- Primary family -->
+      <rect x="10" y="24" width="32" height="32" rx="5" fill="#1a365d"/>
+      <rect x="46" y="24" width="32" height="32" rx="5" fill="#2b4f8a"/>
+      <rect x="82" y="24" width="32" height="32" rx="5" fill="#3b6fd4"/>
+      <rect x="118" y="24" width="32" height="32" rx="5" fill="#5a8dee"/>
+      <rect x="154" y="24" width="32" height="32" rx="5" fill="#c5d8fa"/>
+      <text x="92" y="70" fill="#6272a4" font-size="8" text-anchor="middle">Azul primario</text>
+      <!-- Neutral -->
+      <rect x="210" y="24" width="32" height="32" rx="5" fill="#1a1d26"/>
+      <rect x="246" y="24" width="32" height="32" rx="5" fill="#2d3142"/>
+      <rect x="282" y="24" width="32" height="32" rx="5" fill="#454a64"/>
+      <rect x="318" y="24" width="32" height="32" rx="5" fill="#8891b0"/>
+      <rect x="354" y="24" width="32" height="32" rx="5" fill="#f2f4f9"/>
+      <text x="283" y="70" fill="#6272a4" font-size="8" text-anchor="middle">Neutros</text>
+      <!-- Semantic -->
+      <rect x="420" y="24" width="32" height="32" rx="5" fill="#22c55e"/>
+      <rect x="456" y="24" width="32" height="32" rx="5" fill="#ef4444"/>
+      <rect x="492" y="24" width="32" height="32" rx="5" fill="#f59e0b"/>
+      <rect x="528" y="24" width="32" height="32" rx="5" fill="#3b82f6"/>
+      <text x="475" y="70" fill="#6272a4" font-size="8" text-anchor="middle">Semánticos</text>
+
+      <!-- Typography -->
+      <text x="10" y="92" fill="#ffb86c" font-size="11" font-weight="700">TIPOGRAFÍA — Inter</text>
+      <text x="10" y="120" fill="#f8f8f2" font-size="22" font-weight="900">Mis tareas de hoy</text>
+      <text x="10" y="142" fill="#f8f8f2" font-size="16" font-weight="600">3 pendientes · 1 completada</text>
+      <text x="10" y="160" fill="#8891b0" font-size="12">Última sincronización: hace 2 minutos</text>
+      <text x="10" y="173" fill="#f1fa8c" font-size="10" font-weight="700">ALTA PRIORIDAD</text>
+
+      <!-- Components -->
+      <text x="10" y="196" fill="#ffb86c" font-size="11" font-weight="700">COMPONENTES</text>
+      <!-- Button primary -->
+      <rect x="10" y="204" width="100" height="32" rx="6" fill="#3b6fd4"/>
+      <text x="60" y="224" fill="#f8f8f2" font-size="10" text-anchor="middle" font-weight="700">+ Nueva tarea</text>
+      <!-- Button secondary -->
+      <rect x="118" y="204" width="100" height="32" rx="6" fill="none" stroke="#3b6fd4" stroke-width="1.5"/>
+      <text x="168" y="224" fill="#3b6fd4" font-size="10" text-anchor="middle" font-weight="700">Ver completadas</text>
+      <!-- Input -->
+      <rect x="226" y="204" width="160" height="32" rx="6" fill="none" stroke="#454a64" stroke-width="1.5"/>
+      <text x="316" y="224" fill="#454a64" font-size="9" text-anchor="middle">Buscar tareas...</text>
+      <!-- Badge -->
+      <rect x="396" y="208" width="50" height="20" rx="10" fill="#ef4444" opacity=".2"/>
+      <text x="421" y="221" fill="#ef4444" font-size="8" text-anchor="middle" font-weight="700">Alta</text>
+      <rect x="452" y="208" width="50" height="20" rx="10" fill="#f59e0b" opacity=".2"/>
+      <text x="477" y="221" fill="#f59e0b" font-size="8" text-anchor="middle" font-weight="700">Media</text>
+      <rect x="508" y="208" width="50" height="20" rx="10" fill="#454a64" opacity=".4"/>
+      <text x="533" y="221" fill="#8891b0" font-size="8" text-anchor="middle" font-weight="700">Baja</text>
+      <!-- Card task -->
+      <rect x="10" y="248" width="680" height="38" rx="8" fill="#2d3142"/>
+      <rect x="20" y="256" width="20" height="20" rx="4" fill="none" stroke="#3b6fd4" stroke-width="1.5"/>
+      <text x="52" y="270" fill="#f8f8f2" font-size="11" font-weight="600">Revisar wireframes del A5 con el equipo</text>
+      <rect x="420" y="256" width="50" height="20" rx="10" fill="#ef4444" opacity=".2"/>
+      <text x="445" y="269" fill="#ef4444" font-size="8" text-anchor="middle" font-weight="700">Alta</text>
+      <text x="490" y="269" fill="#8891b0" font-size="9">DEIU</text>
+      <text x="540" y="269" fill="#8891b0" font-size="9">Hoy 15:00</text>
+      <text x="620" y="269" fill="#3b6fd4" font-size="9">✎ ···</text>
+    </svg>
+  </div>
+  <div class="card yellow" style="flex-shrink:0;margin-top:.4em;">
+    <p>🎯 Noten cómo el azul primario comunica <em>confianza y productividad</em>, los neutros oscuros crean <em>foco</em> y los semánticos (rojo/amarillo) comunican <em>urgencia</em> sin gritar.</p>
+  </div>
+</div>
+
+<!-- ═══ S12 CIERRE ═══ -->
+<div class="slide center" style="justify-content:center;">
+  <h2>Resumen de hoy</h2>
+  <div class="grid-2" style="text-align:left;margin-top:.8em;max-width:700px;width:100%;">
+    <div class="card green"><p>✅ Qué es un Sistema de Diseño y un UI Kit</p></div>
+    <div class="card green"><p>✅ Design Atómico: tokens → componentes → organismos</p></div>
+    <div class="card green"><p>✅ Color con propósito y design tokens</p></div>
+    <div class="card green"><p>✅ Tipografía con jerarquía (5 niveles)</p></div>
+    <div class="card green"><p>✅ Componentes con estados y variantes en Figma</p></div>
+    <div class="card green"><p>✅ Material Design 3, Apple HIG y UI Patterns</p></div>
+  </div>
+  <div class="card orange" style="max-width:700px;width:100%;margin-top:.8em;text-align:left;">
+    <p>📌 <strong>Para la próxima sesión (S18 — Jue 16 Abr):</strong> Traigan el UI Kit terminado. Vamos a conectar sus pantallas con prototipado interactivo usando <strong>Smart Animate</strong> en Figma.</p>
+  </div>
+  <div class="card cyan" style="max-width:700px;width:100%;margin-top:.5em;text-align:left;">
+    <p>📦 <strong>Conexión con entregables:</strong> El UI Kit que construyen hoy es la base del <strong>A6 — Prototipo Hi-Fi</strong> que entregarán al cierre de la Unidad IV.</p>
+  </div>
+  <p class="muted" style="margin-top:1em;">DEIU 2026 · Ing. Ricardo Jaramillo · rjaramillo0@ucol.mx</p>
+</div>
+
+<script>
+var c=0,t=12;
+function nav(d){
+  document.querySelectorAll('.slide')[c].classList.remove('active');
+  c+=d;
+  if(c<0)c=0;
+  if(c>=t)c=t-1;
+  var s=document.querySelectorAll('.slide')[c];
+  s.classList.add('active');
+  s.scrollTop=0;
+  document.getElementById('C').textContent=(c+1)+' / '+t;
+  document.getElementById('P').disabled=c===0;
+  document.getElementById('N').disabled=c===t-1;
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')nav(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')nav(-1);
+});
+</script>
+</body>
+</html>
