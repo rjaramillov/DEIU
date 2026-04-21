@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesión 19 — Planeación de Pruebas de Usabilidad | DEIU 2026</title>
+<style>
+:root{
+  --bg:#282a36;--cl:#44475a;--fg:#f8f8f2;--dim:#6272a4;
+  --cyan:#8be9fd;--green:#50fa7b;--orange:#ffb86c;
+  --pink:#ff79c6;--purple:#bd93f9;--red:#ff5555;--yellow:#f1fa8c;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
+  color:var(--fg);font-family:'Segoe UI',system-ui,sans-serif;
+  font-size:clamp(14px,1.4vw,20px);}
+.slide{display:none;width:100vw;height:100vh;flex-direction:column;
+  justify-content:flex-start;padding:3.5vh 5vw 7vh 5vw;overflow:hidden;}
+.slide.active{display:flex;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.slide.active{animation:fi .2s ease;}
+h1{font-size:clamp(1.6em,3.2vw,2.8em);color:var(--purple);margin-bottom:.3em;line-height:1.15;}
+h2{font-size:clamp(1.2em,2.2vw,1.9em);color:var(--cyan);margin-bottom:.4em;line-height:1.2;}
+h3{font-size:clamp(.85em,1.3vw,1.1em);color:var(--orange);margin-bottom:.2em;}
+p,li{font-size:clamp(.78em,1.1vw,.98em);line-height:1.55;}
+ul{padding-left:1.2em;}
+strong{color:var(--pink);}
+em{color:var(--cyan);font-style:normal;}
+.muted{color:var(--dim);font-size:.8em;}
+.center{text-align:center;align-items:center;}
+.card{background:var(--cl);border-left:4px solid var(--purple);
+  border-radius:8px;padding:.7em 1em;margin:.35em 0;flex-shrink:0;}
+.card.green{border-color:var(--green);}
+.card.orange{border-color:var(--orange);}
+.card.red{border-color:var(--red);}
+.card.cyan{border-color:var(--cyan);}
+.card.yellow{border-color:var(--yellow);}
+.card.pink{border-color:var(--pink);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.6em;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5em;}
+.tag{display:inline-block;background:var(--purple);color:var(--bg);
+  font-size:.55em;font-weight:700;padding:2px 9px;border-radius:20px;
+  vertical-align:middle;margin-left:6px;}
+.tag.orange{background:var(--orange);}
+.tag.cyan{background:var(--cyan);}
+.tag.green{background:var(--green);}
+.tag.pink{background:var(--pink);}
+.tag.red{background:var(--red);}
+.tl{border-left:3px solid var(--purple);padding-left:1.2em;margin-left:.4em;}
+.tli{margin-bottom:.6em;position:relative;}
+.tli::before{content:'';width:10px;height:10px;background:var(--purple);
+  border-radius:50%;position:absolute;left:-1.55em;top:.3em;}
+.tli.green::before{background:var(--green);}
+.tli.orange::before{background:var(--orange);}
+.tli.cyan::before{background:var(--cyan);}
+.tli.pink::before{background:var(--pink);}
+.tli.red::before{background:var(--red);}
+.tlabel{font-size:.7em;color:var(--dim);display:block;margin-bottom:.1em;}
+.split{display:flex;gap:2vw;flex:1;min-height:0;align-items:stretch;}
+.split-text{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.split-svg{flex:1.2;display:flex;align-items:center;justify-content:center;min-height:0;}
+.split-svg svg{width:100%;height:100%;max-height:56vh;}
+.svg-wrap{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
+.svg-wrap svg{width:100%;height:100%;max-height:62vh;}
+.ok{color:var(--green);font-weight:700;}
+.bad{color:var(--red);font-weight:700;}
+.nav{position:fixed;bottom:1.5vh;right:2vw;display:flex;gap:.6em;z-index:9999;}
+.btn{background:var(--dim);color:var(--fg);border:none;padding:.55em 1.4em;
+  font-size:.9em;border-radius:6px;cursor:pointer;transition:background .2s;}
+.btn:hover{background:var(--purple);}
+.btn:disabled{background:var(--cl);opacity:.5;cursor:not-allowed;}
+.ctr{position:fixed;bottom:1.5vh;left:2vw;background:var(--cl);
+  padding:.5em 1em;border-radius:6px;font-size:.85em;z-index:9999;color:var(--dim);}
+.pill{display:inline-flex;align-items:center;background:rgba(255,255,255,.06);
+  border:1.5px solid rgba(255,255,255,.15);border-radius:6px;
+  padding:2px 10px;font-family:monospace;font-size:.78em;color:var(--cyan);}
+.ok-row{border-left:3px solid var(--green);padding:.3em .7em;background:rgba(80,250,123,.07);border-radius:0 6px 6px 0;margin:.2em 0;}
+.bad-row{border-left:3px solid var(--red);padding:.3em .7em;background:rgba(255,85,85,.07);border-radius:0 6px 6px 0;margin:.2em 0;}
+</style>
+</head>
+<body>
+<div class="nav">
+  <button class="btn" id="P" onclick="nav(-1)" disabled>&#8592;</button>
+  <button class="btn" id="N" onclick="nav(1)">&#8594;</button>
+</div>
+<div class="ctr" id="C">1 / 11</div>
+
+<!-- S1 PORTADA -->
+<div class="slide active center" style="justify-content:center;">
+  <p class="muted" style="margin-bottom:.5em;">DEIU 2026 · Unidad V · Facultad de Telemática · Universidad de Colima</p>
+  <h1>Sesión 19</h1>
+  <h2 style="color:var(--green);font-size:clamp(1.3em,2.5vw,2em);">Planeación de Pruebas de Usabilidad</h2>
+  <p style="color:var(--orange);margin:.3em 0 1em;">¿Por qué fallan los prototipos? · Regla de los 5 · Métricas · Escenarios · Think-aloud</p>
+  <svg viewBox="0 0 580 150" style="width:65%;max-width:640px;height:auto;margin:.5em auto;">
+    <!-- Usuario navegando prototipo -->
+    <!-- Pantalla izq -->
+    <rect x="10" y="15" width="130" height="120" rx="10" fill="#1e2030" stroke="#6272a4" stroke-width="1.5"/>
+    <rect x="10" y="15" width="130" height="20" rx="10" fill="#44475a"/>
+    <text x="75" y="29" fill="#f8f8f2" font-size="9" text-anchor="middle">Prototipo</text>
+    <rect x="20" y="45" width="110" height="15" rx="4" fill="#44475a"/>
+    <rect x="20" y="65" width="80" height="12" rx="4" fill="#44475a" opacity=".7"/>
+    <rect x="20" y="82" width="95" height="12" rx="4" fill="#44475a" opacity=".5"/>
+    <rect x="20" y="105" width="110" height="22" rx="5" fill="#2B5FD9"/>
+    <text x="75" y="119" fill="#f8f8f2" font-size="9" text-anchor="middle" font-weight="600">Guardar →</text>
+    <!-- Usuario observando -->
+    <circle cx="210" cy="60" r="22" fill="#44475a" stroke="#bd93f9" stroke-width="2"/>
+    <text x="210" y="66" fill="#f8f8f2" font-size="20" text-anchor="middle">🤔</text>
+    <text x="210" y="95" fill="#bd93f9" font-size="9" text-anchor="middle">Usuario</text>
+    <!-- Bocadillo de pensamiento -->
+    <rect x="240" y="25" width="120" height="50" rx="10" fill="#44475a" stroke="#bd93f9" stroke-width="1.5"/>
+    <polygon points="240,55 228,68 255,60" fill="#44475a" stroke="#bd93f9" stroke-width="1"/>
+    <text x="300" y="44" fill="#f8f8f2" font-size="9" text-anchor="middle">"¿Dónde está</text>
+    <text x="300" y="57" fill="#f8f8f2" font-size="9" text-anchor="middle">el botón de inicio?"</text>
+    <!-- Facilitador tomando notas -->
+    <circle cx="440" cy="60" r="22" fill="#44475a" stroke="#50fa7b" stroke-width="2"/>
+    <text x="440" y="66" fill="#f8f8f2" font-size="20" text-anchor="middle">📝</text>
+    <text x="440" y="95" fill="#50fa7b" font-size="9" text-anchor="middle">Facilitador</text>
+    <!-- Nota del facilitador -->
+    <rect x="468" y="20" width="100" height="60" rx="8" fill="#282a36" stroke="#50fa7b" stroke-width="1.5"/>
+    <text x="518" y="38" fill="#50fa7b" font-size="8.5" text-anchor="middle" font-weight="700">Hallazgo #1</text>
+    <rect x="476" y="44" width="84" height="5" rx="2" fill="#6272a4" opacity=".5"/>
+    <rect x="476" y="53" width="68" height="5" rx="2" fill="#6272a4" opacity=".3"/>
+    <rect x="476" y="62" width="76" height="5" rx="2" fill="#6272a4" opacity=".3"/>
+    <!-- Flecha usuario→pantalla -->
+    <line x1="188" y1="65" x2="145" y2="80" stroke="#ffb86c" stroke-width="2" stroke-dasharray="4,3"/>
+    <polygon points="148,75 138,85 143,88" fill="#ffb86c"/>
+    <!-- Flecha facilitador observa -->
+    <line x1="390" y1="58" x2="370" y2="58" stroke="#50fa7b" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <polygon points="372,53 362,58 372,63" fill="#50fa7b"/>
+  </svg>
+  <div class="card cyan" style="max-width:500px;margin:.6em auto 0;">
+    <p>📅 <strong>Martes 21 de Abril, 2026</strong> &nbsp;|&nbsp; 07:00 – 09:00 hrs</p>
+  </div>
+  <p class="muted" style="margin-top:.6em;">Ing. Ricardo Jaramillo &nbsp;·&nbsp; rjaramillo0@ucol.mx</p>
+</div>
+
+<!-- S2 AGENDA -->
+<div class="slide">
+  <h2>Agenda de hoy</h2>
+  <div class="tl" style="margin-top:.5em;">
+    <div class="tli red"><span class="tlabel">07:00 – 07:10 · 10 min</span><strong>Activación:</strong> Intercambio de prototipos — naveguen sin instrucciones</div>
+    <div class="tli orange"><span class="tlabel">07:10 – 07:20 · 10 min</span><strong>Debrief:</strong> ¿Qué confundió? Extracción de patrones en grupo</div>
+    <div class="tli cyan"><span class="tlabel">07:20 – 07:45 · 25 min</span><strong>Teoría:</strong> Planeación de pruebas — tipos, regla de los 5, métricas, escenarios, think-aloud</div>
+    <div class="tli green"><span class="tlabel">07:45 – 08:35 · 50 min</span><strong>Taller:</strong> Cada equipo escribe sus 3 tareas/escenarios para el Test Fest</div>
+    <div class="tli pink"><span class="tlabel">08:35 – 09:00 · 25 min</span><strong>Cierre:</strong> Cada equipo comparte 1 tarea — retroalimentación cruzada</div>
+  </div>
+  <div class="card orange" style="margin-top:.6em;">
+    <p>🎯 <strong>Objetivo:</strong> Que cada equipo salga con 3 tareas/escenarios escritos y validados para el Test Fest del <strong>28 de Abril</strong>. Estas tareas son el insumo que usarán en S20 para diseñar el guión completo.</p>
+  </div>
+</div>
+
+<!-- S3 ¿POR QUÉ PROBAR? -->
+<div class="slide">
+  <h2>Lo que acaban de ver — ¿Por qué probar con usuarios?</h2>
+  <div class="card red" style="margin-bottom:.5em;">
+    <p>Lo que vivieron hace 10 minutos <strong>es exactamente el problema</strong>. El equipo que diseñó el prototipo sabía perfectamente cómo usarlo. El otro equipo no. Esa brecha es el <em>sesgo del diseñador</em> — y es invisible hasta que alguien más usa tu producto.</p>
+  </div>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:54vh;">
+        <text x="150" y="18" fill="#ffb86c" font-size="11" font-weight="700" text-anchor="middle">El sesgo del diseñador</text>
+        <!-- Diseñador -->
+        <circle cx="75" cy="80" r="30" fill="#44475a" stroke="#bd93f9" stroke-width="2"/>
+        <text x="75" y="87" fill="#f8f8f2" font-size="22" text-anchor="middle">🧑‍💻</text>
+        <text x="75" y="125" fill="#bd93f9" font-size="9" text-anchor="middle" font-weight="700">Diseñador</text>
+        <!-- Modelo mental diseñador -->
+        <rect x="115" y="55" width="80" height="60" rx="8" fill="#282a36" stroke="#bd93f9" stroke-width="1.5"/>
+        <text x="155" y="74" fill="#bd93f9" font-size="8" text-anchor="middle" font-weight="700">Modelo mental</text>
+        <line x1="125" y1="84" x2="185" y2="84" stroke="#50fa7b" stroke-width="1"/>
+        <rect x="125" y="88" width="60" height="5" rx="2" fill="#50fa7b" opacity=".6"/>
+        <rect x="125" y="97" width="50" height="5" rx="2" fill="#50fa7b" opacity=".4"/>
+        <text x="155" y="110" fill="#6272a4" font-size="7" text-anchor="middle">Flujo claro ✓</text>
+        <!-- Usuario -->
+        <circle cx="75" cy="210" r="30" fill="#44475a" stroke="#ffb86c" stroke-width="2"/>
+        <text x="75" y="217" fill="#f8f8f2" font-size="22" text-anchor="middle">🤷</text>
+        <text x="75" y="255" fill="#ffb86c" font-size="9" text-anchor="middle" font-weight="700">Usuario real</text>
+        <!-- Modelo mental usuario -->
+        <rect x="115" y="185" width="80" height="60" rx="8" fill="#282a36" stroke="#ffb86c" stroke-width="1.5"/>
+        <text x="155" y="204" fill="#ffb86c" font-size="8" text-anchor="middle" font-weight="700">Modelo mental</text>
+        <line x1="125" y1="214" x2="185" y2="214" stroke="#ff5555" stroke-width="1"/>
+        <rect x="125" y="218" width="35" height="5" rx="2" fill="#ff5555" opacity=".6"/>
+        <text x="145" y="228" fill="#6272a4" font-size="7" text-anchor="middle">¿Dónde está...?</text>
+        <rect x="125" y="232" width="50" height="5" rx="2" fill="#ff5555" opacity=".3"/>
+        <!-- Brecha entre modelos -->
+        <line x1="195" y1="115" x2="195" y2="185" stroke="#ff5555" stroke-width="2" stroke-dasharray="5,4"/>
+        <rect x="200" y="140" width="90" height="30" rx="6" fill="rgba(255,85,85,.15)" stroke="#ff5555" stroke-width="1"/>
+        <text x="245" y="153" fill="#ff5555" font-size="8.5" text-anchor="middle" font-weight="700">BRECHA</text>
+        <text x="245" y="164" fill="#6272a4" font-size="7.5" text-anchor="middle">Sesgo del diseñador</text>
+        <!-- Solución -->
+        <rect x="10" y="275" width="280" height="22" rx="8" fill="rgba(80,250,123,.12)" stroke="#50fa7b" stroke-width="1"/>
+        <text x="150" y="289" fill="#50fa7b" font-size="9" text-anchor="middle" font-weight="700">→ Las pruebas de usabilidad cierran esta brecha</text>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="card green">
+        <h3>¿Para qué sirve una prueba de usabilidad?</h3>
+        <ul style="margin-top:.3em;">
+          <li>Detectar problemas de flujo <strong>antes de programar</strong></li>
+          <li>Descubrir qué confunde al usuario sin que te lo digan</li>
+          <li>Validar que las decisiones de diseño funcionan en contexto real</li>
+          <li>Obtener datos cuantitativos <em>y</em> cualitativos del comportamiento</li>
+        </ul>
+      </div>
+      <div class="card orange" style="margin-top:.5em;">
+        <h3>La regla de Jakob Nielsen (1993)</h3>
+        <p style="margin-top:.3em;font-size:.88em;">El <strong>85% de los problemas de usabilidad</strong> se detectan con solo 5 usuarios. Agregar más usuarios después del quinto aporta cada vez menos hallazgos nuevos. Más usuarios = más costo, no más información.</p>
+      </div>
+      <div class="card cyan" style="margin-top:.5em;">
+        <h3>Conexión con su proyecto</h3>
+        <p style="font-size:.88em;">Lo que observaron en el intercambio son <strong>hallazgos reales de usabilidad</strong>. En el Test Fest van a documentarlos formalmente con las mismas técnicas que veremos hoy.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S4 TIPOS DE PRUEBA -->
+<div class="slide">
+  <h2>Tipos de prueba de usabilidad</h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>No todas las pruebas son iguales. El tipo de prueba depende del <strong>objetivo</strong> (¿qué quieres descubrir?), el <strong>momento</strong> del proceso y los <strong>recursos</strong> disponibles. Para el Test Fest usarán la modalidad <em>moderada presencial</em>.</p>
+  </div>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 270" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- SIN USUARIOS -->
+      <rect x="10" y="10" width="320" height="250" rx="12" fill="#44475a" opacity=".3" stroke="#bd93f9" stroke-width="1.5"/>
+      <text x="170" y="32" fill="#bd93f9" font-size="12" font-weight="700" text-anchor="middle">SIN USUARIOS</text>
+      <!-- Heurística -->
+      <rect x="22" y="42" width="296" height="60" rx="8" fill="#282a36"/>
+      <text x="46" y="62" fill="#bd93f9" font-size="11" font-weight="700">Evaluación heurística</text>
+      <text x="46" y="75" fill="#6272a4" font-size="8.5">Expertos evalúan con las 10 heurísticas de Nielsen</text>
+      <text x="46" y="88" fill="#6272a4" font-size="8.5">Rápido · Sin reclutar usuarios · Sesgado por expertos</text>
+      <!-- Cognitive walkthrough -->
+      <rect x="22" y="110" width="296" height="60" rx="8" fill="#282a36"/>
+      <text x="46" y="130" fill="#bd93f9" font-size="11" font-weight="700">Recorrido cognitivo</text>
+      <text x="46" y="143" fill="#6272a4" font-size="8.5">Simular el proceso mental del usuario tarea por tarea</text>
+      <text x="46" y="156" fill="#6272a4" font-size="8.5">Sin usuarios reales · Útil en fases tempranas</text>
+      <!-- A/B -->
+      <rect x="22" y="178" width="296" height="60" rx="8" fill="#282a36"/>
+      <text x="46" y="198" fill="#bd93f9" font-size="11" font-weight="700">Análisis competitivo</text>
+      <text x="46" y="211" fill="#6272a4" font-size="8.5">Comparar el diseño con soluciones existentes</text>
+      <text x="46" y="224" fill="#6272a4" font-size="8.5">Benchmark de referencia · No mide tu producto</text>
+
+      <!-- CON USUARIOS -->
+      <rect x="368" y="10" width="322" height="250" rx="12" fill="#44475a" opacity=".3" stroke="#50fa7b" stroke-width="1.5"/>
+      <text x="529" y="32" fill="#50fa7b" font-size="12" font-weight="700" text-anchor="middle">CON USUARIOS</text>
+      <!-- Moderada presencial -->
+      <rect x="380" y="42" width="298" height="75" rx="8" fill="#1e2030" stroke="#50fa7b" stroke-width="2"/>
+      <text x="404" y="62" fill="#50fa7b" font-size="11" font-weight="700">Moderada presencial ← TEST FEST</text>
+      <text x="404" y="76" fill="#8be9fd" font-size="8.5">Facilitador + usuario en el mismo espacio</text>
+      <text x="404" y="89" fill="#8be9fd" font-size="8.5">Think-aloud · Observación directa · Ricos en hallazgos</text>
+      <rect x="560" y="48" width="60" height="16" rx="8" fill="#50fa7b"/>
+      <text x="590" y="60" fill="#282a36" font-size="8" text-anchor="middle" font-weight="700">← AQUÍ</text>
+      <!-- No moderada remota -->
+      <rect x="380" y="125" width="298" height="60" rx="8" fill="#282a36"/>
+      <text x="404" y="145" fill="#50fa7b" font-size="11" font-weight="700">No moderada remota</text>
+      <text x="404" y="158" fill="#6272a4" font-size="8.5">Usuario navega solo · Software graba la pantalla</text>
+      <text x="404" y="171" fill="#6272a4" font-size="8.5">Maze, UserTesting, Lookback · Mayor escala</text>
+      <!-- Guerrilla -->
+      <rect x="380" y="193" width="298" height="55" rx="8" fill="#282a36"/>
+      <text x="404" y="213" fill="#50fa7b" font-size="11" font-weight="700">Guerrilla testing</text>
+      <text x="404" y="226" fill="#6272a4" font-size="8.5">Usuarios en cafetería / pasillo · Rápido y económico</text>
+      <text x="404" y="237" fill="#6272a4" font-size="8.5">Baja rigor · Útil para validaciones rápidas</text>
+    </svg>
+  </div>
+</div>
+
+<!-- S5 LA REGLA DE LOS 5 -->
+<div class="slide">
+  <h2>La regla de los 5 usuarios</h2>
+  <div class="card orange" style="margin-bottom:.5em;">
+    <p>Jakob Nielsen (2000): <strong>"5 usuarios revelan el 85% de los problemas de usabilidad."</strong> Esto no es una opinión — es el resultado de estudios empíricos sobre la curva de descubrimiento de problemas. Para el Test Fest de esta clase: <em>cada equipo es evaluado por 3–4 evaluadores.</em></p>
+  </div>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:54vh;">
+        <text x="150" y="18" fill="#ffb86c" font-size="11" font-weight="700" text-anchor="middle">Curva de descubrimiento de problemas</text>
+        <!-- Ejes -->
+        <line x1="40" y1="220" x2="280" y2="220" stroke="#6272a4" stroke-width="1.5"/>
+        <line x1="40" y1="220" x2="40" y2="30" stroke="#6272a4" stroke-width="1.5"/>
+        <!-- Etiquetas eje X -->
+        <text x="40" y="235" fill="#6272a4" font-size="8" text-anchor="middle">0</text>
+        <text x="75" y="235" fill="#6272a4" font-size="8" text-anchor="middle">1</text>
+        <text x="110" y="235" fill="#6272a4" font-size="8" text-anchor="middle">2</text>
+        <text x="145" y="235" fill="#6272a4" font-size="8" text-anchor="middle">3</text>
+        <text x="180" y="235" fill="#6272a4" font-size="8" text-anchor="middle">4</text>
+        <text x="215" y="235" fill="#ffb86c" font-size="9" text-anchor="middle" font-weight="700">5</text>
+        <text x="250" y="235" fill="#6272a4" font-size="8" text-anchor="middle">8+</text>
+        <text x="160" y="248" fill="#6272a4" font-size="8" text-anchor="middle">Número de usuarios</text>
+        <!-- Etiquetas eje Y -->
+        <text x="32" y="220" fill="#6272a4" font-size="7" text-anchor="end">0%</text>
+        <text x="32" y="185" fill="#6272a4" font-size="7" text-anchor="end">30%</text>
+        <text x="32" y="150" fill="#6272a4" font-size="7" text-anchor="end">60%</text>
+        <text x="32" y="115" fill="#6272a4" font-size="7" text-anchor="end">85%</text>
+        <text x="32" y="80" fill="#6272a4" font-size="7" text-anchor="end">95%</text>
+        <text x="32" y="50" fill="#6272a4" font-size="7" text-anchor="end">100%</text>
+        <!-- Línea de referencia 85% -->
+        <line x1="40" y1="115" x2="280" y2="115" stroke="#ffb86c" stroke-width="1" stroke-dasharray="4,3" opacity=".6"/>
+        <text x="282" y="118" fill="#ffb86c" font-size="7">85%</text>
+        <!-- Curva de descubrimiento -->
+        <path d="M 40,220 C 60,160 80,130 110,110 C 135,93 160,82 215,75 C 240,72 260,68 280,66"
+              fill="none" stroke="#50fa7b" stroke-width="3"/>
+        <!-- Puntos en la curva -->
+        <circle cx="75" cy="180" r="5" fill="#50fa7b"/>
+        <text x="75" y="172" fill="#50fa7b" font-size="7.5" text-anchor="middle">~31%</text>
+        <circle cx="110" cy="148" r="5" fill="#50fa7b"/>
+        <text x="110" y="140" fill="#50fa7b" font-size="7.5" text-anchor="middle">~52%</text>
+        <circle cx="145" cy="125" r="5" fill="#50fa7b"/>
+        <text x="145" y="117" fill="#50fa7b" font-size="7.5" text-anchor="middle">~72%</text>
+        <circle cx="180" cy="113" r="5" fill="#50fa7b"/>
+        <!-- Punto 5 usuarios destacado -->
+        <circle cx="215" cy="107" r="8" fill="#ffb86c" stroke="#f8f8f2" stroke-width="1.5"/>
+        <text x="215" y="111" fill="#282a36" font-size="8" text-anchor="middle" font-weight="800">5</text>
+        <text x="215" y="95" fill="#ffb86c" font-size="7.5" text-anchor="middle" font-weight="700">85%</text>
+        <!-- Área de rendimientos decrecientes -->
+        <rect x="215" y="65" width="65" height="155" rx="4" fill="rgba(255,85,85,.08)" stroke="#ff5555" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="248" y="78" fill="#ff5555" font-size="7" text-anchor="middle">costo &gt;</text>
+        <text x="248" y="88" fill="#ff5555" font-size="7" text-anchor="middle">beneficio</text>
+        <!-- Label eje Y -->
+        <text x="14" y="135" fill="#6272a4" font-size="7" transform="rotate(-90,14,135)">% Problemas descubiertos</text>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="card green">
+        <h3>¿Por qué funciona con tan pocos?</h3>
+        <p style="margin-top:.3em;font-size:.88em;">Los problemas más graves se repiten entre usuarios. El primer usuario descubre ~31% de los problemas; el segundo descubre más problemas nuevos — pero menos que el primero. La curva se aplana rápidamente.</p>
+      </div>
+      <div class="card yellow" style="margin-top:.5em;">
+        <h3>¿Cuándo necesitas más de 5?</h3>
+        <ul style="margin-top:.3em;font-size:.85em;">
+          <li>Cuando hay <strong>2+ perfiles de usuario muy distintos</strong> — 5 por perfil</li>
+          <li>Para estudios <strong>cuantitativos de métricas</strong> (tasa de éxito estadística)</li>
+          <li>Para <strong>A/B testing</strong> con validez estadística</li>
+        </ul>
+      </div>
+      <div class="card cyan" style="margin-top:.5em;">
+        <h3>Para el Test Fest</h3>
+        <p style="font-size:.88em;">Cada equipo será evaluado por <strong>3–4 compañeros</strong> de otros equipos actuando como usuarios. Es suficiente para detectar los problemas más graves del prototipo antes de la iteración final.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S6 MÉTRICAS -->
+<div class="slide">
+  <h2>¿Qué medimos? — Métricas de usabilidad</h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>Una prueba de usabilidad produce dos tipos de datos: <strong>cuantitativos</strong> (números comparables) y <strong>cualitativos</strong> (observaciones, citas del usuario). Ambos son necesarios. Los números dicen <em>qué</em> está fallando; las observaciones dicen <em>por qué</em>.</p>
+  </div>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 265" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- CUANTITATIVOS -->
+      <text x="175" y="18" fill="#8be9fd" font-size="12" font-weight="700" text-anchor="middle">CUANTITATIVOS</text>
+      <rect x="10" y="25" width="330" height="235" rx="10" fill="#44475a" opacity=".25" stroke="#8be9fd" stroke-width="1"/>
+      <!-- Tasa de éxito -->
+      <rect x="20" y="35" width="310" height="52" rx="7" fill="#282a36"/>
+      <text x="40" y="55" fill="#50fa7b" font-size="11" font-weight="700">Tasa de éxito (Task Success Rate)</text>
+      <text x="40" y="68" fill="#6272a4" font-size="8.5">% de usuarios que completan la tarea correctamente.</text>
+      <text x="40" y="79" fill="#8be9fd" font-size="8">Ej: 3/4 usuarios completaron "agregar tarea" = 75%</text>
+      <!-- Tiempo de tarea -->
+      <rect x="20" y="94" width="310" height="52" rx="7" fill="#282a36"/>
+      <text x="40" y="114" fill="#50fa7b" font-size="11" font-weight="700">Tiempo de tarea (Task Time)</text>
+      <text x="40" y="127" fill="#6272a4" font-size="8.5">Segundos que tarda el usuario en completar la tarea.</text>
+      <text x="40" y="138" fill="#8be9fd" font-size="8">Baseline: primera sesión. Comparar iteraciones.</text>
+      <!-- Errores -->
+      <rect x="20" y="153" width="310" height="52" rx="7" fill="#282a36"/>
+      <text x="40" y="173" fill="#50fa7b" font-size="11" font-weight="700">Errores y pasos incorrectos</text>
+      <text x="40" y="186" fill="#6272a4" font-size="8.5">Número de acciones incorrectas antes de completar.</text>
+      <text x="40" y="197" fill="#8be9fd" font-size="8">Ej: Tocó 3 botones incorrectos antes de encontrar "+"</text>
+      <!-- SUS -->
+      <rect x="20" y="212" width="310" height="42" rx="7" fill="#1e2030" stroke="#ffb86c" stroke-width="1.5"/>
+      <text x="40" y="230" fill="#ffb86c" font-size="11" font-weight="700">SUS — System Usability Scale</text>
+      <text x="40" y="243" fill="#6272a4" font-size="8.5">Cuestionario de 10 ítems post-sesión · Puntaje 0-100</text>
+      <rect x="260" y="216" width="60" height="16" rx="8" fill="#ffb86c"/>
+      <text x="290" y="227" fill="#282a36" font-size="7.5" text-anchor="middle" font-weight="700">S20 →</text>
+
+      <!-- CUALITATIVOS -->
+      <text x="525" y="18" fill="#ff79c6" font-size="12" font-weight="700" text-anchor="middle">CUALITATIVOS</text>
+      <rect x="360" y="25" width="330" height="235" rx="10" fill="#44475a" opacity=".25" stroke="#ff79c6" stroke-width="1"/>
+      <!-- Think-aloud -->
+      <rect x="370" y="35" width="310" height="52" rx="7" fill="#282a36"/>
+      <text x="390" y="55" fill="#ff79c6" font-size="11" font-weight="700">Verbalizaciones (Think-aloud)</text>
+      <text x="390" y="68" fill="#6272a4" font-size="8.5">Lo que el usuario dice mientras navega.</text>
+      <text x="390" y="79" fill="#8be9fd" font-size="8">Ej: "No sé para qué sirve este botón azul"</text>
+      <!-- Observaciones -->
+      <rect x="370" y="94" width="310" height="52" rx="7" fill="#282a36"/>
+      <text x="390" y="114" fill="#ff79c6" font-size="11" font-weight="700">Observaciones de comportamiento</text>
+      <text x="390" y="127" fill="#6272a4" font-size="8.5">Lo que el facilitador ve sin que el usuario lo diga.</text>
+      <text x="390" y="138" fill="#8be9fd" font-size="8">Ej: Pausa de 8 seg mirando el menú sin tocarlo</text>
+      <!-- Preguntas post-tarea -->
+      <rect x="370" y="153" width="310" height="52" rx="7" fill="#282a36"/>
+      <text x="390" y="173" fill="#ff79c6" font-size="11" font-weight="700">Preguntas post-tarea</text>
+      <text x="390" y="186" fill="#6272a4" font-size="8.5">Percepciones del usuario después de cada tarea.</text>
+      <text x="390" y="197" fill="#8be9fd" font-size="8">Ej: "¿Qué fue lo más difícil?" "¿Lo esperabas ahí?"</text>
+      <!-- Satisfacción -->
+      <rect x="370" y="212" width="310" height="42" rx="7" fill="#282a36"/>
+      <text x="390" y="230" fill="#ff79c6" font-size="11" font-weight="700">Satisfacción general</text>
+      <text x="390" y="243" fill="#6272a4" font-size="8.5">Impresión global del usuario al terminar la sesión.</text>
+    </svg>
+  </div>
+</div>
+
+<!-- S7 CÓMO ESCRIBIR TAREAS -->
+<div class="slide">
+  <h2>Cómo escribir tareas y escenarios</h2>
+  <div class="card green" style="margin-bottom:.5em;">
+    <p>Una <strong>tarea de usabilidad</strong> es la instrucción que le das al usuario. Un <strong>escenario</strong> la contextualiza con una situación realista. La calidad de las tareas determina la calidad de los hallazgos. Una tarea mal escrita sesga al usuario y los datos no sirven.</p>
+  </div>
+  <div class="split" style="flex:1;min-height:0;">
+    <div class="split-svg">
+      <svg viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-height:58vh;">
+        <text x="150" y="18" fill="#ffb86c" font-size="11" font-weight="700" text-anchor="middle">Anatomía de una buena tarea</text>
+        <!-- Escenario -->
+        <rect x="10" y="28" width="280" height="75" rx="8" fill="#1e2030" stroke="#50fa7b" stroke-width="1.5"/>
+        <rect x="10" y="28" width="90" height="18" rx="8" fill="#50fa7b"/>
+        <text x="55" y="40" fill="#282a36" font-size="8.5" text-anchor="middle" font-weight="700">ESCENARIO</text>
+        <text x="20" y="58" fill="#f8f8f2" font-size="8.5" font-style="italic">"Eres Laura, coordinadora de proyectos.</text>
+        <text x="20" y="70" fill="#f8f8f2" font-size="8.5" font-style="italic">Tienes una reunión importante mañana</text>
+        <text x="20" y="82" fill="#f8f8f2" font-size="8.5" font-style="italic">y necesitas organizar tus pendientes."</text>
+        <text x="20" y="96" fill="#50fa7b" font-size="7.5">↑ Contexto realista basado en persona A2</text>
+        <!-- Tarea -->
+        <rect x="10" y="114" width="280" height="58" rx="8" fill="#1e2030" stroke="#8be9fd" stroke-width="1.5"/>
+        <rect x="10" y="114" width="70" height="18" rx="8" fill="#8be9fd"/>
+        <text x="45" y="126" fill="#282a36" font-size="8.5" text-anchor="middle" font-weight="700">TAREA</text>
+        <text x="20" y="146" fill="#f8f8f2" font-size="9" font-weight="600">"Agrega una nueva tarea llamada</text>
+        <text x="20" y="159" fill="#f8f8f2" font-size="9" font-weight="600">'Preparar agenda' para mañana a las 9am."</text>
+        <text x="20" y="166" fill="#8be9fd" font-size="7.5">↑ Acción concreta + datos específicos</text>
+        <!-- Criterio de éxito -->
+        <rect x="10" y="184" width="280" height="48" rx="8" fill="#1e2030" stroke="#bd93f9" stroke-width="1.5"/>
+        <rect x="10" y="184" width="110" height="18" rx="8" fill="#bd93f9"/>
+        <text x="65" y="196" fill="#282a36" font-size="8" text-anchor="middle" font-weight="700">CRITERIO DE ÉXITO</text>
+        <text x="20" y="212" fill="#f8f8f2" font-size="8.5">"La tarea aparece en el dashboard con</text>
+        <text x="20" y="224" fill="#f8f8f2" font-size="8.5">nombre y fecha correctos."</text>
+        <!-- Reglas de oro -->
+        <rect x="10" y="245" width="280" height="88" rx="8" fill="rgba(80,250,123,.08)" stroke="#50fa7b" stroke-width="1"/>
+        <text x="20" y="263" fill="#50fa7b" font-size="9" font-weight="700">Reglas de oro:</text>
+        <text x="20" y="277" fill="#f8f8f2" font-size="8.5">✓ Sin verbos que revelen la interfaz</text>
+        <text x="20" y="289" fill="#f8f8f2" font-size="8.5">✓ Sin mencionar nombres de botones</text>
+        <text x="20" y="301" fill="#f8f8f2" font-size="8.5">✓ Contexto realista (persona del A2)</text>
+        <text x="20" y="313" fill="#f8f8f2" font-size="8.5">✓ Criterio de éxito observable y claro</text>
+        <text x="20" y="325" fill="#f8f8f2" font-size="8.5">✓ Una sola acción principal por tarea</text>
+      </svg>
+    </div>
+    <div class="split-text">
+      <div class="card red">
+        <h3>❌ Tareas que SESGAN al usuario</h3>
+        <div class="bad-row"><p style="font-size:.82em;">"Haz clic en el botón '+' para crear una tarea."<br><span style="color:var(--red);font-size:.78em;">Revela la interfaz — el usuario no descubre nada</span></p></div>
+        <div class="bad-row"><p style="font-size:.82em;">"¿Pudiste navegar fácilmente el menú?"<br><span style="color:var(--red);font-size:.78em;">Pregunta leading — induce respuesta positiva</span></p></div>
+        <div class="bad-row"><p style="font-size:.82em;">"Agrega una tarea usando el FAB inferior."<br><span style="color:var(--red);font-size:.78em;">Nombra el componente — el usuario no necesita buscarlo</span></p></div>
+      </div>
+      <div class="card green" style="margin-top:.5em;">
+        <h3>✅ Tareas bien escritas</h3>
+        <div class="ok-row"><p style="font-size:.82em;">"Tienes una reunión mañana. Asegúrate de que aparezca en tu lista de pendientes."<br><span style="color:var(--green);font-size:.78em;">Objetivo, no instrucción — el usuario decide cómo</span></p></div>
+        <div class="ok-row"><p style="font-size:.82em;">"Necesitas que tu compañero vea el avance del proyecto. ¿Qué harías?"<br><span style="color:var(--green);font-size:.78em;">Escenario + objetivo — no revela la interfaz</span></p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S8 THINK-ALOUD -->
+<div class="slide">
+  <h2>Think-aloud protocol y roles en la sesión</h2>
+  <div class="card cyan" style="margin-bottom:.5em;">
+    <p>El <strong>think-aloud protocol</strong> pide al usuario que verbalice en voz alta todo lo que piensa mientras navega. Es la técnica más usada en pruebas moderadas porque revela el modelo mental del usuario — no solo su comportamiento, sino el <em>por qué</em> detrás de cada acción.</p>
+  </div>
+  <div class="grid-2" style="flex:1;min-height:0;align-content:start;gap:.5em;">
+    <div class="card green">
+      <h3>Cómo funciona el think-aloud</h3>
+      <ul style="margin-top:.3em;font-size:.85em;">
+        <li>Antes de empezar: <em>"Por favor di en voz alta todo lo que piensas mientras navegas. No hay respuestas correctas o incorrectas."</em></li>
+        <li>Durante: si el usuario se calla, el facilitador dice <em>"¿qué estás pensando ahora?"</em></li>
+        <li>Nunca corregir ni ayudar — aunque el usuario esté perdido</li>
+        <li>Los silencios largos y la frustración son datos valiosos</li>
+      </ul>
+    </div>
+    <div class="card orange">
+      <h3>Lo que el facilitador NO debe hacer</h3>
+      <ul style="margin-top:.3em;font-size:.85em;">
+        <li class="bad">❌ <span>"Ese botón está arriba a la derecha..."</span></li>
+        <li class="bad">❌ <span>"¿No ves el menú de hamburguesa?"</span></li>
+        <li class="bad">❌ <span>"Muy bien, eso era lo correcto"</span></li>
+        <li class="bad">❌ <span>"¿Te parece que el diseño es bonito?"</span></li>
+        <li class="ok" style="margin-top:.3em;">✅ <span>"¿Qué esperabas que pasara?"</span></li>
+        <li class="ok">✅ <span>"¿Qué harías a continuación?"</span></li>
+      </ul>
+    </div>
+    <div class="card purple" style="--purple:#bd93f9;">
+      <h3>Roles en la sesión</h3>
+      <div style="font-size:.85em;margin-top:.3em;">
+        <p style="margin-bottom:.3em;"><strong style="color:var(--cyan);">Facilitador (1 persona)</strong><br>Presenta las tareas, aplica el think-aloud, hace preguntas neutras. No ayuda.</p>
+        <p style="margin-bottom:.3em;"><strong style="color:var(--green);">Observador/es (1-2 personas)</strong><br>Toman notas de comportamiento, errores, expresiones. No interactúan con el usuario.</p>
+        <p><strong style="color:var(--orange);">Registrador (1 persona)</strong><br>Cronometra las tareas, registra éxito/fallo, anota citas textuales del usuario.</p>
+      </div>
+    </div>
+    <div class="card yellow">
+      <h3>Estructura de una sesión (30–45 min)</h3>
+      <div class="tl" style="margin-top:.3em;border-color:var(--yellow);">
+        <div class="tli" style="font-size:.82em;"><div class="tli" style="--purple:var(--yellow);"><span class="tlabel">5 min</span>Presentación y consentimiento</div></div>
+        <div class="tli" style="font-size:.82em;"><span class="tlabel">3 min</span>Práctica de think-aloud con tarea piloto</div>
+        <div class="tli" style="font-size:.82em;"><span class="tlabel">15-25 min</span>Tareas 1, 2 y 3 con think-aloud</div>
+        <div class="tli" style="font-size:.82em;"><span class="tlabel">5 min</span>Preguntas post-sesión + SUS (S20)</div>
+        <div class="tli" style="font-size:.82em;"><span class="tlabel">2 min</span>Agradecimiento y cierre</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S9 TALLER -->
+<div class="slide">
+  <h2>Taller — Escriban sus tareas para el Test Fest <span class="tag orange">50 min</span></h2>
+  <div class="card green" style="margin-bottom:.5em;">
+    <p>Cada equipo escribe <strong>3 tareas/escenarios</strong> basadas en las tareas más frecuentes del <strong>A3 (Task Analysis)</strong>. Estas son las tareas que usarán en el Test Fest del <strong>28 de Abril</strong>. Lo que produzcan hoy es un insumo de S20 y S21.</p>
+  </div>
+  <div class="svg-wrap" style="flex:1;min-height:0;">
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <!-- Paso 1 -->
+      <rect x="10" y="10" width="155" height="180" rx="10" fill="#44475a" opacity=".5"/>
+      <text x="87" y="40" fill="#50fa7b" font-size="24" text-anchor="middle">1️⃣</text>
+      <text x="87" y="62" fill="#50fa7b" font-size="11" font-weight="700" text-anchor="middle">Revisar A3</text>
+      <text x="87" y="78" fill="#f8f8f2" font-size="8.5" text-anchor="middle">Identifiquen las</text>
+      <text x="87" y="90" fill="#f8f8f2" font-size="8.5" text-anchor="middle">3 tareas más</text>
+      <text x="87" y="102" fill="#f8f8f2" font-size="8.5" text-anchor="middle">frecuentes de</text>
+      <text x="87" y="114" fill="#f8f8f2" font-size="8.5" text-anchor="middle">su usuario (A3)</text>
+      <text x="87" y="178" fill="#50fa7b" font-size="8" text-anchor="middle">~10 min</text>
+      <polygon points="165,95 178,100 165,105" fill="#f8f8f2"/>
+
+      <!-- Paso 2 -->
+      <rect x="183" y="10" width="155" height="180" rx="10" fill="#44475a" opacity=".5"/>
+      <text x="260" y="40" fill="#8be9fd" font-size="24" text-anchor="middle">2️⃣</text>
+      <text x="260" y="62" fill="#8be9fd" font-size="11" font-weight="700" text-anchor="middle">Escribir escenario</text>
+      <text x="260" y="78" fill="#f8f8f2" font-size="8.5" text-anchor="middle">Contexto realista</text>
+      <text x="260" y="90" fill="#f8f8f2" font-size="8.5" text-anchor="middle">basado en su</text>
+      <text x="260" y="102" fill="#f8f8f2" font-size="8.5" text-anchor="middle">persona del A2</text>
+      <text x="260" y="114" fill="#f8f8f2" font-size="8.5" text-anchor="middle">(sin revelar UI)</text>
+      <text x="260" y="178" fill="#8be9fd" font-size="8" text-anchor="middle">~12 min</text>
+      <polygon points="338,95 352,100 338,105" fill="#f8f8f2"/>
+
+      <!-- Paso 3 -->
+      <rect x="357" y="10" width="155" height="180" rx="10" fill="#44475a" opacity=".5"/>
+      <text x="434" y="40" fill="#ffb86c" font-size="24" text-anchor="middle">3️⃣</text>
+      <text x="434" y="62" fill="#ffb86c" font-size="11" font-weight="700" text-anchor="middle">Validar la tarea</text>
+      <text x="434" y="78" fill="#f8f8f2" font-size="8.5" text-anchor="middle">¿Revela la UI?</text>
+      <text x="434" y="90" fill="#f8f8f2" font-size="8.5" text-anchor="middle">¿Tiene criterio</text>
+      <text x="434" y="102" fill="#f8f8f2" font-size="8.5" text-anchor="middle">de éxito claro?</text>
+      <text x="434" y="114" fill="#f8f8f2" font-size="8.5" text-anchor="middle">¿Una acción?</text>
+      <text x="434" y="178" fill="#ffb86c" font-size="8" text-anchor="middle">~10 min</text>
+      <polygon points="512,95 526,100 512,105" fill="#f8f8f2"/>
+
+      <!-- Paso 4 -->
+      <rect x="531" y="10" width="159" height="180" rx="10" fill="#44475a" opacity=".5"/>
+      <text x="610" y="40" fill="#ff79c6" font-size="24" text-anchor="middle">4️⃣</text>
+      <text x="610" y="62" fill="#ff79c6" font-size="11" font-weight="700" text-anchor="middle">Asignar roles</text>
+      <text x="610" y="78" fill="#f8f8f2" font-size="8.5" text-anchor="middle">Definir quién</text>
+      <text x="610" y="90" fill="#f8f8f2" font-size="8.5" text-anchor="middle">facilita, observa</text>
+      <text x="610" y="102" fill="#f8f8f2" font-size="8.5" text-anchor="middle">y registra en</text>
+      <text x="610" y="114" fill="#f8f8f2" font-size="8.5" text-anchor="middle">el Test Fest</text>
+      <text x="610" y="178" fill="#ff79c6" font-size="8" text-anchor="middle">~8 min</text>
+    </svg>
+  </div>
+  <div class="grid-2" style="flex-shrink:0;margin-top:.4em;">
+    <div class="card green">
+      <h3>Entregable de la sesión</h3>
+      <ul style="font-size:.85em;margin-top:.2em;">
+        <li>📋 3 tareas con escenario, instrucción y criterio de éxito</li>
+        <li>👥 Roles asignados: facilitador, observador, registrador</li>
+        <li>✅ Revisadas por el docente antes de S20</li>
+      </ul>
+    </div>
+    <div class="card cyan">
+      <h3>Usen la plantilla de actividad</h3>
+      <p style="font-size:.85em;">Tienen la plantilla impresa. Complétenla a mano o en digital — la entregan hoy al docente para revisión antes de S20.</p>
+    </div>
+  </div>
+</div>
+
+<!-- S10 CIERRE TALLER -->
+<div class="slide">
+  <h2>Cierre — Compartamos una tarea <span class="tag pink">25 min</span></h2>
+  <div class="card" style="margin-bottom:.5em;">
+    <p>Cada equipo comparte su <strong>tarea 1</strong> con el grupo. Los otros equipos dan retroalimentación usando las reglas de escritura de tareas que aprendimos.</p>
+  </div>
+  <div class="grid-2" style="flex:1;min-height:0;align-content:start;">
+    <div class="card cyan">
+      <h3>Preguntas de retroalimentación</h3>
+      <ul style="margin-top:.3em;font-size:.85em;">
+        <li>¿La tarea menciona algún elemento de la interfaz?</li>
+        <li>¿El escenario es realista para el usuario del A2?</li>
+        <li>¿Se puede saber si la tarea fue completada o no?</li>
+        <li>¿Se puede hacer en una sola sesión de ~5 minutos?</li>
+      </ul>
+    </div>
+    <div class="card orange">
+      <h3>Preguntas de reflexión</h3>
+      <ul style="margin-top:.3em;font-size:.85em;">
+        <li>¿Cuál fue la tarea más difícil de escribir? ¿Por qué?</li>
+        <li>¿Qué aprendieron sobre su propio prototipo al escribirlas?</li>
+        <li>¿Cambiarían algo del flujo basándose en las tareas?</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h3>Conexión con S20 (Jueves 23 Abr)</h3>
+      <ul style="margin-top:.3em;font-size:.85em;">
+        <li>Con las tareas revisadas, construirán el <strong>guión completo</strong></li>
+        <li>Diseñarán la hoja de registro de observaciones</li>
+        <li>Aprenderán a calcular el <strong>SUS score</strong></li>
+        <li>Definirán el orden de los equipos evaluadores</li>
+      </ul>
+    </div>
+    <div class="card yellow">
+      <h3>Para el Test Fest (Martes 28 Abr)</h3>
+      <ul style="margin-top:.3em;font-size:.85em;">
+        <li>📱 Prototipo A6 listo y navegable</li>
+        <li>📋 Guión de prueba completo (S20)</li>
+        <li>📊 Hojas de registro impresas</li>
+        <li>👥 Roles definidos en el equipo</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- S11 CIERRE -->
+<div class="slide center" style="justify-content:center;">
+  <h2>Resumen de hoy</h2>
+  <div class="grid-2" style="text-align:left;margin-top:.8em;max-width:700px;width:100%;">
+    <div class="card green"><p>✅ El sesgo del diseñador — por qué probar con usuarios es indispensable</p></div>
+    <div class="card green"><p>✅ Tipos de prueba — moderada, no moderada, guerrilla, sin usuarios</p></div>
+    <div class="card green"><p>✅ La regla de los 5 — con 5 usuarios detectas el 85% de los problemas</p></div>
+    <div class="card green"><p>✅ Métricas — tasa de éxito, tiempo, errores, SUS (cuanti y cualitativo)</p></div>
+    <div class="card green"><p>✅ Cómo escribir tareas — escenario + instrucción + criterio de éxito</p></div>
+    <div class="card green"><p>✅ Think-aloud y roles — facilitador, observador, registrador</p></div>
+  </div>
+  <div class="card orange" style="max-width:700px;width:100%;margin-top:.8em;text-align:left;">
+    <p>📌 <strong>Para la próxima sesión (S20 — Jue 23 Abr):</strong> Traigan sus 3 tareas escritas. Construimos el guión completo, la hoja de registro y el SUS. El jueves salen con todo listo para el Test Fest del 28.</p>
+  </div>
+  <div class="card cyan" style="max-width:700px;width:100%;margin-top:.5em;text-align:left;">
+    <p>📦 <strong>Conexión con A6:</strong> El prototipo que entreguen el <strong>28 de Abril</strong> es el que se prueba ese mismo día. Asegúrense de que todos los flujos estén conectados y navegables.</p>
+  </div>
+  <p class="muted" style="margin-top:1em;">DEIU 2026 · Ing. Ricardo Jaramillo · rjaramillo0@ucol.mx</p>
+</div>
+
+<script>
+var c=0,t=11;
+function nav(d){
+  document.querySelectorAll('.slide')[c].classList.remove('active');
+  c+=d; if(c<0)c=0; if(c>=t)c=t-1;
+  var s=document.querySelectorAll('.slide')[c];
+  s.classList.add('active'); s.scrollTop=0;
+  document.getElementById('C').textContent=(c+1)+' / '+t;
+  document.getElementById('P').disabled=c===0;
+  document.getElementById('N').disabled=c===t-1;
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')nav(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')nav(-1);
+});
+</script>
+</body>
+</html>
